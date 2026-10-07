@@ -2,6 +2,26 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-07 — Phase 1 engine
+
+**Implementation choices**
+
+- RNG: sfc32, 128-bit state expanded from a 32-bit seed with splitmix32; first 15 outputs discarded. Normals via Box–Muller.
+- Φ: Hart (1968) / West (2005) double-precision algorithm. Φ⁻¹: Acklam + one Halley step (accuracy ~1e-15, tested against Python's `statistics.NormalDist`).
+- Metalog feasibility threshold 1.66711 (Keelin 2016) confirmed numerically by a test.
+- **Fallback** (CLAUDE.md asked to log it): two-piece normal _in the same bound-transformed space_ — median p50, separate spreads below and above, scaled so p10/p90 are hit exactly. It stays inside the limits. It is also used for ties (worst = base or base = best). All three equal → a fixed value.
+- Values exactly on a limit (e.g. worst = 0 orders) are moved 0.1% of the limit range inside it (never more than half-way to the next value), because the log transforms are infinite on the limit.
+- Copula links samples by Gaussian Z directly (`fromNormal(z)`), so the fallback needs no Φ/Φ⁻¹ round trip.
+- "Spend ↔ demand −0.2" is applied to both busy-hour and quiet-hour demand.
+- Most-likely values are medians of the 10,000 scenarios. Margin of safety uses the median orders and median break-even (the two numbers shown on the card). "Every order loses money" fires when the median contribution per order ≤ 0. The capacity alert fires when the median share of demand turned away is > 5%.
+- Phase 2 pulled forward: the arepa template is data in `src/templates/`, and `src/state/scenario.ts` turns it plus user changes into a simulation spec (single-number spreads, limits, overrides).
+- Temporary **engine preview page** (`src/ui/preview/`) replaces the placeholder so Ricardo can test numbers before Phase 3. It uses a fixed default seed (12345) until URL state exists (Phase 5). It will be deleted in Phase 3.
+
+**Open questions for Ricardo**
+
+- _Sensitivity with linked inputs._ Spearman measures each input's total association with profit, including what moves with it. Ingredient cost is linked +0.3 to spend, and spend raises profit, so cost shows ≈ 0.00 (Default) or even +0.09 (Strong), versus −0.15 if inputs are independent. Options: (A) keep Spearman as specified and show bar length only, no sign; (B) partial rank correlation, which brings back the 2020 flaw (price looks too important); (C) rank on an independent run, which has the same problem. Recommendation: A.
+- _Margin wording vs loss chance._ At defaults the margin of safety is 20% ("comfortable") while the chance of a losing typical day is 32%. Both are correct (medians vs whole distribution) but may read as contradictory.
+
 ## 2026-10-07 — Phase 0 plan (approved by Ricardo in chat; folded into SPEC v0.3 and CLAUDE.md)
 
 **Stack & hosting**
