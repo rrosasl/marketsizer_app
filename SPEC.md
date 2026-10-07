@@ -1,0 +1,202 @@
+# SPEC v0.2 — Pop-up Food Stand Simulator
+
+**Changelog v0.2:** UI language = English; decisions-vs-uncertainties confirmed; VAT split food 7% / drinks 19%; defaults calibrated (avg spend, opening hours, staff cost); trading-day defaults reflect Markthalle reality (Saturday-only weekend).
+
+Status: draft for review in chat. Once frozen, this file is the single source of truth for Claude Code.
+Test case: arepa stand in a Berlin Markthalle.
+
+---
+
+## 1. Product principles
+
+1. **Audience: non-experts. UI language: English (v1).** No jargon in the UI: no "P10", "Monte Carlo", "distribution" or "correlation". Labels say *Worst case / Most likely / Best case*.
+2. **Minimum friction.** The default page is one **weekend day**. Everything else (weekdays, month, year, payback) is optional.
+3. **Decisions vs. uncertainties.** Things the user *chooses* (opening hours, staff count, wage) take a single value. Things the user *estimates* (orders, spend, costs) take worst / base / best.
+4. **Screenshot-ready.** Every output is a self-contained card that reads correctly in a pitch deck with no surrounding context.
+5. **Private and shareable.** All computation runs client-side. Scenario state, including the random seed, is stored in the URL.
+
+---
+
+## 2. Guided input: worst / base / best
+
+Each uncertain input has three fields plus an ⓘ button.
+
+**Info text (draft):**
+> **Base case:** what you realistically expect on a typical day.
+> **Worst case:** a realistic bad scenario, not a disaster. There's roughly a 1-in-10 chance reality turns out worse than this.
+> **Best case:** a realistic good scenario. There's roughly a 1-in-10 chance reality turns out better than this.
+
+Notes:
+- The inputs describe the **average level** (e.g. "how busy a typical weekend day will be"), not swings from one day to the next. See §8 for why.
+- For **cost inputs**, worst means the *highest* value. The UI shows the fields in the order worst → base → best and adds a hint ("worst = most expensive").
+- **"I only know one number" mode:** the user enters the base value only, and the template's default spread is applied (stated per input in §4).
+- Validation: the values must be ordered (worst ≤ base ≤ best, or reversed for costs). If they aren't, show an inline message in plain language.
+- Hard limits (minimum/maximum) are set by the template and hidden from the user, e.g. orders ≥ 0.
+
+---
+
+## 3. Model: one day
+
+Defined separately for each day type d ∈ {weekend, weekday}. The weekend is the default page.
+
+### Revenue
+```
+offpeak_hours   = max(open_hours − peak_hours, 0)
+peak_orders     = min(peak_demand_per_h,    capacity_per_h) × peak_hours
+offpeak_orders  = min(offpeak_demand_per_h, capacity_per_h) × offpeak_hours
+orders          = peak_orders + offpeak_orders
+lost_orders     = (peak_demand_per_h − capacity_per_h)⁺ × peak_hours + (same for off-peak)
+gross_sales     = orders × avg_spend_gross          # what customers pay, incl. VAT
+net_sales       = gross_sales × (1 − drinks_share)/(1 + vat_food)
+                + gross_sales × drinks_share/(1 + vat_drinks)
+```
+
+### Costs
+```
+ingredients     = orders × cost_per_order            # food + packaging
+payment_fees    = gross_sales × card_fee_rate
+rent            = rent_fixed_per_day + net_sales × rent_revenue_share
+staff           = staff_count × (open_hours + setup_hours) × staff_cost_per_h
+owner_pay       = owner_hours × owner_rate_per_h     # explicit; can be 0
+other_daily     = other_costs_per_day                # energy, cleaning, waste, consumables
+daily_costs     = ingredients + payment_fees + rent + staff + owner_pay + other_daily
+profit          = net_sales − daily_costs
+```
+
+### Operating break-even (orders per day)
+```
+net_per_order          = net_sales / orders
+contribution_per_order = net_per_order × (1 − rent_revenue_share)
+                         − cost_per_order − avg_spend_gross × card_fee_rate
+fixed_per_day          = rent_fixed_per_day + staff + owner_pay + other_daily
+breakeven_orders       = fixed_per_day / contribution_per_order
+margin_of_safety       = (orders − breakeven_orders) / orders
+```
+If contribution_per_order ≤ 0, show a hard warning: "Every order loses money. Check your price or costs."
+
+---
+
+## 4. Template defaults: arepa stand, Berlin Markthalle
+
+⚠️ **Placeholders. Calibrate with research before freezing.**
+
+### Uncertainties (worst / base / best)
+| Input | Unit | Worst | Base | Best | Spread if single-number mode |
+|---|---|---|---|---|---|
+| Busy hours per day | h | 2 | 3 | 4 | ±33% |
+| Orders per busy hour (demand) | orders/h | 10 | 18 | 28 | −45% / +55% |
+| Orders per quiet hour (demand) | orders/h | 3 | 6 | 10 | −50% / +65% |
+| Average spend per order (incl. VAT) | € | 10.00 | 12.00 | 14.00 | −17% / +17% |
+| Ingredients + packaging per order | € | 3.80 | 3.20 | 2.80 | +20% / −12% |
+
+### Decisions (single value)
+| Input | Default | Note |
+|---|---|---|
+| Opening hours (weekend day) | 8 h | Markthalle Neun Saturday 10:00–18:00 |
+| Max orders per hour you can serve | 30 | 2 people at the counter |
+| Staff on shift (excluding owner) | 1 | |
+| Setup + cleanup hours | 2 h | added to staff hours |
+| Staff cost per hour (employer) | €18 | min. wage €13.90 (2026) + ~21% employer SV, or minijob flat ~30% |
+| Owner hours / owner rate | 11 h / €18 | explicit, can be set to 0 |
+| Rent: fixed per day | €120 | **placeholder: no public data, get a quote from the hall** |
+| Rent: share of sales | 0% | many halls use fixed + % |
+| Card / payment fees | 1.5% | |
+| VAT food / drinks | 7% / 19% | Food 7% since 1 Jan 2026 for eat-in and takeaway alike |
+| Drinks share of sales | 20% | needed to split VAT |
+| Other costs per day | €25 | |
+
+Sanity check at base values: 84 orders → €1,008 gross / €923 net sales per day, €134 profit/day (after owner pay), break-even ≈ 66 orders, margin of safety ≈ 21%.
+
+Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3.50–4.00; Markthalle Street Food Thursday dishes ~€6–15; Markthalle Neun hours Sat 10–18, Fri 12–18, Thu street food 17–22, closed Sun (except monthly breakfast market).
+
+**Least-calibrated inputs: orders per busy/quiet hour.** No public data exists. Best calibration: count orders per hour at a comparable stall on a Saturday (one observation session).
+
+---
+
+## 5. Uncertainty engine
+
+- **Distributions:** 3-term **metalog** fitted to (worst, base, best) as (p10, p50, p90), with template bounds (bounded or semi-bounded variant).
+  - Acceptance test: the fitted p10/p50/p90 reproduce the inputs within 1%.
+  - Check feasibility. If the metalog is infeasible (very lopsided inputs), fall back to a two-piece normal and show a gentle note to the user. Exact fallback to be decided in Code.
+- **Linked uncertainties:** a Gaussian copula with a **template-fixed** correlation matrix. It is not shown to the user; an advanced toggle offers Independent / Default / Strong.
+
+| Pair | Default ρ | Rationale |
+|---|---|---|
+| Busy-hour demand ↔ quiet-hour demand | +0.6 | A popular stand is popular all day |
+| Avg spend ↔ demand (both) | −0.2 | Higher spend per order, fewer orders |
+| Avg spend ↔ ingredient cost per order | +0.3 | Bigger orders cost more |
+| Weekend demand ↔ weekday demand (full weekday mode) | +0.7 | Same stand, same reputation |
+
+- **Draws:** 10,000, seeded. The seed is stored in the URL so results are reproducible.
+- **Sensitivity:** Spearman rank correlation of each uncertain input with **daily profit**. Report the top 5.
+
+---
+
+## 6. Outputs: weekend day page (default)
+
+All outputs are cards. Each card has a title, a headline number, a worst–best range, a one-line footnote, and a small brand mark.
+
+1. **Sales per weekend day:** "Most likely €X · Worst case €A · Best case €B", with a range bar.
+2. **Profit per weekend day (after paying yourself):** same format, plus "Chance a weekend day loses money: N%".
+3. **Break-even:** "You need about N orders a day to cover your costs. You expect about M." Shown as a bar with the break-even line. Margin of safety is phrased in words ("comfortable / thin / negative").
+4. **What matters most:** a top-5 bar chart with plain labels, plus one sentence: "Your biggest uncertainty is *average spend per order*. Pin this down first (e.g. test prices at a market day)."
+5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "You may turn away ~N customers on busy hours. A second person at the counter could pay for itself."
+
+Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated scenarios of your inputs."
+
+---
+
+## 7. Optional: extend to month & year
+
+Opened via a "See your month and year →" button.
+
+### Inputs
+- **Trading days per week:** weekend days (default 1, since many market halls are closed Sundays), weekdays (default 0).
+- **Weekday opening hours:** separate decision input (e.g. Fri 12–18 = 6 h, Street Food Thursday 17–22 = 5 h).
+- **Weekday scenario:** *simple mode* (default) is a single slider "A weekday is __% as busy as a weekend day" (default 60%), which scales both demand inputs. *Full mode* gives a separate worst/base/best set.
+- **Weeks open per year:** default 48.
+- **Ramp-up:** "In your first __ months, expect __% of normal demand" (default 2 months at 60%).
+- **Monthly fixed costs** (insurance, permits, accounting, storage): default €250.
+- **One-off setup costs:** equipment €6,000; initial stock €800; permits/hygiene €300. Refundable deposits are excluded from payback and listed separately.
+
+### Logic (per simulation draw)
+```
+days_per_month_d  = days_per_week_d × weeks_open/12
+month_profit_m    = Σ_d days_per_month_d × daily_profit_d(ramp_factor_m) − monthly_fixed
+cumulative_m      = −setup_costs + Σ_{k≤m} month_profit_k
+payback_month     = first m where cumulative_m ≥ 0   (horizon 36 months; otherwise "not within 3 years")
+```
+
+### Outputs (cards)
+6. **Monthly sales & profit** (after ramp-up): most likely + range.
+7. **Yearly sales & profit** (first full year, including ramp-up).
+8. **Payback:** "Most likely you earn back your €X setup costs in N months." Plus "Chance of earning it back within 12 months: N%." Shown as a cumulative cash curve with a band and a zero line.
+
+---
+
+## 8. Methodological note (why inputs are averages, not daily swings)
+
+If worst/base/best described day-to-day swings, adding up 20+ days would cancel out most of the uncertainty, and monthly ranges would look falsely narrow. For a new stand, the dominant uncertainty is the **level**: is it a hit or not? So each draw represents one possible "true average day", and months are built from that same day. This is conservative and honest. Day-to-day volatility is a possible later extension (v2).
+
+---
+
+## 9. Screenshot / pitch-deck requirements
+
+- An "Export card" button on each card produces a PNG. Default 16:9, optional 1:1.
+- Cards carry their own context: the scenario name (e.g. "Arepa stand · Markthalle Berlin · weekend day"), a key-assumptions footnote, and a date.
+- High-contrast palette that stays readable when projected. No hover-only information.
+
+---
+
+## 10. Non-goals for v1
+
+Multiple templates · user-defined formulas · accounts or login · backend · tax beyond VAT · financing/loans · day-to-day volatility.
+
+---
+
+## 11. Open questions
+
+1. ~~UI language~~ → English. Number format `€1,234.50`.
+2. ~~VAT~~ → resolved. Rent: needs a real quote (fixed/day vs. fixed + % share).
+3. Demand per hour: calibrate via one observation session at a comparable stall.
+4. Product name / brand mark on exported cards.
