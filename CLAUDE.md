@@ -37,26 +37,29 @@ The project evolves a 2020 notebook (Monte Carlo market sizing for an arepa rest
 2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (5 inputs). Things the user *chooses* (opening hours, staff, wages, rent terms) take a single value.
 3. **Correlations are fixed per template** and hidden from the user, with only an advanced toggle (Independent / Default / Strong).
 4. **Two break-evens:** daily operating break-even (orders per day) and payback (months to recover setup costs).
-5. **The owner's own labour is costed explicitly** (it can be set to 0, but it's always visible).
+5. **The owner's own labour is costed explicitly** (owner works the same hours as staff; the rate can be set to 0, but it's always visible).
 6. **The weekend day is the default page.** Month/year is optional and opened by the user.
 7. **No jargon in the UI:** no "P10", "Monte Carlo" or "distribution". Use *Worst case / Most likely / Best case*.
 8. **UI language: English.** Number format `€1,234.50`.
+9. **Simplicity first.** Anything most users don't need goes under "Advanced settings".
 
 ---
 
 ## 3. Tech stack & architecture
 
 - **Static, client-side web app.** No backend, no accounts, no data leaves the browser.
-- TypeScript + Vite. The UI framework is your recommendation (React is fine); propose it in the Phase 0 plan.
-- Testing: Vitest. The engine must be pure, framework-free TypeScript with no DOM dependencies.
+- TypeScript (strict) + Vite + React 19. Charts are hand-built SVG components (no chart library) and must look polished.
+- Lint: oxlint. Format: Prettier. Testing: Vitest + fast-check. `npm run check` runs all of them.
+- The engine must be pure, framework-free TypeScript with no DOM dependencies.
 - Scenario state, **including the random seed**, is serialised into the URL, so a shared link reproduces the exact result.
-- Deployment: a static host (GitHub Pages / Netlify / Cloudflare Pages). Propose one.
+- Deployment: GitHub Pages via GitHub Actions (`.github/workflows/ci.yml`); every push to `main` that passes checks deploys.
 
-Suggested structure (adapt if you have a better one, but explain why):
+Structure:
 ```
 /src/engine/      # pure TS: rng, metalog, copula, model, sensitivity, extrapolation
 /src/templates/   # template definitions (inputs, defaults, bounds, correlations)
-/src/ui/          # components, cards, charts
+/src/state/       # scenario schema + URL codec (pure, tested)
+/src/ui/          # components, cards, charts; copy.ts holds all UI text
 /tests/           # engine unit + property tests
 SPEC.md  CLAUDE.md  DECISIONS.md
 ```

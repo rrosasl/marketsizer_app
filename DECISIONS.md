@@ -2,7 +2,7 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
-## 2026-10-07 — Phase 0 plan (approved by Ricardo in chat)
+## 2026-10-07 — Phase 0 plan (approved by Ricardo in chat; folded into SPEC v0.3 and CLAUDE.md)
 
 **Stack & hosting**
 
@@ -10,7 +10,7 @@ Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newe
 - Lint: **oxlint** (Vite's current default) instead of ESLint — faster, zero-config; Prettier for formatting.
 - Tests: Vitest + fast-check (property tests).
 - Hosting: GitHub Pages via GitHub Actions (repo is public, so free). CI runs lint, format check, typecheck, tests and build on every push/PR; `main` deploys.
-- Repo: new repo `MarketSizer`; the older Python `restaurant-market-sizer` app is a separate product and stays where it is.
+- Repo: new repo `rrosasl/marketsizer_app`; the older Python `restaurant-market-sizer` app is a separate product and stays where it is.
 
 **Structure** (deviation from CLAUDE.md §3 suggestion)
 

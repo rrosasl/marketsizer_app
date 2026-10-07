@@ -1,4 +1,6 @@
-# SPEC v0.2 — Pop-up Food Stand Simulator
+# SPEC v0.3 — Pop-up Food Stand Simulator
+
+**Changelog v0.3:** simplicity principle (complexity goes under Advanced settings); owner hours = staff hours; busy hours capped at opening hours; "most likely" = median; break-even capacity warning; input limits (editable under Advanced); correlation toggle defined; margin-of-safety words defined; capacity alert states facts only; refundable deposits dropped. Details in DECISIONS.md.
 
 **Changelog v0.2:** UI language = English; decisions-vs-uncertainties confirmed; VAT split food 7% / drinks 19%; defaults calibrated (avg spend, opening hours, staff cost); trading-day defaults reflect Markthalle reality (Saturday-only weekend).
 
@@ -14,6 +16,7 @@ Test case: arepa stand in a Berlin Markthalle.
 3. **Decisions vs. uncertainties.** Things the user *chooses* (opening hours, staff count, wage) take a single value. Things the user *estimates* (orders, spend, costs) take worst / base / best.
 4. **Screenshot-ready.** Every output is a self-contained card that reads correctly in a pitch deck with no surrounding context.
 5. **Private and shareable.** All computation runs client-side. Scenario state, including the random seed, is stored in the URL.
+6. **Simplicity first.** Show only what most users need. Everything else (input limits, correlation setting, single-number spreads, etc.) lives under **Advanced settings**.
 
 ---
 
@@ -31,7 +34,7 @@ Notes:
 - For **cost inputs**, worst means the *highest* value. The UI shows the fields in the order worst → base → best and adds a hint ("worst = most expensive").
 - **"I only know one number" mode:** the user enters the base value only, and the template's default spread is applied (stated per input in §4).
 - Validation: the values must be ordered (worst ≤ base ≤ best, or reversed for costs). If they aren't, show an inline message in plain language.
-- Hard limits (minimum/maximum) are set by the template and hidden from the user, e.g. orders ≥ 0.
+- Limits (minimum/maximum) are set by the template, hidden by default and editable under Advanced settings (see §4).
 
 ---
 
@@ -41,11 +44,12 @@ Defined separately for each day type d ∈ {weekend, weekday}. The weekend is th
 
 ### Revenue
 ```
-offpeak_hours   = max(open_hours − peak_hours, 0)
-peak_orders     = min(peak_demand_per_h,    capacity_per_h) × peak_hours
+peak_hours_eff  = min(peak_hours, open_hours)
+offpeak_hours   = open_hours − peak_hours_eff
+peak_orders     = min(peak_demand_per_h,    capacity_per_h) × peak_hours_eff
 offpeak_orders  = min(offpeak_demand_per_h, capacity_per_h) × offpeak_hours
 orders          = peak_orders + offpeak_orders
-lost_orders     = (peak_demand_per_h − capacity_per_h)⁺ × peak_hours + (same for off-peak)
+lost_orders     = (peak_demand_per_h − capacity_per_h)⁺ × peak_hours_eff + (same for off-peak)
 gross_sales     = orders × avg_spend_gross          # what customers pay, incl. VAT
 net_sales       = gross_sales × (1 − drinks_share)/(1 + vat_food)
                 + gross_sales × drinks_share/(1 + vat_drinks)
@@ -57,7 +61,7 @@ ingredients     = orders × cost_per_order            # food + packaging
 payment_fees    = gross_sales × card_fee_rate
 rent            = rent_fixed_per_day + net_sales × rent_revenue_share
 staff           = staff_count × (open_hours + setup_hours) × staff_cost_per_h
-owner_pay       = owner_hours × owner_rate_per_h     # explicit; can be 0
+owner_pay       = (open_hours + setup_hours) × owner_rate_per_h   # owner works the same hours as staff; rate can be 0
 other_daily     = other_costs_per_day                # energy, cleaning, waste, consumables
 daily_costs     = ingredients + payment_fees + rent + staff + owner_pay + other_daily
 profit          = net_sales − daily_costs
@@ -73,6 +77,7 @@ breakeven_orders       = fixed_per_day / contribution_per_order
 margin_of_safety       = (orders − breakeven_orders) / orders
 ```
 If contribution_per_order ≤ 0, show a hard warning: "Every order loses money. Check your price or costs."
+If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more than you can serve in a day."
 
 ---
 
@@ -81,13 +86,13 @@ If contribution_per_order ≤ 0, show a hard warning: "Every order loses money. 
 ⚠️ **Placeholders. Calibrate with research before freezing.**
 
 ### Uncertainties (worst / base / best)
-| Input | Unit | Worst | Base | Best | Spread if single-number mode |
-|---|---|---|---|---|---|
-| Busy hours per day | h | 2 | 3 | 4 | ±33% |
-| Orders per busy hour (demand) | orders/h | 10 | 18 | 28 | −45% / +55% |
-| Orders per quiet hour (demand) | orders/h | 3 | 6 | 10 | −50% / +65% |
-| Average spend per order (incl. VAT) | € | 10.00 | 12.00 | 14.00 | −17% / +17% |
-| Ingredients + packaging per order | € | 3.80 | 3.20 | 2.80 | +20% / −12% |
+| Input | Unit | Worst | Base | Best | Spread if single-number mode | Limits (Advanced) |
+|---|---|---|---|---|---|---|
+| Busy hours per day | h | 2 | 3 | 4 | ±33% | 0 – opening hours |
+| Orders per busy hour (demand) | orders/h | 10 | 18 | 28 | −45% / +55% | 0 – 150 |
+| Orders per quiet hour (demand) | orders/h | 3 | 6 | 10 | −50% / +65% | 0 – 100 |
+| Average spend per order (incl. VAT) | € | 10.00 | 12.00 | 14.00 | −17% / +17% | €1 – €60 |
+| Ingredients + packaging per order | € | 3.80 | 3.20 | 2.80 | +20% / −12% | €0 – €30 |
 
 ### Decisions (single value)
 | Input | Default | Note |
@@ -97,7 +102,7 @@ If contribution_per_order ≤ 0, show a hard warning: "Every order loses money. 
 | Staff on shift (excluding owner) | 1 | |
 | Setup + cleanup hours | 2 h | added to staff hours |
 | Staff cost per hour (employer) | €18 | min. wage €13.90 (2026) + ~21% employer SV, or minijob flat ~30% |
-| Owner hours / owner rate | 11 h / €18 | explicit, can be set to 0 |
+| Owner rate per hour | €18 | owner hours = opening + setup hours (10 h); rate can be set to 0 |
 | Rent: fixed per day | €120 | **placeholder: no public data, get a quote from the hall** |
 | Rent: share of sales | 0% | many halls use fixed + % |
 | Card / payment fees | 1.5% | |
@@ -105,7 +110,7 @@ If contribution_per_order ≤ 0, show a hard warning: "Every order loses money. 
 | Drinks share of sales | 20% | needed to split VAT |
 | Other costs per day | €25 | |
 
-Sanity check at base values: 84 orders → €1,008 gross / €923 net sales per day, €134 profit/day (after owner pay), break-even ≈ 66 orders, margin of safety ≈ 21%.
+Sanity check at base values (owner 10 h): 84 orders → €1,008 gross / €923 net sales per day, €134 profit/day (after owner pay), break-even ≈ 66 orders, margin of safety ≈ 21%.
 
 Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3.50–4.00; Markthalle Street Food Thursday dishes ~€6–15; Markthalle Neun hours Sat 10–18, Fri 12–18, Thu street food 17–22, closed Sun (except monthly breakfast market).
 
@@ -118,7 +123,7 @@ Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3
 - **Distributions:** 3-term **metalog** fitted to (worst, base, best) as (p10, p50, p90), with template bounds (bounded or semi-bounded variant).
   - Acceptance test: the fitted p10/p50/p90 reproduce the inputs within 1%.
   - Check feasibility. If the metalog is infeasible (very lopsided inputs), fall back to a two-piece normal and show a gentle note to the user. Exact fallback to be decided in Code.
-- **Linked uncertainties:** a Gaussian copula with a **template-fixed** correlation matrix. It is not shown to the user; an advanced toggle offers Independent / Default / Strong.
+- **Linked uncertainties:** a Gaussian copula with a **template-fixed** correlation matrix. It is not shown to the user; an Advanced setting offers Independent (all ρ = 0) / Default (table below) / Strong (each ρ × 1.5, capped at ±0.9).
 
 | Pair | Default ρ | Rationale |
 |---|---|---|
@@ -136,11 +141,13 @@ Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3
 
 All outputs are cards. Each card has a title, a headline number, a worst–best range, a one-line footnote, and a small brand mark.
 
+"Most likely" = median of the simulated results (also for break-even and payback). Worst/best = 10th/90th percentile.
+
 1. **Sales per weekend day:** "Most likely €X · Worst case €A · Best case €B", with a range bar.
-2. **Profit per weekend day (after paying yourself):** same format, plus "Chance a weekend day loses money: N%".
-3. **Break-even:** "You need about N orders a day to cover your costs. You expect about M." Shown as a bar with the break-even line. Margin of safety is phrased in words ("comfortable / thin / negative").
+2. **Profit per weekend day (after paying yourself):** same format, plus "Chance your typical weekend day loses money: N%" (each scenario is a possible *average* day, see §8).
+3. **Break-even:** "You need about N orders a day to cover your costs. You expect about M." Shown as a bar with the break-even line. Margin of safety is phrased in words: negative (< 0%), thin (0–15%), comfortable (> 15%).
 4. **What matters most:** a top-5 bar chart with plain labels, plus one sentence: "Your biggest uncertainty is *average spend per order*. Pin this down first (e.g. test prices at a market day)."
-5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "You may turn away ~N customers on busy hours. A second person at the counter could pay for itself."
+5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "You may turn away ~N customers (~€X in sales) at busy times." Facts only; no staffing advice.
 
 Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated scenarios of your inputs."
 
@@ -155,9 +162,9 @@ Opened via a "See your month and year →" button.
 - **Weekday opening hours:** separate decision input (e.g. Fri 12–18 = 6 h, Street Food Thursday 17–22 = 5 h).
 - **Weekday scenario:** *simple mode* (default) is a single slider "A weekday is __% as busy as a weekend day" (default 60%), which scales both demand inputs. *Full mode* gives a separate worst/base/best set.
 - **Weeks open per year:** default 48.
-- **Ramp-up:** "In your first __ months, expect __% of normal demand" (default 2 months at 60%).
+- **Ramp-up:** "In your first __ months, expect __% of normal demand" (default 2 months at 60%). Scales both demand inputs before the capacity cap.
 - **Monthly fixed costs** (insurance, permits, accounting, storage): default €250.
-- **One-off setup costs:** equipment €6,000; initial stock €800; permits/hygiene €300. Refundable deposits are excluded from payback and listed separately.
+- **One-off setup costs:** equipment €6,000; initial stock €800; permits/hygiene €300.
 
 ### Logic (per simulation draw)
 ```
