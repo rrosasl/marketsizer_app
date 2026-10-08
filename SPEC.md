@@ -1,4 +1,6 @@
-# SPEC v0.3 — Pop-up Food Stand Simulator
+# SPEC v0.4 — Pop-up Food Stand Simulator
+
+**Changelog v0.4 (UI feedback 2026-10-08):** "I only know one number" mode removed; worst/best are auto-suggested from "most likely" and can be overridden; "most likely" is the primary field; positive framing (chance of profit, "room to grow", cushion words); "What matters most" shows strength only, with plain-language help and a research tip.
 
 **Changelog v0.3:** simplicity principle (complexity goes under Advanced settings); owner hours = staff hours; busy hours capped at opening hours; "most likely" = median; break-even capacity warning; input limits (editable under Advanced); correlation toggle defined; margin-of-safety words defined; capacity alert states facts only; refundable deposits dropped. Details in DECISIONS.md.
 
@@ -32,7 +34,7 @@ Each uncertain input has three fields plus an ⓘ button.
 Notes:
 - The inputs describe the **average level** (e.g. "how busy a typical weekend day will be"), not swings from one day to the next. See §8 for why.
 - For **cost inputs**, worst means the *highest* value. The UI shows the fields in the order worst → base → best and adds a hint ("worst = most expensive").
-- **"I only know one number" mode:** the user enters the base value only, and the template's default spread is applied (stated per input in §4).
+- **Auto-suggested range:** the user enters "most likely" first; worst and best are filled in automatically from the template's spread (§4), rounded to friendly numbers (whole numbers from 10 up, one decimal below). They follow "most likely" until the user types their own value; a "Use suggestion" link restores the suggestion. "Most likely" is visually primary; worst/best are secondary.
 - Validation: the values must be ordered (worst ≤ base ≤ best, or reversed for costs). If they aren't, show an inline message in plain language.
 - Limits (minimum/maximum) are set by the template, hidden by default and editable under Advanced settings (see §4).
 
@@ -86,7 +88,7 @@ If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more th
 ⚠️ **Placeholders. Calibrate with research before freezing.**
 
 ### Uncertainties (worst / base / best)
-| Input | Unit | Worst | Base | Best | Spread if single-number mode | Limits (Advanced) |
+| Input | Unit | Worst | Base | Best | Suggested spread | Limits (Advanced) |
 |---|---|---|---|---|---|---|
 | Busy hours per day | h | 2 | 3 | 4 | ±33% | 0 – opening hours |
 | Orders per busy hour (demand) | orders/h | 10 | 18 | 28 | −45% / +55% | 0 – 150 |
@@ -144,10 +146,10 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 "Most likely" = median of the simulated results (also for break-even and payback). Worst/best = 10th/90th percentile.
 
 1. **Sales per weekend day:** "Most likely €X · Worst case €A · Best case €B", with a range bar.
-2. **Profit per weekend day (after paying yourself):** same format, plus "Chance your typical weekend day loses money: N%" (each scenario is a possible *average* day, see §8).
-3. **Break-even:** "You need about N orders a day to cover your costs. You expect about M." Shown as a bar with the break-even line. Margin of safety is phrased in words: negative (< 0%), thin (0–15%), comfortable (> 15%).
-4. **What matters most:** a top-5 bar chart with plain labels, plus one sentence: "Your biggest uncertainty is *average spend per order*. Pin this down first (e.g. test prices at a market day)."
-5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "You may turn away ~N customers (~€X in sales) at busy times." Facts only; no staffing advice.
+2. **Profit per weekend day (after paying yourself):** same format, plus "N% chance a typical weekend day makes a profit" (each scenario is a possible *average* day, see §8).
+3. **Break-even:** "You need about N orders a day to cover your costs. You expect about M." Shown as a bar with the break-even line. Margin of safety is phrased in words: "Below break-even" (< 0%), "Thin cushion" (0–15%), "Healthy cushion" (> 15%), plus the number of orders of room.
+4. **What matters most:** a top-5 bar chart with plain labels. Bars show strength only (Big / Some / Small impact), no sign; the direction label ("Higher → more profit") comes from the model, not from the correlation sign. A short intro, an ⓘ explanation, and a "Start here" box with a template research tip for the top driver.
+5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "Room to grow. At busy times, about N more customers may want to order than you can serve — around €X in extra sales." Facts only; no staffing advice.
 
 Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated scenarios of your inputs."
 

@@ -2,7 +2,7 @@ import type { CorrelationPair, DayDecisions, Estimate, UncertainKey } from '../e
 
 export type Unit = 'h' | 'orders/h' | '€' | '€/h' | '%' | 'people' | 'orders'
 
-/** Single-number mode: worst = base × (1 + worst), best = base × (1 + best). */
+/** Suggested range: worst = base × (1 + worst), best = base × (1 + best). */
 export interface Spread {
   worst: number
   best: number
@@ -19,6 +19,8 @@ export interface UncertainInputDef {
   /** Default limits; `upper` may refer to a decision (e.g. busy hours ≤ opening hours). */
   limits: { lower: number; upper: number | { decision: keyof DayDecisions } }
   help: string
+  /** How to narrow this estimate down (shown when it is the biggest driver). */
+  tip: string
 }
 
 export interface DecisionDef {

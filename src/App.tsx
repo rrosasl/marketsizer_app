@@ -1,5 +1,5 @@
-import EnginePreview from './ui/preview/EnginePreview'
+import WeekendPage from './ui/WeekendPage'
 
 export default function App() {
-  return <EnginePreview />
+  return <WeekendPage />
 }

@@ -14,6 +14,7 @@ export const arepaMarkthalle: Template = {
       spread: { worst: -0.33, best: 0.33 },
       limits: { lower: 0, upper: { decision: 'openHours' } },
       help: 'How many hours of the day feel busy, e.g. the lunch rush.',
+      tip: 'Watch a similar stall on a Saturday and note when queues form and when they fade.',
     },
     {
       key: 'peakDemand',
@@ -24,6 +25,7 @@ export const arepaMarkthalle: Template = {
       spread: { worst: -0.45, best: 0.55 },
       limits: { lower: 0, upper: 150 },
       help: 'How many customers want to order in a busy hour, even if you could not serve them all.',
+      tip: 'Count orders at a similar stall during a Saturday lunch rush.',
     },
     {
       key: 'offpeakDemand',
@@ -34,6 +36,7 @@ export const arepaMarkthalle: Template = {
       spread: { worst: -0.5, best: 0.65 },
       limits: { lower: 0, upper: 100 },
       help: 'How many customers want to order in a quiet hour.',
+      tip: 'Count orders at a similar stall during a quiet afternoon hour.',
     },
     {
       key: 'avgSpendGross',
@@ -44,6 +47,7 @@ export const arepaMarkthalle: Template = {
       spread: { worst: -0.17, best: 0.17 },
       limits: { lower: 1, upper: 60 },
       help: 'What a customer pays on average per order, including VAT and drinks.',
+      tip: 'Check what similar stalls charge, or test your menu and prices at a market day.',
     },
     {
       key: 'costPerOrder',
@@ -54,6 +58,7 @@ export const arepaMarkthalle: Template = {
       spread: { worst: 0.2, best: -0.12 },
       limits: { lower: 0, upper: 30 },
       help: 'Food, drinks and packaging for an average order. Worst = most expensive.',
+      tip: 'Price your recipes with real supplier quotes, including packaging.',
     },
   ],
   decisions: [

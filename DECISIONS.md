@@ -2,6 +2,16 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-08 — Phase 3 started: weekend-day page redesign (Ricardo's UI feedback)
+
+- **Single-number mode removed** (SPEC §2). Replaced by auto-suggested worst/best from "most likely" using the template spread, rounded to friendly numbers; values follow "most likely" until typed; "Use suggestion" restores them. Template defaults equal their own suggestions.
+- Suggested values that fall outside a limit (e.g. busy hours above opening hours) are clamped; typed values are not, so validation can flag them.
+- **"What matters most" = option A**: Spearman as specified, bar length only (Big ≥ 0.5, Some ≥ 0.25, otherwise Small impact). Direction text comes from the template (costs lower profit), not from the sign of ρ, which can flip for linked inputs. Each input has a research tip.
+- **Positive framing**: "N% chance a typical weekend day makes a profit"; cushion words "Healthy / Thin cushion / Below break-even"; capacity alert reads "Room to grow". The "every order loses money" message stays explicit but suggests a fix.
+- Temporary preview page removed; the page lives in `src/ui/WeekendPage.tsx`, all text in `src/ui/copy.ts`.
+- Visual system: system sans, navy ink, one blue accent for "most likely" and range bars, green/red only for profit/loss. Light mode only for now.
+- Advanced settings and limits: same content and behaviour, restyled.
+
 ## 2026-10-07 — Phase 1 engine
 
 **Implementation choices**
