@@ -1007,3 +1007,33 @@ select {
     grid-column: 2;
   }
 }
+
+.num.has-sign input {
+  padding-right: 40px;
+}
+.sign-btn {
+  position: absolute;
+  right: 5px;
+  width: 30px;
+  height: calc(100% - 10px);
+  border: 0;
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+.sign-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.goal-amount {
+  width: 150px;
+}
+.goal-loss {
+  font-size: 0.78rem;
+  color: var(--muted);
+}

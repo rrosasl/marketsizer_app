@@ -59,3 +59,14 @@ describe('scenario', () => {
     })
   })
 })
+
+describe('parseNumber', () => {
+  it('accepts negatives, typographic minus and comma decimals', async () => {
+    const { parseNumber } = await import('../../src/ui/parseNumber')
+    expect(parseNumber('-50')).toBe(-50)
+    expect(parseNumber('−50')).toBe(-50)
+    expect(parseNumber('12,5')).toBe(12.5)
+    expect(parseNumber('-')).toBeNaN()
+    expect(parseNumber('abc')).toBeNaN()
+  })
+})

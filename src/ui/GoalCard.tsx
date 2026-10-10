@@ -82,6 +82,7 @@ export function GoalCard({
           className="goal-amount"
           invalid={!valid}
           prefix="€"
+          allowNegative
           onChange={(v) => onGoal({ ...goal, metric: 'profit', amount: v })}
         />
         <span>?</span>
@@ -99,6 +100,7 @@ export function GoalCard({
                 <div style={{ width: `${Math.max(p > 0 ? 1 : 0, p * 100)}%` }} />
               </div>
               <span className="card-sub">{copy.goalLikely(formatEuro(likely))}</span>
+              <span className="goal-loss">{copy.goalLossChance(fmtPct(r.summary.lossChance))}</span>
             </div>
           </div>
 

@@ -85,6 +85,7 @@ export const copy = {
   goalResult: (dir: string, amount: string) =>
     `probability that your profit on a typical weekend day will be ${dir} ${amount}`,
   goalLikely: (value: string) => `Your most likely profit is ${value}.`,
+  goalLossChance: (pct: string) => `Probability of a loss on a typical weekend day: ${pct}`,
   goalTakesTitle: { 'at-least': 'What it would take', below: 'What that would look like' },
   goalTakesIntro: {
     'at-least':
