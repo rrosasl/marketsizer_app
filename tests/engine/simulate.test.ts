@@ -106,3 +106,13 @@ describe('median cost day', () => {
     expect(r.summary.dailyCosts.p10).toBeLessThan(r.summary.dailyCosts.p90)
   })
 })
+
+describe('cushion label', () => {
+  it('follows the chance of a profitable day, not the margin', () => {
+    const r = simulate(spec(42))
+    // Defaults: ~20% margin of safety but ~1-in-3 chance of a losing day → "thin", not "healthy".
+    expect(r.summary.marginOfSafety).toBeGreaterThan(0.15)
+    expect(r.summary.lossChance).toBeGreaterThan(0.1)
+    expect(r.summary.marginWord).toBe('thin')
+  })
+})

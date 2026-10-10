@@ -2,7 +2,7 @@ import { buildCorrelationMatrix, correlatedNormals, type CorrelationPair } from 
 import { fitDistribution, type Bounds, type DistributionKind } from './distribution'
 import {
   marginOfSafety,
-  marginWord,
+  cushionWord,
   simulateDay,
   type DayDecisions,
   type DayResult,
@@ -77,6 +77,7 @@ export interface SimulationResult {
     lossChance: number
     /** From the most-likely (median) orders and break-even. */
     marginOfSafety: number
+    /** Cushion label, based on the chance of a profitable day (not on the margin). */
     marginWord: MarginWord
     /** Median contribution per order ≤ 0: every order loses money. */
     everyOrderLosesMoney: boolean
@@ -188,6 +189,8 @@ export function simulate(spec: SimulationSpec): SimulationResult {
   const margin = marginOfSafety(ordersRange.p50, breakevenRange.p50)
   const medianLostShare = summarize(lostShare).p50
 
+  const lossChance = shareWhere(profit, (v) => v < 0)
+
   const sensitivity = keys
     .map((key) => ({ key, rho: spearman(samples[key], profit) }))
     .sort((a, b) => Math.abs(b.rho) - Math.abs(a.rho))
@@ -209,9 +212,9 @@ export function simulate(spec: SimulationSpec): SimulationResult {
       profit: summarize(profit),
       orders: ordersRange,
       breakevenOrders: breakevenRange,
-      lossChance: shareWhere(profit, (v) => v < 0),
+      lossChance,
       marginOfSafety: margin,
-      marginWord: marginWord(margin),
+      marginWord: cushionWord(1 - lossChance),
       everyOrderLosesMoney: summarize(contribution).p50 <= 0,
       breakevenAboveCapacity: breakevenRange.p50 > maxOrdersPerDay,
       maxOrdersPerDay,

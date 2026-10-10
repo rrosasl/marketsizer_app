@@ -2,6 +2,10 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-10 — Cushion label follows the chance of profit (Ricardo: yes)
+
+- The break-even card's label is now based on the chance a typical day makes a profit, not on the margin of safety: ≥ 90% "Healthy cushion", 50–90% "Thin cushion", < 50% "Below break-even". At defaults (68%) it reads "Thin cushion" instead of "Healthy cushion". The "N orders of room" detail still uses median orders − median break-even.
+
 ## 2026-10-10 — Costs card (Ricardo)
 
 - New "Costs per weekend day" card between Sales and Break-even (SPEC §6 card 2b). Sales and Costs sit side by side; Break-even now spans the full width below them.

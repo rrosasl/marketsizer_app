@@ -116,16 +116,24 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
 
 export type MarginWord = 'negative' | 'thin' | 'comfortable'
 
-/** Margin of safety = (expected − break-even) / expected orders. Thresholds: SPEC §6 (v0.3). */
+/** Margin of safety = (expected − break-even) / expected orders. */
 export function marginOfSafety(expectedOrders: number, breakevenOrders: number): number {
   if (!(expectedOrders > 0)) return -Infinity
   return (expectedOrders - breakevenOrders) / expectedOrders
 }
 
-export function marginWord(margin: number): MarginWord {
-  if (margin < 0) return 'negative'
-  if (margin <= 0.15) return 'thin'
-  return 'comfortable'
+/** Thresholds for the cushion label, as a chance that a typical day makes a profit. SPEC §6. */
+export const CUSHION_HEALTHY = 0.9
+export const CUSHION_THIN = 0.5
+
+/**
+ * Cushion label from the chance that a typical day makes a profit, so it can never contradict the
+ * profit card: ≥ 90% healthy, 50–90% thin, below 50% (most likely day loses money) negative.
+ */
+export function cushionWord(profitChance: number): MarginWord {
+  if (profitChance >= CUSHION_HEALTHY) return 'comfortable'
+  if (profitChance >= CUSHION_THIN) return 'thin'
+  return 'negative'
 }
 
 export type CostKind = 'fixed' | 'variable'

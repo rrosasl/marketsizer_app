@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { marginOfSafety, marginWord, simulateDay, type DayUncertain } from '../../src/engine'
+import { cushionWord, marginOfSafety, simulateDay, type DayUncertain } from '../../src/engine'
 import { arepaMarkthalle } from '../../src/templates'
 import { defaultScenario } from '../../src/state/scenario'
 
@@ -49,10 +49,13 @@ describe('simulateDay', () => {
     expect(r.rent).toBeCloseTo(120 + 0.1 * r.netSales, 9)
   })
 
-  it('labels the margin of safety', () => {
-    expect(marginWord(-0.1)).toBe('negative')
-    expect(marginWord(0.1)).toBe('thin')
-    expect(marginWord(0.21)).toBe('comfortable')
+  it('labels the cushion from the chance of a profitable day', () => {
+    // Based on the chance of a profitable day.
+    expect(cushionWord(0.95)).toBe('comfortable')
+    expect(cushionWord(0.9)).toBe('comfortable')
+    expect(cushionWord(0.68)).toBe('thin')
+    expect(cushionWord(0.5)).toBe('thin')
+    expect(cushionWord(0.4)).toBe('negative')
   })
 })
 
