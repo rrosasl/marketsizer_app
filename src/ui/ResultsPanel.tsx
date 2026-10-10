@@ -102,8 +102,6 @@ export function ResultsPanel({
         </article>
       </div>
 
-      <GoalCard r={r} goal={goal} onGoal={onGoal} defs={defs} baseValues={baseValues} />
-
       {s.capacity.show && (
         <aside className="notice notice-grow">
           <b>{copy.capacityTitle}.</b>{' '}
@@ -139,6 +137,8 @@ export function ResultsPanel({
           </div>
         )}
       </article>
+
+      <GoalCard r={r} goal={goal} onGoal={onGoal} defs={defs} baseValues={baseValues} />
 
       <p className="footnote">
         {copy.footnote(r.draws.toLocaleString('en-GB'))}

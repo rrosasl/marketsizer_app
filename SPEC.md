@@ -1,6 +1,6 @@
 # SPEC v0.5 — Pop-up Food Stand Simulator
 
-**Changelog v0.5 (2026-10-10):** owner pay removed — the user adds themselves to "People on shift" if they want to pay themselves (default 2 people); new "Check a goal" card (chance of profit/sales at least / less than €X, plus what it would take).
+**Changelog v0.5 (2026-10-10):** owner pay removed — the user adds themselves to "People on shift" if they want to pay themselves (default 2 people); new "Check a goal" card (probability that profit will be above / below €X, plus what it would take), placed last.
 
 **Changelog v0.4 (UI feedback 2026-10-08):** "I only know one number" mode removed; worst/best are auto-suggested from "most likely" and can be overridden; "most likely" is the primary field; positive framing (chance of profit, "room to grow", cushion words); "What matters most" shows strength only, with plain-language help and a research tip.
 
@@ -151,7 +151,7 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 4. **What matters most:** a top-5 bar chart with plain labels. Bars show strength only (Big / Some / Small impact), no sign; the direction label ("Higher → more profit") comes from the model, not from the correlation sign. A short intro, an ⓘ explanation, and a "Start here" box with a template research tip for the top driver.
 5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "Room to grow. At busy times, about N more customers may want to order than you can serve — around €X in extra sales." Facts only; no staffing advice.
 
-6. **Check a goal:** "What is the chance my [profit | sales] on a weekend day is [at least | less than] €X?" → share of the 10,000 scenarios that meet it (shown as <1% / >99% at the extremes), with the most-likely value for context. Below it, "What it would take" (or "What that would look like" for *less than*): up to 3 estimates whose typical value in the scenarios that meet the goal differs most from the user's most-likely value. Ranked by the average percentile rank of the estimate among those scenarios minus 50%; shown only if that shift is ≥ 5 points, and only if at least 50 scenarios fall on each side. Default question: profit at least €200.
+6. **Check a goal** (last section of the page): "What’s the probability that my profit will be [above | below] €X?" (profit only) → share of the 10,000 scenarios that meet it (shown as <1% / >99% at the extremes), with the most-likely value for context. Below it, "What it would take" (or "What that would look like" for *below*): up to 3 estimates whose typical value in the scenarios that meet the goal differs most from the user's most-likely value. Ranked by the average percentile rank of the estimate among those scenarios minus 50%; shown only if that shift is ≥ 5 points, and only if at least 50 scenarios fall on each side. Default question: profit at least €200.
 
 Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated scenarios of your inputs."
 

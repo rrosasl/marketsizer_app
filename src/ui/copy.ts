@@ -80,13 +80,11 @@ export const copy = {
   goalTitle: 'Check a goal',
   goalInfo:
     'We count how many of the 10,000 simulated weekend days reach your goal. Each simulated day is one possible “typical day” for your stand.',
-  goalAsk: 'What is the chance my',
-  goalMetric: { profit: 'profit', sales: 'sales' },
-  goalOnADay: 'on a weekend day is',
-  goalDirection: { 'at-least': 'at least', below: 'less than' },
-  goalResult: (metric: string, dir: string, amount: string) =>
-    `chance your ${metric} on a typical weekend day is ${dir} ${amount}`,
-  goalLikely: (metric: string, value: string) => `Your most likely ${metric} is ${value}.`,
+  goalAsk: 'What’s the probability that my profit will be',
+  goalDirection: { 'at-least': 'above', below: 'below' },
+  goalResult: (dir: string, amount: string) =>
+    `probability that your profit on a typical weekend day will be ${dir} ${amount}`,
+  goalLikely: (value: string) => `Your most likely profit is ${value}.`,
   goalTakesTitle: { 'at-least': 'What it would take', below: 'What that would look like' },
   goalTakesIntro: {
     'at-least':

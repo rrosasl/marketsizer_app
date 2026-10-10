@@ -3,7 +3,6 @@ import {
   analyzeGoal,
   type Goal,
   type GoalDirection,
-  type GoalMetric,
   type SimulationResult,
   type UncertainKey,
 } from '../engine'
@@ -45,8 +44,7 @@ export function GoalCard({
 }) {
   const valid = Number.isFinite(goal.amount)
   const analysis = useMemo(() => (valid ? analyzeGoal(r, goal) : null), [r, goal, valid])
-  const metricWord = copy.goalMetric[goal.metric]
-  const likely = goal.metric === 'profit' ? r.summary.profit.p50 : r.summary.grossSales.p50
+  const likely = r.summary.profit.p50
   const shown = analysis?.drivers
     .filter((d) => Math.abs(d.shift) >= MIN_SHIFT)
     .slice(0, MAX_DRIVERS)
@@ -65,21 +63,11 @@ export function GoalCard({
       <div className="goal-ask">
         <span>{copy.goalAsk}</span>
         <select
-          aria-label="Profit or sales"
-          value={goal.metric}
-          onChange={(e) => onGoal({ ...goal, metric: e.target.value as GoalMetric })}
-        >
-          {(Object.keys(copy.goalMetric) as GoalMetric[]).map((m) => (
-            <option key={m} value={m}>
-              {copy.goalMetric[m]}
-            </option>
-          ))}
-        </select>
-        <span>{copy.goalOnADay}</span>
-        <select
-          aria-label="At least or less than"
+          aria-label="Above or below"
           value={goal.direction}
-          onChange={(e) => onGoal({ ...goal, direction: e.target.value as GoalDirection })}
+          onChange={(e) =>
+            onGoal({ ...goal, metric: 'profit', direction: e.target.value as GoalDirection })
+          }
         >
           {(Object.keys(copy.goalDirection) as GoalDirection[]).map((d) => (
             <option key={d} value={d}>
@@ -94,7 +82,7 @@ export function GoalCard({
           className="goal-amount"
           invalid={!valid}
           prefix="€"
-          onChange={(v) => onGoal({ ...goal, amount: v })}
+          onChange={(v) => onGoal({ ...goal, metric: 'profit', amount: v })}
         />
         <span>?</span>
       </div>
@@ -105,16 +93,12 @@ export function GoalCard({
             <span className="goal-pct">{fmtPct(p)}</span>
             <div className="goal-answer-text">
               <span>
-                {copy.goalResult(
-                  metricWord,
-                  copy.goalDirection[goal.direction],
-                  formatEuro(goal.amount),
-                )}
+                {copy.goalResult(copy.goalDirection[goal.direction], formatEuro(goal.amount))}
               </span>
               <div className="goal-meter" aria-hidden="true">
                 <div style={{ width: `${Math.max(p > 0 ? 1 : 0, p * 100)}%` }} />
               </div>
-              <span className="card-sub">{copy.goalLikely(metricWord, formatEuro(likely))}</span>
+              <span className="card-sub">{copy.goalLikely(formatEuro(likely))}</span>
             </div>
           </div>
 
