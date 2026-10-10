@@ -74,6 +74,9 @@ export default function WeekendPage() {
 
   const setDecision = (key: keyof DayDecisions) => (v: number) =>
     update((s) => void (s.decisions[key] = v))
+  const baseValues = Object.fromEntries(
+    template.uncertain.map((d) => [d.key, deferred.uncertain[d.key].base]),
+  ) as Record<UncertainKey, number>
   const basic = template.decisions.filter((d) => !d.advanced)
   const advanced = template.decisions.filter((d) => d.advanced)
 
@@ -245,7 +248,15 @@ export default function WeekendPage() {
               {copy.resultsError} {outcome.error}
             </p>
           )}
-          {valid && outcome.result && <ResultsPanel r={outcome.result} defs={defs} />}
+          {valid && outcome.result && (
+            <ResultsPanel
+              r={outcome.result}
+              defs={defs}
+              goal={scenario.goal}
+              onGoal={(g) => update((s) => void (s.goal = g))}
+              baseValues={baseValues}
+            />
+          )}
         </section>
       </main>
     </div>

@@ -1,4 +1,4 @@
-import type { CorrelationPair, DayDecisions, Estimate, UncertainKey } from '../engine'
+import type { CorrelationPair, DayDecisions, Estimate, Goal, UncertainKey } from '../engine'
 
 export type Unit = 'h' | 'orders/h' | '€' | '€/h' | '%' | 'people' | 'orders'
 
@@ -43,4 +43,6 @@ export interface Template {
   uncertain: UncertainInputDef[]
   decisions: DecisionDef[]
   correlations: CorrelationPair<UncertainKey>[]
+  /** Starting question for the goal card. */
+  defaultGoal: Goal
 }

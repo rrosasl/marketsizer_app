@@ -1,4 +1,4 @@
-import type { SimulationResult, UncertainKey } from '../engine'
+import type { Goal, SimulationResult, UncertainKey } from '../engine'
 import type { UncertainInputDef } from '../templates'
 import { BreakevenBar } from './charts/BreakevenBar'
 import { DriverBars } from './charts/DriverBars'
@@ -7,6 +7,7 @@ import { RangeBar } from './charts/RangeBar'
 import { InfoTip } from './components/InfoTip'
 import { copy } from './copy'
 import { formatEuro } from './format'
+import { GoalCard } from './GoalCard'
 
 const fmtOrders = (x: number) => (Number.isFinite(x) ? Math.round(x).toLocaleString('en-GB') : '—')
 const fmtPct = (x: number) => `${Math.round(x * 100)}%`
@@ -14,9 +15,15 @@ const fmtPct = (x: number) => `${Math.round(x * 100)}%`
 export function ResultsPanel({
   r,
   defs,
+  goal,
+  onGoal,
+  baseValues,
 }: {
   r: SimulationResult
   defs: Record<UncertainKey, UncertainInputDef>
+  goal: Goal
+  onGoal: (g: Goal) => void
+  baseValues: Record<UncertainKey, number>
 }) {
   const s = r.summary
   const profitChance = 1 - s.lossChance
@@ -95,6 +102,8 @@ export function ResultsPanel({
         </article>
       </div>
 
+      <GoalCard r={r} goal={goal} onGoal={onGoal} defs={defs} baseValues={baseValues} />
+
       {s.capacity.show && (
         <aside className="notice notice-grow">
           <b>{copy.capacityTitle}.</b>{' '}
@@ -167,10 +176,6 @@ export function ResultsPanel({
             <tr>
               <th>{copy.math.staff}</th>
               <td>−{formatEuro(r.baseCase.staff)}</td>
-            </tr>
-            <tr>
-              <th>{copy.math.owner}</th>
-              <td>−{formatEuro(r.baseCase.ownerPay)}</td>
             </tr>
             <tr>
               <th>{copy.math.other}</th>

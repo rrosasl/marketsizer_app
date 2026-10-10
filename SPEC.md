@@ -1,4 +1,6 @@
-# SPEC v0.4 — Pop-up Food Stand Simulator
+# SPEC v0.5 — Pop-up Food Stand Simulator
+
+**Changelog v0.5 (2026-10-10):** owner pay removed — the user adds themselves to "People on shift" if they want to pay themselves (default 2 people); new "Check a goal" card (chance of profit/sales at least / less than €X, plus what it would take).
 
 **Changelog v0.4 (UI feedback 2026-10-08):** "I only know one number" mode removed; worst/best are auto-suggested from "most likely" and can be overridden; "most likely" is the primary field; positive framing (chance of profit, "room to grow", cushion words); "What matters most" shows strength only, with plain-language help and a research tip.
 
@@ -63,9 +65,8 @@ ingredients     = orders × cost_per_order            # food + packaging
 payment_fees    = gross_sales × card_fee_rate
 rent            = rent_fixed_per_day + net_sales × rent_revenue_share
 staff           = staff_count × (open_hours + setup_hours) × staff_cost_per_h
-owner_pay       = (open_hours + setup_hours) × owner_rate_per_h   # owner works the same hours as staff; rate can be 0
 other_daily     = other_costs_per_day                # energy, cleaning, waste, consumables
-daily_costs     = ingredients + payment_fees + rent + staff + owner_pay + other_daily
+daily_costs     = ingredients + payment_fees + rent + staff + other_daily
 profit          = net_sales − daily_costs
 ```
 
@@ -74,7 +75,7 @@ profit          = net_sales − daily_costs
 net_per_order          = net_sales / orders
 contribution_per_order = net_per_order × (1 − rent_revenue_share)
                          − cost_per_order − avg_spend_gross × card_fee_rate
-fixed_per_day          = rent_fixed_per_day + staff + owner_pay + other_daily
+fixed_per_day          = rent_fixed_per_day + staff + other_daily
 breakeven_orders       = fixed_per_day / contribution_per_order
 margin_of_safety       = (orders − breakeven_orders) / orders
 ```
@@ -101,10 +102,9 @@ If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more th
 |---|---|---|
 | Opening hours (weekend day) | 8 h | Markthalle Neun Saturday 10:00–18:00 |
 | Max orders per hour you can serve | 30 | 2 people at the counter |
-| Staff on shift (excluding owner) | 1 | |
+| People on shift | 2 | everyone paid for the shift; include yourself to pay yourself a wage |
 | Setup + cleanup hours | 2 h | added to staff hours |
-| Staff cost per hour (employer) | €18 | min. wage €13.90 (2026) + ~21% employer SV, or minijob flat ~30% |
-| Owner rate per hour | €18 | owner hours = opening + setup hours (10 h); rate can be set to 0 |
+| Cost per person per hour (employer) | €18 | min. wage €13.90 (2026) + ~21% employer SV, or minijob flat ~30% |
 | Rent: fixed per day | €120 | **placeholder: no public data, get a quote from the hall** |
 | Rent: share of sales | 0% | many halls use fixed + % |
 | Card / payment fees | 1.5% | |
@@ -112,7 +112,7 @@ If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more th
 | Drinks share of sales | 20% | needed to split VAT |
 | Other costs per day | €25 | |
 
-Sanity check at base values (owner 10 h): 84 orders → €1,008 gross / €923 net sales per day, €134 profit/day (after owner pay), break-even ≈ 66 orders, margin of safety ≈ 21%.
+Sanity check at base values (2 people × 10 h): 84 orders → €1,008 gross / €923 net sales per day, €134 profit/day (after owner pay), break-even ≈ 66 orders, margin of safety ≈ 21%.
 
 Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3.50–4.00; Markthalle Street Food Thursday dishes ~€6–15; Markthalle Neun hours Sat 10–18, Fri 12–18, Thu street food 17–22, closed Sun (except monthly breakfast market).
 
@@ -146,10 +146,12 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 "Most likely" = median of the simulated results (also for break-even and payback). Worst/best = 10th/90th percentile.
 
 1. **Sales per weekend day:** "Most likely €X · Worst case €A · Best case €B", with a range bar.
-2. **Profit per weekend day (after paying yourself):** same format, plus "N% chance a typical weekend day makes a profit" (each scenario is a possible *average* day, see §8).
+2. **Profit per weekend day (after all costs, including wages):** same format, plus "N% chance a typical weekend day makes a profit" (each scenario is a possible *average* day, see §8).
 3. **Break-even:** "You need about N orders a day to cover your costs. You expect about M." Shown as a bar with the break-even line. Margin of safety is phrased in words: "Below break-even" (< 0%), "Thin cushion" (0–15%), "Healthy cushion" (> 15%), plus the number of orders of room.
 4. **What matters most:** a top-5 bar chart with plain labels. Bars show strength only (Big / Some / Small impact), no sign; the direction label ("Higher → more profit") comes from the model, not from the correlation sign. A short intro, an ⓘ explanation, and a "Start here" box with a template research tip for the top driver.
 5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "Room to grow. At busy times, about N more customers may want to order than you can serve — around €X in extra sales." Facts only; no staffing advice.
+
+6. **Check a goal:** "What is the chance my [profit | sales] on a weekend day is [at least | less than] €X?" → share of the 10,000 scenarios that meet it (shown as <1% / >99% at the extremes), with the most-likely value for context. Below it, "What it would take" (or "What that would look like" for *less than*): up to 3 estimates whose typical value in the scenarios that meet the goal differs most from the user's most-likely value. Ranked by the average percentile rank of the estimate among those scenarios minus 50%; shown only if that shift is ≥ 5 points, and only if at least 50 scenarios fall on each side. Default question: profit at least €200.
 
 Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated scenarios of your inputs."
 

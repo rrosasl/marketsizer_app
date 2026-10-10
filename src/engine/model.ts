@@ -19,8 +19,6 @@ export interface DayDecisions {
   staffCount: number
   setupHours: number
   staffCostPerHour: number
-  /** Owner works the same hours as staff (open + setup). Rate may be 0. */
-  ownerRatePerHour: number
   rentFixedPerDay: number
   rentRevenueShare: number
   cardFeeRate: number
@@ -42,7 +40,6 @@ export interface DayResult {
   paymentFees: number
   rent: number
   staff: number
-  ownerPay: number
   otherCosts: number
   dailyCosts: number
   profit: number
@@ -78,15 +75,14 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
   const rent = d.rentFixedPerDay + netSales * d.rentRevenueShare
   const workedHours = d.openHours + d.setupHours
   const staff = d.staffCount * workedHours * d.staffCostPerHour
-  const ownerPay = workedHours * d.ownerRatePerHour
   const otherCosts = d.otherCostsPerDay
-  const dailyCosts = ingredients + paymentFees + rent + staff + ownerPay + otherCosts
+  const dailyCosts = ingredients + paymentFees + rent + staff + otherCosts
   const profit = netSales - dailyCosts
 
   const netPerOrder = u.avgSpendGross * netPerGross
   const contributionPerOrder =
     netPerOrder * (1 - d.rentRevenueShare) - u.costPerOrder - u.avgSpendGross * d.cardFeeRate
-  const fixedPerDay = d.rentFixedPerDay + staff + ownerPay + otherCosts
+  const fixedPerDay = d.rentFixedPerDay + staff + otherCosts
   const breakevenOrders = contributionPerOrder > 0 ? fixedPerDay / contributionPerOrder : Infinity
 
   return {
@@ -100,7 +96,6 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
     paymentFees,
     rent,
     staff,
-    ownerPay,
     otherCosts,
     dailyCosts,
     profit,

@@ -14,10 +14,12 @@ export function NumberField(props: {
   invalid?: boolean
   className?: string
   suffix?: string
+  prefix?: string
 }) {
   const [draft, setDraft] = useState<string | null>(null)
   return (
     <span className={`num ${props.className ?? ''} ${props.invalid ? 'invalid' : ''}`}>
+      {props.prefix && <span className="num-prefix">{props.prefix}</span>}
       <input
         type="number"
         inputMode="decimal"

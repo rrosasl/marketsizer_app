@@ -4,6 +4,7 @@ import {
   type CorrelationMode,
   type DayDecisions,
   type Estimate,
+  type Goal,
   type SimulationSpec,
   type UncertainKey,
 } from '../engine'
@@ -24,6 +25,8 @@ export interface Scenario {
   decisions: DayDecisions
   correlationMode: CorrelationMode
   seed: number
+  /** The "chance of reaching a goal" question. */
+  goal: Goal
 }
 
 export function defaultScenario(t: Template, seed: number): Scenario {
@@ -31,7 +34,15 @@ export function defaultScenario(t: Template, seed: number): Scenario {
   for (const def of t.uncertain) uncertain[def.key] = { ...def.defaults }
   const decisions = {} as DayDecisions
   for (const def of t.decisions) decisions[def.key] = def.default
-  return { uncertain, manual: {}, limits: {}, decisions, correlationMode: 'default', seed }
+  return {
+    uncertain,
+    manual: {},
+    limits: {},
+    decisions,
+    correlationMode: 'default',
+    seed,
+    goal: { ...t.defaultGoal },
+  }
 }
 
 export type Side = 'worst' | 'best'

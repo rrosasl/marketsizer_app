@@ -37,7 +37,7 @@ The project evolves a 2020 notebook (Monte Carlo market sizing for an arepa rest
 2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (5 inputs). Things the user *chooses* (opening hours, staff, wages, rent terms) take a single value.
 3. **Correlations are fixed per template** and hidden from the user, with only an advanced toggle (Independent / Default / Strong).
 4. **Two break-evens:** daily operating break-even (orders per day) and payback (months to recover setup costs).
-5. **The owner's own labour is costed explicitly** (owner works the same hours as staff; the rate can be set to 0, but it's always visible).
+5. **Labour is costed through "People on shift".** There is no separate owner pay; the user includes themselves on shift if they want to pay themselves (default: 2 people).
 6. **The weekend day is the default page.** Month/year is optional and opened by the user.
 7. **No jargon in the UI:** no "P10", "Monte Carlo" or "distribution". Use *Worst case / Most likely / Best case*.
 8. **UI language: English.** Number format `€1,234.50`.
@@ -93,6 +93,7 @@ a3 = (x90 + x10 − 2·x50) / ((1 − 2α)·L)
 - Sampled rank correlations are within ±0.03 of their targets at n = 10,000.
 - The same seed gives identical results; a different seed changes the results.
 - At base values with zero uncertainty, the model reproduces the SPEC §4 sanity check (84 orders, €1,008 gross, €923.1 net, €134.1 profit, break-even ≈ 66.4 orders).
+- Goal check: probability equals the share of scenarios meeting it; "at least €0 profit" equals the chance of a profitable day.
 - Capacity cap: demand above capacity produces lost orders, not extra sales.
 - Contribution per order ≤ 0 triggers the "every order loses money" warning state.
 - Payback is reported as "not within 3 years" when cumulative cash never turns positive.

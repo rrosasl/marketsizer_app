@@ -50,7 +50,7 @@ export const copy = {
   bestCase: 'Best case',
 
   profitTitle: 'Profit per weekend day',
-  profitSub: 'after paying yourself',
+  profitSub: 'after all costs, including wages',
   profitChance: 'chance a typical weekend day makes a profit',
 
   salesTitle: 'Sales per weekend day',
@@ -76,6 +76,30 @@ export const copy = {
   spreadHint: 'Point at a bar to see its range.',
   spreadReadout: (from: string, to: string, share: string) =>
     `${from} to ${to} · ${share} of scenarios`,
+
+  goalTitle: 'Check a goal',
+  goalInfo:
+    'We count how many of the 10,000 simulated weekend days reach your goal. Each simulated day is one possible “typical day” for your stand.',
+  goalAsk: 'What is the chance my',
+  goalMetric: { profit: 'profit', sales: 'sales' },
+  goalOnADay: 'on a weekend day is',
+  goalDirection: { 'at-least': 'at least', below: 'less than' },
+  goalResult: (metric: string, dir: string, amount: string) =>
+    `chance your ${metric} on a typical weekend day is ${dir} ${amount}`,
+  goalLikely: (metric: string, value: string) => `Your most likely ${metric} is ${value}.`,
+  goalTakesTitle: { 'at-least': 'What it would take', below: 'What that would look like' },
+  goalTakesIntro: {
+    'at-least':
+      'In the scenarios that reach this goal, these estimates are typically different from your most likely values:',
+    below:
+      'In the scenarios where this happens, these estimates are typically different from your most likely values:',
+  },
+  goalTakesWhen: 'In those scenarios',
+  goalTakesYou: 'You expect',
+  goalTooRare:
+    'Almost none of your scenarios reach this, so there is too little to say what it would take.',
+  goalTooCommon: 'Almost every scenario reaches this — no change needed.',
+  goalNothingStandsOut: 'No single estimate stands out — it takes a bit of everything.',
 
   driversTitle: 'What matters most',
   driversIntro:
@@ -110,8 +134,7 @@ export const copy = {
     ingredients: 'Ingredients + packaging',
     fees: 'Card fees',
     rent: 'Rent',
-    staff: 'Staff',
-    owner: 'Your pay',
+    staff: 'Wages',
     other: 'Other costs',
     profit: 'Profit',
     breakeven: 'Break-even orders',

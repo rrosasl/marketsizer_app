@@ -2,6 +2,12 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-10 — Owner pay removed; "Check a goal" added (Ricardo)
+
+- **Owner pay removed** from model, template and UI. Labour = people on shift × (opening + setup hours) × cost per person per hour. "People on shift" defaults to **2** (you + one helper) so the default numbers and the SPEC §4 sanity check are unchanged (€134.14 profit at base values); the help text says to include yourself if you want to pay yourself a wage. Profit card now reads "after all costs, including wages".
+- **Check a goal** (SPEC §6 card 6). Engine: `analyzeGoal` in `src/engine/goal.ts`, reusing the existing 10,000 draws (no re-simulation). "What it would take" compares, per estimate, its typical (median) value in the scenarios that meet the goal with the user's most-likely value; ranked by percentile shift (mean rank percentile among those scenarios − 50%), shown if ≥ 5 points, top 3. Needs ≥ 50 scenarios on each side; otherwise a plain sentence. This is descriptive ("in the scenarios that reach this…"), not a recommendation, and linked estimates move together, so e.g. price rarely shows up because higher prices come with slightly fewer customers.
+- The goal question is part of the scenario state (will go into the URL in Phase 5); template default: profit at least €200.
+
 ## 2026-10-08 — Phase 3 started: weekend-day page redesign (Ricardo's UI feedback)
 
 - **Single-number mode removed** (SPEC §2). Replaced by auto-suggested worst/best from "most likely" using the template spread, rounded to friendly numbers; values follow "most likely" until typed; "Use suggestion" restores them. Template defaults equal their own suggestions.

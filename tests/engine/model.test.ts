@@ -18,7 +18,7 @@ describe('simulateDay', () => {
     expect(r.orders).toBe(84)
     expect(r.grossSales).toBe(1008)
     expect(r.netSales).toBeCloseTo(923.06, 2)
-    expect(r.ownerPay).toBe(180) // owner works open + setup = 10 h
+    expect(r.staff).toBe(360) // 2 people × (8 + 2) h × €18
     expect(r.profit).toBeCloseTo(134.14, 2)
     expect(r.breakevenOrders).toBeCloseTo(66.37, 2)
     expect(marginOfSafety(r.orders, r.breakevenOrders)).toBeCloseTo(0.21, 2)
