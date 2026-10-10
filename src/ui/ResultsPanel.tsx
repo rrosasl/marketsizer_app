@@ -7,6 +7,7 @@ import { RangeBar } from './charts/RangeBar'
 import { InfoTip } from './components/InfoTip'
 import { copy } from './copy'
 import { formatEuro } from './format'
+import { CostsCard } from './CostsCard'
 import { GoalCard } from './GoalCard'
 
 const fmtOrders = (x: number) => (Number.isFinite(x) ? Math.round(x).toLocaleString('en-GB') : '—')
@@ -79,28 +80,31 @@ export function ResultsPanel({
           <span className="eyebrow">{copy.mostLikely}</span>
           <span className="big">{formatEuro(s.grossSales.p50)}</span>
           <RangeBar range={s.grossSales} fmt={formatEuro} />
+          <p className="sales-orders">{copy.salesOrders(fmtOrders(s.orders.p50))}</p>
         </article>
 
-        <article className="card">
-          <header className="card-head">
-            <h3>{copy.breakevenTitle}</h3>
-          </header>
-          <p className="lead">
-            {copy.breakevenLine(fmtOrders(s.breakevenOrders.p50), fmtOrders(s.orders.p50))}
-          </p>
-          <BreakevenBar expected={s.orders.p50} breakeven={s.breakevenOrders.p50} />
-          <p className={`cushion cushion-${s.marginWord}`}>
-            <b>{copy.cushion[s.marginWord]}</b>
-            {Number.isFinite(room) &&
-              ` · ${room >= 0 ? copy.cushionDetail(fmtOrders(room)) : copy.cushionShort(fmtOrders(-room))}`}
-          </p>
-          {s.breakevenAboveCapacity && (
-            <p className="notice notice-warn">
-              {copy.breakevenAboveCapacity(fmtOrders(s.maxOrdersPerDay))}
-            </p>
-          )}
-        </article>
+        <CostsCard r={r} />
       </div>
+
+      <article className="card">
+        <header className="card-head">
+          <h3>{copy.breakevenTitle}</h3>
+        </header>
+        <p className="lead">
+          {copy.breakevenLine(fmtOrders(s.breakevenOrders.p50), fmtOrders(s.orders.p50))}
+        </p>
+        <BreakevenBar expected={s.orders.p50} breakeven={s.breakevenOrders.p50} />
+        <p className={`cushion cushion-${s.marginWord}`}>
+          <b>{copy.cushion[s.marginWord]}</b>
+          {Number.isFinite(room) &&
+            ` · ${room >= 0 ? copy.cushionDetail(fmtOrders(room)) : copy.cushionShort(fmtOrders(-room))}`}
+        </p>
+        {s.breakevenAboveCapacity && (
+          <p className="notice notice-warn">
+            {copy.breakevenAboveCapacity(fmtOrders(s.maxOrdersPerDay))}
+          </p>
+        )}
+      </article>
 
       {s.capacity.show && (
         <aside className="notice notice-grow">

@@ -55,3 +55,29 @@ describe('simulateDay', () => {
     expect(marginWord(0.21)).toBe('comfortable')
   })
 })
+
+describe('costBreakdown', () => {
+  it('splits base-case costs into fixed and variable, largest first', async () => {
+    const { costBreakdown } = await import('../../src/engine')
+    const r = simulateDay(base, decisions)
+    const b = costBreakdown(r)
+    expect(b.fixed).toBeCloseTo(120 + 360 + 25, 9)
+    expect(b.variable).toBeCloseTo(268.8 + 15.12, 9)
+    expect(b.total).toBeCloseTo(r.dailyCosts, 9)
+    expect(b.items.map((i) => i.key)).toEqual([
+      'wages',
+      'ingredients',
+      'rentFixed',
+      'other',
+      'cardFees',
+    ])
+  })
+
+  it('counts a rent share of sales as variable', async () => {
+    const { costBreakdown } = await import('../../src/engine')
+    const r = simulateDay(base, { ...decisions, rentRevenueShare: 0.1 })
+    const b = costBreakdown(r)
+    expect(b.items.find((i) => i.key === 'rentShare')).toMatchObject({ kind: 'variable' })
+    expect(b.total).toBeCloseTo(r.dailyCosts, 9)
+  })
+})

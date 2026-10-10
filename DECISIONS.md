@@ -2,6 +2,13 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-10 — Costs card (Ricardo)
+
+- New "Costs per weekend day" card between Sales and Break-even (SPEC §6 card 2b). Sales and Costs sit side by side; Break-even now spans the full width below them.
+- "Costs for the median day" = the simulated scenario whose total daily costs are closest to the median, not per-item medians, because medians of the line items don't add up to the median total. Fixed = wages, fixed rent, other costs; variable = ingredients + packaging, card fees, rent share of sales.
+- Colours: fixed = violet `#4a3aa7`, variable = blue `#2a78d6` (validated pair: CVD ΔE 13, normal-vision ΔE 16.3, both ≥ 3:1 on white), always with text labels.
+- Sales card gets a line "From about N orders a day" (median orders). An "average spend" figure was left out because median sales ÷ median orders (€11.77) differs from the €12 the user entered and would confuse.
+
 ## 2026-10-10 — Owner pay removed; "Check a goal" added (Ricardo)
 
 - **Owner pay removed** from model, template and UI. Labour = people on shift × (opening + setup hours) × cost per person per hour. "People on shift" defaults to **2** (you + one helper) so the default numbers and the SPEC §4 sanity check are unchanged (€134.14 profit at base values); the help text says to include yourself if you want to pay yourself a wage. Profit card now reads "after all costs, including wages".

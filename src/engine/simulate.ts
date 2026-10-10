@@ -61,9 +61,15 @@ export interface SimulationResult {
   fits: Record<UncertainKey, DistributionKind>
   /** The day with every estimate at its base value (a check, not a headline number). */
   baseCase: DayResult
+  /**
+   * The simulated day whose total costs are the median (most likely) of all scenarios. Used for
+   * the cost breakdown, so its line items add up exactly.
+   */
+  medianCostDay: DayResult
   summary: {
     grossSales: Range
     netSales: Range
+    dailyCosts: Range
     profit: Range
     orders: Range
     breakevenOrders: Range
@@ -129,6 +135,7 @@ export function simulate(spec: SimulationSpec): SimulationResult {
   const profit = new Float64Array(n)
   const grossSales = new Float64Array(n)
   const netSales = new Float64Array(n)
+  const dailyCosts = new Float64Array(n)
   const orders = new Float64Array(n)
   const breakeven = new Float64Array(n)
   const contribution = new Float64Array(n)
@@ -150,6 +157,7 @@ export function simulate(spec: SimulationSpec): SimulationResult {
     profit[s] = r.profit
     grossSales[s] = r.grossSales
     netSales[s] = r.netSales
+    dailyCosts[s] = r.dailyCosts
     orders[s] = r.orders
     breakeven[s] = r.breakevenOrders
     contribution[s] = r.contributionPerOrder
@@ -162,6 +170,18 @@ export function simulate(spec: SimulationSpec): SimulationResult {
   const base = {} as DayUncertain
   for (const k of keys) base[k] = spec.uncertain[k].estimate.base
   const baseCase = simulateDay(base, spec.decisions)
+
+  const costsRange = summarize(dailyCosts)
+  let medianIdx = 0
+  for (let s = 1; s < n; s++) {
+    if (
+      Math.abs(dailyCosts[s]! - costsRange.p50) < Math.abs(dailyCosts[medianIdx]! - costsRange.p50)
+    )
+      medianIdx = s
+  }
+  const at = {} as DayUncertain
+  for (const k of keys) at[k] = samples[k][medianIdx]!
+  const medianCostDay = simulateDay(at, spec.decisions)
 
   const ordersRange = summarize(orders)
   const breakevenRange = summarize(breakeven)
@@ -181,9 +201,11 @@ export function simulate(spec: SimulationSpec): SimulationResult {
     orders,
     fits,
     baseCase,
+    medianCostDay,
     summary: {
       grossSales: summarize(grossSales),
       netSales: summarize(netSales),
+      dailyCosts: costsRange,
       profit: summarize(profit),
       orders: ordersRange,
       breakevenOrders: breakevenRange,

@@ -55,6 +55,25 @@ export const copy = {
 
   salesTitle: 'Sales per weekend day',
   salesSub: 'what customers pay, incl. VAT',
+  salesOrders: (orders: string) => `From about ${orders} orders a day.`,
+
+  costsTitle: 'Costs per weekend day',
+  costsSub: 'what a most likely day costs you',
+  costsFixed: 'Fixed',
+  costsFixedHelp: 'The same however busy the day is.',
+  costsVariable: 'Variable',
+  costsVariableHelp: 'Grows with every order.',
+  costsInfo:
+    'This is one of the 10,000 simulated days: the one whose total costs are right in the middle. Fixed costs stay the same however many orders you sell; variable costs grow with every order.',
+  costItems: {
+    wages: 'Wages',
+    rentFixed: 'Rent',
+    other: 'Other costs',
+    ingredients: 'Ingredients + packaging',
+    cardFees: 'Card fees',
+    rentShare: 'Rent (share of sales)',
+  },
+  costsRange: (lo: string, hi: string) => `Most days cost between ${lo} and ${hi}.`,
 
   breakevenTitle: 'Break-even',
   breakevenLine: (need: string, expect: string) =>

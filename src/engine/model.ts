@@ -39,6 +39,10 @@ export interface DayResult {
   ingredients: number
   paymentFees: number
   rent: number
+  /** Fixed part of the rent (per day). */
+  rentFixed: number
+  /** Rent charged as a share of sales. */
+  rentVariable: number
   staff: number
   otherCosts: number
   dailyCosts: number
@@ -72,7 +76,8 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
 
   const ingredients = orders * u.costPerOrder
   const paymentFees = grossSales * d.cardFeeRate
-  const rent = d.rentFixedPerDay + netSales * d.rentRevenueShare
+  const rentVariable = netSales * d.rentRevenueShare
+  const rent = d.rentFixedPerDay + rentVariable
   const workedHours = d.openHours + d.setupHours
   const staff = d.staffCount * workedHours * d.staffCostPerHour
   const otherCosts = d.otherCostsPerDay
@@ -95,6 +100,8 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
     ingredients,
     paymentFees,
     rent,
+    rentFixed: d.rentFixedPerDay,
+    rentVariable,
     staff,
     otherCosts,
     dailyCosts,
@@ -119,4 +126,37 @@ export function marginWord(margin: number): MarginWord {
   if (margin < 0) return 'negative'
   if (margin <= 0.15) return 'thin'
   return 'comfortable'
+}
+
+export type CostKind = 'fixed' | 'variable'
+export type CostItemKey = 'wages' | 'rentFixed' | 'other' | 'ingredients' | 'cardFees' | 'rentShare'
+
+export interface CostItem {
+  key: CostItemKey
+  kind: CostKind
+  amount: number
+}
+
+/**
+ * A day's costs split into fixed (the same however busy the day is) and variable (grow with each
+ * order or with sales). Items with zero cost are left out; largest first. Sums to `dailyCosts`.
+ */
+export function costBreakdown(day: DayResult): {
+  items: CostItem[]
+  fixed: number
+  variable: number
+  total: number
+} {
+  const all: CostItem[] = [
+    { key: 'wages', kind: 'fixed', amount: day.staff },
+    { key: 'rentFixed', kind: 'fixed', amount: day.rentFixed },
+    { key: 'other', kind: 'fixed', amount: day.otherCosts },
+    { key: 'ingredients', kind: 'variable', amount: day.ingredients },
+    { key: 'cardFees', kind: 'variable', amount: day.paymentFees },
+    { key: 'rentShare', kind: 'variable', amount: day.rentVariable },
+  ]
+  const items = all.filter((i) => i.amount > 0).sort((a, b) => b.amount - a.amount)
+  const fixed = items.filter((i) => i.kind === 'fixed').reduce((s, i) => s + i.amount, 0)
+  const variable = items.filter((i) => i.kind === 'variable').reduce((s, i) => s + i.amount, 0)
+  return { items, fixed, variable, total: fixed + variable }
 }

@@ -98,3 +98,11 @@ describe('simulate', () => {
     expect(performance.now() - t0).toBeLessThan(200)
   })
 })
+
+describe('median cost day', () => {
+  it('is an actual scenario whose total costs are the median', () => {
+    const r = simulate(spec(4))
+    expect(r.medianCostDay.dailyCosts).toBeCloseTo(r.summary.dailyCosts.p50, 0)
+    expect(r.summary.dailyCosts.p10).toBeLessThan(r.summary.dailyCosts.p90)
+  })
+})
