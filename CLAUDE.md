@@ -95,6 +95,7 @@ a3 = (x90 + x10 − 2·x50) / ((1 − 2α)·L)
 - Goal check: probability equals the share of scenarios meeting it; "at least €0 profit" equals the chance of a profitable day.
 - Capacity cap: demand above capacity produces lost orders, not extra sales.
 - Stress tests: "as expected" equals the Profit card's most-likely profit; fewer customers cut orders and variable costs but not fixed costs, and are applied before the capacity cap; the customer tolerance brings most-likely profit to ~€0.
+- Investor card: chance of any loss equals the chance of a losing day; percent outcomes don't depend on the amount below a day's costs; the stake is capped at a day's costs and can't lose more than itself.
 - URL state: a scenario encoded in the link decodes to the identical scenario and identical simulated results; garbage links fall back to defaults without crashing.
 - Contribution per order ≤ 0 triggers the "every order loses money" warning state.
 - Performance: 10,000 draws plus sensitivity in < 200 ms on a mid-range laptop.

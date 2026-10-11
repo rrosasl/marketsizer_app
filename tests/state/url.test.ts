@@ -29,6 +29,7 @@ describe('URL state', () => {
     s.limits.offpeakDemand = { upper: 40 }
     s.correlationMode = 'strong'
     s.goal = { metric: 'profit', direction: 'below', amount: -50 }
+    s.investor = { amount: 250, gain: 0.5, loss: 0.1 }
     expect(decodeScenario(t, encodeScenario(t, s))).toEqual(s)
   })
 

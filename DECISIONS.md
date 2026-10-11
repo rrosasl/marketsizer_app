@@ -2,6 +2,13 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — "For investors" card (Ricardo)
+
+- Investor co-funds one market day; result shared **in proportion to their part of the day's total costs incl. wages** (option a). Return % = profit ÷ costs per scenario, so one input (the amount) is enough; amounts above a typical day's costs are capped ("they fund the whole day").
+- Framed as **a typical market day** (SPEC §8): the footnote says it is not a guarantee. Single-day swings (weather etc.) are not modelled, so a specific day is riskier than shown.
+- Thresholds via **dropdowns** (gain 5/10/20/50%, loss 10/20/50%; defaults 10% and 20%); **€ first, % in brackets**; gains and losses in separate green/red panels. "Chance of losing any money" repeats the Profit card on purpose — investors read this card on its own.
+- Engine: `investorOutlook` (pure, tested); `SimulationResult` now also returns per-scenario `dailyCosts`. Choice saved in the link (`i`).
+
 ## 2026-10-11 — Per weekend day only; Phase 4 dropped (Ricardo)
 
 - The app stays **per weekend day**: no month/year figures, ramp-up, monthly fixed costs, one-off setup costs or payback. SPEC §7 and the payback acceptance test removed; CLAUDE.md key decisions 4 and 6 rewritten; Phase 4 struck from the plan.

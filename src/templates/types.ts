@@ -79,4 +79,19 @@ export interface Template {
   capacitySuggestion: { perPerson: number; exponent: number; ceiling: number }
   /** "What if things go worse than expected?" rows (the first should be no change). */
   stressTests: StressShock[]
+  /** "For investors" card: default stake and the dropdown choices (shares of the stake). */
+  investor: {
+    defaults: InvestorChoice
+    gainOptions: number[]
+    lossOptions: number[]
+  }
+}
+
+export interface InvestorChoice {
+  /** € the investor puts into one market day. */
+  amount: number
+  /** "Chance of earning at least gain × amount". */
+  gain: number
+  /** "Chance of losing at least loss × amount". */
+  loss: number
 }

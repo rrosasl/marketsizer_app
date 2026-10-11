@@ -6,7 +6,7 @@ import {
   type SimulationResult,
   type UncertainKey,
 } from '../engine'
-import type { Template, UncertainInputDef } from '../templates'
+import type { InvestorChoice, Template, UncertainInputDef } from '../templates'
 import { BreakevenBar } from './charts/BreakevenBar'
 import { DriverBars } from './charts/DriverBars'
 import { ProfitSpread } from './charts/ProfitSpread'
@@ -16,6 +16,7 @@ import { copy } from './copy'
 import { formatEuro } from './format'
 import { CostsCard } from './CostsCard'
 import { GoalCard } from './GoalCard'
+import { InvestorCard } from './InvestorCard'
 import { StressTable } from './StressSection'
 import { cardCaption } from './caption'
 
@@ -30,6 +31,8 @@ export function ResultsPanel({
   baseValues,
   decisions,
   template,
+  investor,
+  onInvestor,
 }: {
   r: SimulationResult
   defs: Record<UncertainKey, UncertainInputDef>
@@ -39,6 +42,8 @@ export function ResultsPanel({
   /** The choices `r` was simulated with (for the stress tests). */
   decisions: DayDecisions
   template: Template
+  investor: InvestorChoice
+  onInvestor: (c: InvestorChoice) => void
 }) {
   const s = r.summary
   const profitChance = 1 - s.lossChance
@@ -181,6 +186,14 @@ export function ResultsPanel({
         onGoal={onGoal}
         defs={defs}
         baseValues={baseValues}
+        caption={caption}
+      />
+
+      <InvestorCard
+        r={r}
+        template={template}
+        choice={investor}
+        onChoice={onInvestor}
         caption={caption}
       />
 

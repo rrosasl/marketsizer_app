@@ -1,5 +1,6 @@
 export * from './copula'
 export * from './goal'
+export * from './investor'
 export * from './distribution'
 export * from './model'
 export * from './normal'

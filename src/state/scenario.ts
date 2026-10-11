@@ -8,7 +8,7 @@ import {
   type SimulationSpec,
   type UncertainKey,
 } from '../engine'
-import type { Spread, Template, UncertainInputDef } from '../templates'
+import type { InvestorChoice, Spread, Template, UncertainInputDef } from '../templates'
 
 export const DEFAULT_DRAWS = 10_000
 
@@ -29,6 +29,8 @@ export interface Scenario {
   seed: number
   /** The "chance of reaching a goal" question. */
   goal: Goal
+  /** "For investors" card choices. */
+  investor: InvestorChoice
 }
 
 export function defaultScenario(t: Template, seed: number): Scenario {
@@ -45,6 +47,7 @@ export function defaultScenario(t: Template, seed: number): Scenario {
     correlationMode: 'default',
     seed,
     goal: { ...t.defaultGoal },
+    investor: { ...t.investor.defaults },
   }
 }
 

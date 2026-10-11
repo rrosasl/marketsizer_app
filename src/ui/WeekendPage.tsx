@@ -345,6 +345,8 @@ export default function WeekendPage() {
               baseValues={baseValues}
               decisions={deferred.decisions}
               template={template}
+              investor={scenario.investor}
+              onInvestor={(c) => update((s) => void (s.investor = c))}
             />
           )}
         </section>

@@ -33,6 +33,8 @@ interface Packed {
   cm?: 1
   c?: CorrelationMode
   g?: Goal
+  /** Investor card: [amount, gain, loss]. */
+  i?: [number, number, number]
 }
 
 const isNum = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x)
@@ -75,6 +77,11 @@ export function encodeScenario(t: Template, s: Scenario): string {
     g.amount !== def.goal.amount
   ) {
     p.g = g
+  }
+  const iv = s.investor
+  const di = def.investor
+  if (iv.amount !== di.amount || iv.gain !== di.gain || iv.loss !== di.loss) {
+    p.i = [iv.amount, iv.gain, iv.loss]
   }
   return `${PARAM}=${toBase64Url(JSON.stringify(p))}`
 }
@@ -125,6 +132,9 @@ export function decodeScenario(t: Template, hash: string): Scenario | null {
     isNum(g.amount)
   ) {
     s.goal = { metric: g.metric, direction: g.direction, amount: g.amount }
+  }
+  if (Array.isArray(p.i) && p.i.length === 3 && p.i.every(isNum)) {
+    s.investor = { amount: p.i[0]!, gain: p.i[1]!, loss: p.i[2]! }
   }
   return s
 }

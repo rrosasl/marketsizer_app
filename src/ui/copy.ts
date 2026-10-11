@@ -149,6 +149,26 @@ export const copy = {
   goalTooCommon: 'Almost every scenario reaches this — no change needed.',
   goalNothingStandsOut: 'No single estimate stands out — it takes a bit of everything.',
 
+  investor: {
+    title: 'For investors',
+    info: 'An investor co-funds one market day and shares its result in proportion: if they pay for 17% of the day’s costs, they get 17% of the profit — or carry 17% of the loss. The most they can lose is what they put in.',
+    askBefore: 'If an investor puts',
+    askAfter: 'into one market day…',
+    share: (share: string, costs: string) =>
+      `…they get ${share} of the day’s result (a typical day costs ${costs} to run, incl. wages).`,
+    capped: (costs: string) =>
+      `…they fund the whole day: a typical day costs about ${costs} to run, so that is all one day can use.`,
+    likely: 'Most likely return',
+    upTitle: 'Making money',
+    upAsk: 'Chance of earning',
+    orMore: 'or more',
+    downTitle: 'Losing money',
+    anyLoss: 'Chance of losing any money',
+    downAsk: 'Chance of losing',
+    option: (eur: string, pct: string) => `${eur} (${pct})`,
+    note: 'Shared in proportion to the day’s costs. Figures for a typical market day, not a guarantee.',
+  },
+
   driversTitle: 'What matters most',
   driversIntro:
     'Which of your estimates moves your profit the most. A longer bar means your result depends more on getting that estimate right.',

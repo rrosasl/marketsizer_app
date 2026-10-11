@@ -1,4 +1,6 @@
-# SPEC v1.1 — Pop-up Food Stand Simulator
+# SPEC v1.2 — Pop-up Food Stand Simulator
+
+**Changelog v1.2 (2026-10-11):** new "For investors" card (§6 card 7).
 
 **Changelog v1.1 (2026-10-11):** per-weekend-day only — §7 (month, year, payback) dropped.
 
@@ -170,6 +172,8 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "Room to grow. At busy times, about N more customers may want to order than you can serve — around €X in extra sales." Facts only; no staffing advice.
 
 6. **Check a goal** (last section of the page): "What’s the probability that my profit will be [above | below] €X?" (profit only; €X may be negative — a ± button flips the sign because phone number pads have no minus key). Under the answer, small and muted: "Probability of a loss on a typical weekend day: N%". → share of the 10,000 scenarios that meet it (shown as <1% / >99% at the extremes), with the most-likely value for context. Below it, "What it would take" (or "What that would look like" for *below*): up to 3 estimates whose typical value in the scenarios that meet the goal differs most from the user's most-likely value. Ranked by the average percentile rank of the estimate among those scenarios minus 50%; shown only if that shift is ≥ 5 points, and only if at least 50 scenarios fall on each side. Default question: profit at least €200.
+
+7. **For investors** (after Check a goal): "If an investor puts €[100] into one market day…" — the investor co-funds the day and shares its result **in proportion to their part of the day's total costs (incl. wages)**: share = min(amount, day costs) / day costs, computed per scenario; investor result = share × day profit. So the return % = profit ÷ costs, independent of the amount up to a day's costs; above that the stake is capped ("they fund the whole day"). Shows: the share of a typical (median-cost) day, the most likely return "+€X (Y%)", then two visually separate panels — green **Making money**: "Chance of earning [€10 (10%) ▾] or more" (options 5 / 10 / 20 / 50% of the stake); red **Losing money**: "Chance of losing any money" and "Chance of losing [€20 (20%) ▾] or more" (options 10 / 20 / 50%). Amounts lead in €, % in brackets. Footnote: "Shared in proportion to the day's costs. Figures for a typical market day, not a guarantee." Defaults and options are template data; the choice is saved in the link.
 
 **Review-round rules (v1.0):**
 - Sales card: below the headline, "€net after VAT (€VAT VAT)" using median net sales; so a reader can check Sales after VAT − Costs ≈ Profit.

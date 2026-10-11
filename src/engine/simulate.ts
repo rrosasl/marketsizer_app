@@ -57,6 +57,8 @@ export interface SimulationResult {
   seed: number
   samples: Record<UncertainKey, Float64Array>
   profit: Float64Array
+  /** Total daily costs per scenario (for the investor view). */
+  dailyCosts: Float64Array
   grossSales: Float64Array
   orders: Float64Array
   fits: Record<UncertainKey, DistributionKind>
@@ -202,6 +204,7 @@ export function simulate(spec: SimulationSpec): SimulationResult {
     seed: spec.seed,
     samples,
     profit,
+    dailyCosts,
     grossSales,
     orders,
     fits,
