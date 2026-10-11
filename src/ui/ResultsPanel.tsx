@@ -166,8 +166,12 @@ export function ResultsPanel({
               <td>{formatEuro(r.baseCase.netSales)}</td>
             </tr>
             <tr>
-              <th>{copy.math.ingredients}</th>
-              <td>−{formatEuro(r.baseCase.ingredients)}</td>
+              <th>{copy.math.dishes}</th>
+              <td>−{formatEuro(r.baseCase.dishIngredients)}</td>
+            </tr>
+            <tr>
+              <th>{copy.math.drinks}</th>
+              <td>−{formatEuro(r.baseCase.drinkIngredients)}</td>
             </tr>
             <tr>
               <th>{copy.math.fees}</th>

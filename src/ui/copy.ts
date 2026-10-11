@@ -5,6 +5,15 @@ export const copy = {
   pageIntro:
     'See what a typical weekend day could look like for your stand: sales, profit and how many orders you need.',
 
+  productTitle: 'Your product',
+  productIntro: 'What you sell, what you charge and what it costs you.',
+  dishGroup: 'Main dish',
+  drinkGroup: 'Drink',
+  orderValue: (spend: string, cost: string) =>
+    `≈ ${spend} per order on average, of which ${cost} goes on ingredients.`,
+  priceHint:
+    'If you raise prices, lower your order estimates too — higher prices usually mean fewer customers.',
+  customersTitle: 'Your customers',
   estimatesTitle: 'Your estimates',
   estimatesIntro:
     'Start with what you think is most likely. We suggest a worst and best case for you — change them if you know better.',
@@ -17,8 +26,8 @@ export const copy = {
   useSuggestion: 'Use suggestion',
   costHint: 'For costs, worst = most expensive.',
 
-  choicesTitle: 'Your choices',
-  choicesIntro: 'Things you decide yourself. One number each.',
+  choicesTitle: 'Your stand',
+  choicesIntro: 'How you run the stand. One number each.',
 
   advancedTitle: 'Advanced settings',
   linkedLabel: 'Linked estimates',
@@ -69,7 +78,8 @@ export const copy = {
     wages: 'Wages',
     rentFixed: 'Rent',
     other: 'Other costs',
-    ingredients: 'Ingredients + packaging',
+    dishes: 'Main dish ingredients + packaging',
+    drinks: 'Drinks',
     cardFees: 'Card fees',
     rentShare: 'Rent (share of sales)',
   },
@@ -149,7 +159,8 @@ export const copy = {
     orders: 'Orders',
     gross: 'Sales incl. VAT',
     net: 'Sales excl. VAT',
-    ingredients: 'Ingredients + packaging',
+    dishes: 'Main dish ingredients + packaging',
+    drinks: 'Drinks',
     fees: 'Card fees',
     rent: 'Rent',
     staff: 'Wages',

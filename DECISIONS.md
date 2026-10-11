@@ -2,6 +2,18 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Product mix replaces average spend (Ricardo)
+
+- **Prices are choices.** "Average spend per order" (an estimate) is replaced by: price of a main dish and price of a drink (choices), share of orders that include a drink (estimate, _Your customers_), main dishes per order (estimate, Advanced). Spend per order = dishes × dish price + drink rate × drink price.
+- **Costs split**: ingredients + packaging per main dish (estimate) and cost of a drink (choice), both in _Your product_. Cost per order = dishes × dish cost + drink rate × drink cost. Kept in € (not % of price), so raising a price doesn't raise ingredient costs.
+- **VAT split is exact** from the order mix; the "drinks share of sales" setting is removed.
+- **Correlations**: spend ↔ demand (−0.2) and spend ↔ cost (+0.3) removed — the first no longer applies because price is a choice, the second is now structural (a drink adds both price and cost). Only busy ↔ quiet demand (+0.6) remains.
+- **Price changes don't move demand** (Ricardo chose option a): a hint under the prices says "If you raise prices, lower your order estimates too". A price-elasticity setting is under "Later".
+- **Page structure**: inputs grouped by topic — _Your product_ (main dish: price + cost range; drink: price + cost; live "≈ €X per order" line), _Your customers_ (busy hours, orders per busy/quiet hour, orders with a drink), _Your stand_ (choices) + Advanced (main dishes per order range, VAT, card fees, rent share, linked estimates, limits, seed).
+- **Defaults** (Ricardo): dish €7, drink €4, dish cost €3 (range €3.50 / €3.00 / €2.70), drink in every 2nd order (30% / 50% / 70%). Drink cost **€0.80** from research: German soft drinks by the crate cost roughly €0.55–0.75 per bottle (e.g. Club-Mate 20 × 0.5 l at €10.99 wholesale promo, fritz-kola 24 × 0.33 l at €17–18 retail, excl. deposit); €0.80 allows for cups/ice and pricier imported Latin drinks, and matches a typical 20–25% drinks cost on a €4 (€3.36 net) price. Sources: handelshof via prospektangebote.de, mydealz/famila, whk-controlling.de (Faktor 3–5 Getränkekalkulation).
+- **Consequence**: the base case is now loss-making (−€111 a day; break-even ≈ 108 orders vs 84 expected; ~25% chance of a profitable day). The SPEC §4 sanity check and tests were updated to these numbers.
+- Suggestion rounding: percentages to whole %, dishes to 0.05, otherwise as before; suggestions are clamped to the default limits.
+
 ## 2026-10-10 — Cushion label follows the chance of profit (Ricardo: yes)
 
 - The break-even card's label is now based on the chance a typical day makes a profit, not on the margin of safety: ≥ 90% "Healthy cushion", 50–90% "Thin cushion", < 50% "Below break-even". At defaults (68%) it reads "Thin cushion" instead of "Healthy cushion". The "N orders of room" detail still uses median orders − median break-even.
@@ -85,5 +97,7 @@ Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newe
 - _Refundable deposits_ (SPEC §7): dropped.
 
 ## Later
+
+- Price elasticity (Advanced): demand falls by X% per 10% price rise above a reference price.
 
 - (none yet)

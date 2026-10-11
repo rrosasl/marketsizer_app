@@ -1,4 +1,6 @@
-# SPEC v0.5 — Pop-up Food Stand Simulator
+# SPEC v0.6 — Pop-up Food Stand Simulator
+
+**Changelog v0.6 (2026-10-11):** average spend replaced by the product mix: menu prices of a main dish and a drink are *choices*; the share of orders with a drink and main dishes per order are *estimates*; ingredient cost split into per main dish (estimate) and per drink (choice). Drinks share of sales and the spend-related correlations removed (now structural). Inputs grouped as Your product / Your customers / Your stand. New defaults (dish €7, drink €4) make the base case loss-making — see §4.
 
 **Changelog v0.5 (2026-10-10):** owner pay removed — the user adds themselves to "People on shift" if they want to pay themselves (default 2 people); new "Check a goal" card (probability that profit will be above / below €X, plus what it would take), placed last.
 
@@ -54,14 +56,17 @@ peak_orders     = min(peak_demand_per_h,    capacity_per_h) × peak_hours_eff
 offpeak_orders  = min(offpeak_demand_per_h, capacity_per_h) × offpeak_hours
 orders          = peak_orders + offpeak_orders
 lost_orders     = (peak_demand_per_h − capacity_per_h)⁺ × peak_hours_eff + (same for off-peak)
+avg_spend_gross = dishes_per_order × dish_price + drink_rate × drink_price   # incl. VAT
+net_per_order   = dishes_per_order × dish_price/(1 + vat_food)
+                + drink_rate × drink_price/(1 + vat_drinks)
+cost_per_order  = dishes_per_order × dish_cost + drink_rate × drink_cost
 gross_sales     = orders × avg_spend_gross          # what customers pay, incl. VAT
-net_sales       = gross_sales × (1 − drinks_share)/(1 + vat_food)
-                + gross_sales × drinks_share/(1 + vat_drinks)
+net_sales       = orders × net_per_order
 ```
 
 ### Costs
 ```
-ingredients     = orders × cost_per_order            # food + packaging
+ingredients     = orders × cost_per_order            # dishes (incl. packaging) + drinks
 payment_fees    = gross_sales × card_fee_rate
 rent            = rent_fixed_per_day + net_sales × rent_revenue_share
 staff           = staff_count × (open_hours + setup_hours) × staff_cost_per_h
@@ -72,7 +77,6 @@ profit          = net_sales − daily_costs
 
 ### Operating break-even (orders per day)
 ```
-net_per_order          = net_sales / orders
 contribution_per_order = net_per_order × (1 − rent_revenue_share)
                          − cost_per_order − avg_spend_gross × card_fee_rate
 fixed_per_day          = rent_fixed_per_day + staff + other_daily
@@ -94,12 +98,16 @@ If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more th
 | Busy hours per day | h | 2 | 3 | 4 | ±33% | 0 – opening hours |
 | Orders per busy hour (demand) | orders/h | 10 | 18 | 28 | −45% / +55% | 0 – 150 |
 | Orders per quiet hour (demand) | orders/h | 3 | 6 | 10 | −50% / +65% | 0 – 100 |
-| Average spend per order (incl. VAT) | € | 10.00 | 12.00 | 14.00 | −17% / +17% | €1 – €60 |
-| Ingredients + packaging per order | € | 3.80 | 3.20 | 2.80 | +20% / −12% | €0 – €30 |
+| Orders that include a drink (Your customers) | % | 30% | 50% | 70% | ±40% | 0 – 100% |
+| Ingredients + packaging per main dish (Your product) | € | 3.50 | 3.00 | 2.70 | +17% / −10% | €0 – €30 |
+| Main dishes per order (Advanced) | dishes | 0.95 | 1.00 | 1.15 | −5% / +15% | 0 – 5 |
 
 ### Decisions (single value)
 | Input | Default | Note |
 |---|---|---|
+| Price of a main dish (Your product) | €7.00 | incl. VAT (Ricardo) |
+| Price of a drink (Your product) | €4.00 | incl. VAT; Berlin €3.50–4.00 |
+| Cost of a drink (Your product) | €0.80 | bought-in soft drinks ~€0.55–0.75/bottle by the crate excl. deposit, plus cup/ice and pricier imports |
 | Opening hours (weekend day) | 8 h | Markthalle Neun Saturday 10:00–18:00 |
 | Max orders per hour you can serve | 30 | 2 people at the counter |
 | People on shift | 2 | everyone paid for the shift; include yourself to pay yourself a wage |
@@ -109,10 +117,9 @@ If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more th
 | Rent: share of sales | 0% | many halls use fixed + % |
 | Card / payment fees | 1.5% | |
 | VAT food / drinks | 7% / 19% | Food 7% since 1 Jan 2026 for eat-in and takeaway alike |
-| Drinks share of sales | 20% | needed to split VAT |
 | Other costs per day | €25 | |
 
-Sanity check at base values (2 people × 10 h): 84 orders → €1,008 gross / €923 net sales per day, €134 profit/day (after owner pay), break-even ≈ 66 orders, margin of safety ≈ 21%.
+Sanity check at base values (2 people × 10 h): 84 orders × €9.00 (1 dish × €7 + 0.5 drinks × €4) → €756 gross / €690.71 net sales per day; costs €801.94 (ingredients €285.60 = 84 × €3.40, card fees €11.34, rent €120, wages €360, other €25) → **profit −€111.23/day**, break-even ≈ 107.7 orders, margin of safety ≈ −28%. ⚠️ With a €7 dish costing €3 the default stand is loss-making; this is the user's chosen default, not a bug.
 
 Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3.50–4.00; Markthalle Street Food Thursday dishes ~€6–15; Markthalle Neun hours Sat 10–18, Fri 12–18, Thu street food 17–22, closed Sun (except monthly breakfast market).
 
@@ -130,8 +137,6 @@ Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3
 | Pair | Default ρ | Rationale |
 |---|---|---|
 | Busy-hour demand ↔ quiet-hour demand | +0.6 | A popular stand is popular all day |
-| Avg spend ↔ demand (both) | −0.2 | Higher spend per order, fewer orders |
-| Avg spend ↔ ingredient cost per order | +0.3 | Bigger orders cost more |
 | Weekend demand ↔ weekday demand (full weekday mode) | +0.7 | Same stand, same reputation |
 
 - **Draws:** 10,000, seeded. The seed is stored in the URL so results are reproducible.

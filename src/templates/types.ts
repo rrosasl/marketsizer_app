@@ -1,6 +1,9 @@
 import type { CorrelationPair, DayDecisions, Estimate, Goal, UncertainKey } from '../engine'
 
-export type Unit = 'h' | 'orders/h' | '€' | '€/h' | '%' | 'people' | 'orders'
+export type Unit = 'h' | 'orders/h' | '€' | '€/h' | '%' | 'people' | 'orders' | 'dishes'
+
+/** Where an input appears on the page. */
+export type Section = 'product' | 'customers' | 'stand' | 'advanced'
 
 /** Suggested range: worst = base × (1 + worst), best = base × (1 + best). */
 export interface Spread {
@@ -10,6 +13,7 @@ export interface Spread {
 
 export interface UncertainInputDef {
   key: UncertainKey
+  section: Exclude<Section, 'stand'>
   label: string
   unit: Unit
   /** True for costs: worst is the highest value. */
@@ -25,6 +29,7 @@ export interface UncertainInputDef {
 
 export interface DecisionDef {
   key: keyof DayDecisions
+  section: Exclude<Section, 'customers'>
   label: string
   unit: Unit
   default: number
@@ -32,8 +37,6 @@ export interface DecisionDef {
   max?: number
   step: number
   help?: string
-  /** Shown only under Advanced settings. */
-  advanced?: boolean
 }
 
 export interface Template {

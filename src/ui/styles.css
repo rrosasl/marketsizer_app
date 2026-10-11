@@ -1127,3 +1127,35 @@ select {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+
+/* Product card */
+.product-group {
+  background: var(--surface-2);
+  border-radius: 14px;
+  padding: 14px 16px 4px;
+  margin-bottom: 12px;
+}
+.product-group h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.product-group > .decisions {
+  margin-bottom: 14px;
+}
+.product-group .estimate {
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+.product-group .num-side input {
+  background: var(--surface);
+}
+.order-value {
+  margin: 14px 0 4px;
+  font-weight: 600;
+}
+.advanced-estimates {
+  margin-bottom: 14px;
+}

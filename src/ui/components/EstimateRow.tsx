@@ -17,6 +17,8 @@ export function EstimateRow(props: {
   onReset: (side: Side) => void
 }) {
   const { def, value, manual, issue } = props
+  // Percentages are stored as fractions (0.5) and shown as 50.
+  const k = def.unit === '%' ? 100 : 1
   const side = (s: Side) => (
     <div className={`side ${manual[s] ? 'is-manual' : 'is-auto'}`}>
       <span className="field-label">
@@ -31,8 +33,8 @@ export function EstimateRow(props: {
       </span>
       <NumberField
         label={`${def.label}: ${s === 'worst' ? copy.worstCase : copy.bestCase}`}
-        value={value[s]}
-        onChange={(v) => props.onSide(s, v)}
+        value={value[s] * k}
+        onChange={(v) => props.onSide(s, v / k)}
         invalid={!!issue}
         className="num-side"
       />
@@ -51,8 +53,8 @@ export function EstimateRow(props: {
           <span className="field-label likely-label">{copy.likely}</span>
           <NumberField
             label={`${def.label}: ${copy.likely}`}
-            value={value.base}
-            onChange={props.onBase}
+            value={value.base * k}
+            onChange={(v) => props.onBase(v / k)}
             invalid={!!issue}
             className="num-likely"
           />

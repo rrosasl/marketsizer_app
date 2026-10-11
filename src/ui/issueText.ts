@@ -2,10 +2,10 @@ import type { EstimateIssue } from '../engine'
 import type { UncertainInputDef } from '../templates'
 import { copy } from './copy'
 
-const fmt = (x: number) => String(Math.round(x * 100) / 100)
-
 /** Plain-English message for an invalid estimate. */
 export function issueText(issue: EstimateIssue, def: UncertainInputDef): string {
+  const fmt = (x: number) =>
+    def.unit === '%' ? `${Math.round(x * 100)}%` : String(Math.round(x * 100) / 100)
   switch (issue.kind) {
     case 'not-a-number':
       return copy.errors.notANumber

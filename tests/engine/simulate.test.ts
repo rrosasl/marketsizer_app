@@ -33,12 +33,12 @@ describe('simulate', () => {
     )
     expect(r.summary.orders.p10).toBe(84)
     expect(r.summary.orders.p90).toBe(84)
-    expect(r.summary.grossSales.p50).toBe(1008)
-    expect(r.summary.netSales.p50).toBeCloseTo(923.06, 2)
-    expect(r.summary.profit.p10).toBeCloseTo(134.14, 2)
-    expect(r.summary.profit.p90).toBeCloseTo(134.14, 2)
-    expect(r.summary.breakevenOrders.p50).toBeCloseTo(66.37, 2)
-    expect(r.summary.lossChance).toBe(0)
+    expect(r.summary.grossSales.p50).toBe(756)
+    expect(r.summary.netSales.p50).toBeCloseTo(690.71, 2)
+    expect(r.summary.profit.p10).toBeCloseTo(-111.23, 2)
+    expect(r.summary.profit.p90).toBeCloseTo(-111.23, 2)
+    expect(r.summary.breakevenOrders.p50).toBeCloseTo(107.73, 2)
+    expect(r.summary.lossChance).toBe(1)
   })
 
   it('sampled inputs hit the entered worst/base/best as 10th/50th/90th percentiles', () => {
@@ -71,8 +71,8 @@ describe('simulate', () => {
   it('sets the "every order loses money" state', () => {
     const r = simulate(
       spec(3, (s) => {
-        s.uncertain.avgSpendGross = { worst: 2.5, base: 3, best: 3.5 }
-        s.uncertain.costPerOrder = { worst: 4, base: 3.5, best: 3 }
+        s.decisions.dishPrice = 3
+        s.decisions.drinkPrice = 1
       }),
     )
     expect(r.summary.everyOrderLosesMoney).toBe(true)
@@ -82,12 +82,12 @@ describe('simulate', () => {
   it('ranks drivers by Spearman correlation with profit', () => {
     // Independent mode: each input's own effect, so the signs are unambiguous.
     const r = simulate(spec(5, (s) => (s.correlationMode = 'independent')))
-    expect(r.sensitivity).toHaveLength(5)
+    expect(r.sensitivity).toHaveLength(6)
     for (let i = 1; i < r.sensitivity.length; i++)
       expect(Math.abs(r.sensitivity[i - 1]!.rho)).toBeGreaterThanOrEqual(
         Math.abs(r.sensitivity[i]!.rho),
       )
-    expect(r.sensitivity.find((x) => x.key === 'costPerOrder')!.rho).toBeLessThan(0)
+    expect(r.sensitivity.find((x) => x.key === 'dishCost')!.rho).toBeLessThan(0)
     expect(r.sensitivity.find((x) => x.key === 'peakDemand')!.rho).toBeGreaterThan(0)
   })
 
@@ -109,8 +109,8 @@ describe('median cost day', () => {
 
 describe('cushion label', () => {
   it('follows the chance of a profitable day, not the margin', () => {
-    const r = simulate(spec(42))
-    // Defaults: ~20% margin of safety but ~1-in-3 chance of a losing day → "thin", not "healthy".
+    // €10 dish: ~20% margin of safety but ~1-in-3 chance of a losing day → "thin", not "healthy".
+    const r = simulate(spec(42, (s) => (s.decisions.dishPrice = 10)))
     expect(r.summary.marginOfSafety).toBeGreaterThan(0.15)
     expect(r.summary.lossChance).toBeGreaterThan(0.1)
     expect(r.summary.marginWord).toBe('thin')

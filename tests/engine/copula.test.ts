@@ -57,10 +57,15 @@ describe('copula', () => {
   }
 
   it('strong mode multiplies by 1.5 and caps at 0.9', () => {
-    const strong = correlationsForMode(arepaMarkthalle.correlations, 'strong').map((p) => p.rho)
+    const pairs = [
+      { a: 'peakDemand', b: 'offpeakDemand', rho: 0.6 },
+      { a: 'drinkRate', b: 'peakDemand', rho: -0.2 },
+      { a: 'drinkRate', b: 'dishCost', rho: 0.3 },
+    ] as const
+    const strong = correlationsForMode(pairs, 'strong').map((p) => p.rho)
     expect(strong[0]).toBeCloseTo(0.9, 12)
     expect(strong[1]).toBeCloseTo(-0.3, 12)
-    expect(strong[3]).toBeCloseTo(0.45, 12)
+    expect(strong[2]).toBeCloseTo(0.45, 12)
     expect(correlationsForMode(arepaMarkthalle.correlations, 'independent')).toEqual([])
   })
 })

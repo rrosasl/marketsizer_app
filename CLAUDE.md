@@ -34,7 +34,7 @@ The project evolves a 2020 notebook (Monte Carlo market sizing for an arepa rest
 ### Key decisions already made (don't reopen without asking)
 
 1. **Inputs describe the average level, not day-to-day swings.** Each simulation draw is one possible "true typical day", and months are built from that same draw. Rationale: for a new stand the main uncertainty is whether it's a hit at all. Treating inputs as daily noise would average out over a month and make the ranges falsely narrow. See SPEC §8.
-2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (5 inputs). Things the user *chooses* (opening hours, staff, wages, rent terms) take a single value.
+2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (6 inputs: busy hours, orders per busy/quiet hour, share of orders with a drink, ingredients per main dish, main dishes per order). Things the user *chooses* (menu prices, drink cost, opening hours, staff, wages, rent terms) take a single value.
 3. **Correlations are fixed per template** and hidden from the user, with only an advanced toggle (Independent / Default / Strong).
 4. **Two break-evens:** daily operating break-even (orders per day) and payback (months to recover setup costs).
 5. **Labour is costed through "People on shift".** There is no separate owner pay; the user includes themselves on shift if they want to pay themselves (default: 2 people).
@@ -92,7 +92,7 @@ a3 = (x90 + x10 − 2·x50) / ((1 − 2α)·L)
 - The metalog reproduces the input p10/p50/p90 within 1% (bounded and unbounded cases).
 - Sampled rank correlations are within ±0.03 of their targets at n = 10,000.
 - The same seed gives identical results; a different seed changes the results.
-- At base values with zero uncertainty, the model reproduces the SPEC §4 sanity check (84 orders, €1,008 gross, €923.1 net, €134.1 profit, break-even ≈ 66.4 orders).
+- At base values with zero uncertainty, the model reproduces the SPEC §4 sanity check (84 orders, €756 gross, €690.71 net, −€111.23 profit, break-even ≈ 107.7 orders).
 - Goal check: probability equals the share of scenarios meeting it; "at least €0 profit" equals the chance of a profitable day.
 - Capacity cap: demand above capacity produces lost orders, not extra sales.
 - Contribution per order ≤ 0 triggers the "every order loses money" warning state.

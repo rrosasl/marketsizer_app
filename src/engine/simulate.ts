@@ -19,8 +19,9 @@ export const UNCERTAIN_KEYS: readonly UncertainKey[] = [
   'peakHours',
   'peakDemand',
   'offpeakDemand',
-  'avgSpendGross',
-  'costPerOrder',
+  'drinkRate',
+  'dishesPerOrder',
+  'dishCost',
 ]
 
 export interface UncertainSpec {
@@ -150,8 +151,9 @@ export function simulate(spec: SimulationSpec): SimulationResult {
         peakHours: samples.peakHours[s]!,
         peakDemand: samples.peakDemand[s]!,
         offpeakDemand: samples.offpeakDemand[s]!,
-        avgSpendGross: samples.avgSpendGross[s]!,
-        costPerOrder: samples.costPerOrder[s]!,
+        drinkRate: samples.drinkRate[s]!,
+        dishesPerOrder: samples.dishesPerOrder[s]!,
+        dishCost: samples.dishCost[s]!,
       },
       spec.decisions,
     )

@@ -8,7 +8,12 @@ import {
   type SimulationResult,
   type UncertainKey,
 } from '../engine'
-import { arepaMarkthalle as template, type UncertainInputDef } from '../templates'
+import {
+  arepaMarkthalle as template,
+  type DecisionDef,
+  type Section,
+  type UncertainInputDef,
+} from '../templates'
 import {
   boundsFor,
   defaultScenario,
@@ -24,6 +29,7 @@ import { EstimateRow } from './components/EstimateRow'
 import { InfoTip } from './components/InfoTip'
 import { NumberField } from './components/NumberField'
 import { copy } from './copy'
+import { formatEuro } from './format'
 import { ResultsPanel } from './ResultsPanel'
 import './styles.css'
 
@@ -77,8 +83,34 @@ export default function WeekendPage() {
   const baseValues = Object.fromEntries(
     template.uncertain.map((d) => [d.key, deferred.uncertain[d.key].base]),
   ) as Record<UncertainKey, number>
-  const basic = template.decisions.filter((d) => !d.advanced)
-  const advanced = template.decisions.filter((d) => d.advanced)
+  const decisionsIn = (section: Section) => template.decisions.filter((d) => d.section === section)
+  const estimatesIn = (section: Section) => template.uncertain.filter((d) => d.section === section)
+  const decisionField = (def: DecisionDef) => (
+    <DecisionField
+      key={def.key}
+      def={def}
+      value={scenario.decisions[def.key]}
+      onChange={setDecision(def.key)}
+    />
+  )
+  const estimateRow = (def: UncertainInputDef) => (
+    <EstimateRow
+      key={def.key}
+      def={def}
+      value={scenario.uncertain[def.key]}
+      manual={scenario.manual[def.key] ?? {}}
+      issue={issues[def.key]}
+      onBase={(v) => update((s) => setBase(def, s, v))}
+      onSide={(side, v) => update((s) => setSide(def, s, side, v))}
+      onReset={(side) => update((s) => resetSide(def, s, side))}
+    />
+  )
+  const byKey = <T extends { key: string }>(list: T[], key: string) =>
+    list.find((d) => d.key === key)!
+  const u = scenario.uncertain
+  const d = scenario.decisions
+  const orderSpend = u.dishesPerOrder.base * d.dishPrice + u.drinkRate.base * d.drinkPrice
+  const orderCost = u.dishesPerOrder.base * u.dishCost.base + u.drinkRate.base * d.drinkCost
 
   return (
     <div className="app">
@@ -100,10 +132,8 @@ export default function WeekendPage() {
           <article className="card">
             <header className="card-head with-action">
               <div>
-                <h2>
-                  {copy.estimatesTitle} <InfoTip text={copy.estimatesInfo} />
-                </h2>
-                <p className="card-sub">{copy.estimatesIntro}</p>
+                <h2>{copy.productTitle}</h2>
+                <p className="card-sub">{copy.productIntro}</p>
               </div>
               <button
                 type="button"
@@ -113,20 +143,36 @@ export default function WeekendPage() {
                 {copy.reset}
               </button>
             </header>
-            <div className="estimates">
-              {template.uncertain.map((def) => (
-                <EstimateRow
-                  key={def.key}
-                  def={def}
-                  value={scenario.uncertain[def.key]}
-                  manual={scenario.manual[def.key] ?? {}}
-                  issue={issues[def.key]}
-                  onBase={(v) => update((s) => setBase(def, s, v))}
-                  onSide={(side, v) => update((s) => setSide(def, s, side, v))}
-                  onReset={(side) => update((s) => resetSide(def, s, side))}
-                />
-              ))}
+            <div className="product-group">
+              <h3>{copy.dishGroup}</h3>
+              <div className="decisions">
+                {decisionField(byKey(template.decisions, 'dishPrice'))}
+              </div>
+              {estimateRow(byKey(template.uncertain, 'dishCost'))}
             </div>
+            <div className="product-group">
+              <h3>{copy.drinkGroup}</h3>
+              <div className="decisions">
+                {decisionField(byKey(template.decisions, 'drinkPrice'))}
+                {decisionField(byKey(template.decisions, 'drinkCost'))}
+              </div>
+            </div>
+            {Number.isFinite(orderSpend) && Number.isFinite(orderCost) && (
+              <p className="order-value">
+                {copy.orderValue(formatEuro(orderSpend), formatEuro(orderCost))}
+              </p>
+            )}
+            <p className="card-sub">{copy.priceHint}</p>
+          </article>
+
+          <article className="card">
+            <header className="card-head">
+              <h2>
+                {copy.customersTitle} <InfoTip text={copy.estimatesInfo} />
+              </h2>
+              <p className="card-sub">{copy.estimatesIntro}</p>
+            </header>
+            <div className="estimates">{estimatesIn('customers').map(estimateRow)}</div>
           </article>
 
           <article className="card">
@@ -134,28 +180,15 @@ export default function WeekendPage() {
               <h2>{copy.choicesTitle}</h2>
               <p className="card-sub">{copy.choicesIntro}</p>
             </header>
-            <div className="decisions">
-              {basic.map((def) => (
-                <DecisionField
-                  key={def.key}
-                  def={def}
-                  value={scenario.decisions[def.key]}
-                  onChange={setDecision(def.key)}
-                />
-              ))}
-            </div>
+            <div className="decisions">{decisionsIn('stand').map(decisionField)}</div>
 
             <details className="advanced">
               <summary>{copy.advancedTitle}</summary>
+              <div className="estimates advanced-estimates">
+                {estimatesIn('advanced').map(estimateRow)}
+              </div>
               <div className="decisions">
-                {advanced.map((def) => (
-                  <DecisionField
-                    key={def.key}
-                    def={def}
-                    value={scenario.decisions[def.key]}
-                    onChange={setDecision(def.key)}
-                  />
-                ))}
+                {decisionsIn('advanced').map(decisionField)}
                 <div className="decision">
                   <span className="decision-label">
                     {copy.linkedLabel}
@@ -181,25 +214,31 @@ export default function WeekendPage() {
               <div className="limits">
                 {template.uncertain.map((def) => {
                   const b = boundsFor(def, scenario)
+                  const k = def.unit === '%' ? 100 : 1
                   return (
                     <div className="limit" key={def.key}>
-                      <span>{def.label}</span>
+                      <span>
+                        {def.label}
+                        {k === 100 && <em className="muted"> (%)</em>}
+                      </span>
                       <NumberField
                         label={`${def.label} minimum`}
-                        value={b.lower}
+                        value={b.lower * k}
                         onChange={(v) =>
                           update(
-                            (s) => void (s.limits[def.key] = { ...s.limits[def.key], lower: v }),
+                            (s) =>
+                              void (s.limits[def.key] = { ...s.limits[def.key], lower: v / k }),
                           )
                         }
                       />
                       <span className="muted">{copy.limitTo}</span>
                       <NumberField
                         label={`${def.label} maximum`}
-                        value={b.upper}
+                        value={b.upper * k}
                         onChange={(v) =>
                           update(
-                            (s) => void (s.limits[def.key] = { ...s.limits[def.key], upper: v }),
+                            (s) =>
+                              void (s.limits[def.key] = { ...s.limits[def.key], upper: v / k }),
                           )
                         }
                       />

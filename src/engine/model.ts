@@ -6,14 +6,22 @@ export interface DayUncertain {
   peakDemand: number
   /** Customers wanting to order per quiet hour. */
   offpeakDemand: number
-  /** Average spend per order, incl. VAT (€). */
-  avgSpendGross: number
-  /** Ingredients + packaging per order (€). */
-  costPerOrder: number
+  /** Share of orders that include a drink (0–1). */
+  drinkRate: number
+  /** Main dishes per order (some orders have two, some are drink-only). */
+  dishesPerOrder: number
+  /** Ingredients + packaging per main dish (€). */
+  dishCost: number
 }
 
 /** The decisions (single values) for one day type. SPEC §4. */
 export interface DayDecisions {
+  /** Menu price of a main dish, incl. VAT (€). */
+  dishPrice: number
+  /** Menu price of a drink, incl. VAT (€). */
+  drinkPrice: number
+  /** What one drink costs you (€). */
+  drinkCost: number
   openHours: number
   capacityPerHour: number
   staffCount: number
@@ -24,7 +32,6 @@ export interface DayDecisions {
   cardFeeRate: number
   vatFood: number
   vatDrinks: number
-  drinksShare: number
   otherCostsPerDay: number
 }
 
@@ -34,8 +41,16 @@ export interface DayResult {
   lostOrders: number
   /** Gross sales of the orders lost to the capacity cap (what those customers would have paid). */
   lostGrossSales: number
+  /** Average spend per order incl. VAT (dishes + drinks). */
+  avgSpendGross: number
+  /** Ingredients + packaging per order (dishes + drinks). */
+  costPerOrder: number
   grossSales: number
   netSales: number
+  /** Ingredients + packaging for main dishes. */
+  dishIngredients: number
+  /** Cost of drinks. */
+  drinkIngredients: number
   ingredients: number
   paymentFees: number
   rent: number
@@ -58,7 +73,10 @@ export interface DayResult {
 
 const pos = (x: number) => (x > 0 ? x : 0)
 
-/** One day of trading, SPEC §3 (v0.3). Pure and scalar: called once per simulated scenario. */
+/**
+ * One day of trading, SPEC §3 (v0.6). Pure and scalar: called once per simulated scenario.
+ * An order = `dishesPerOrder` main dishes + a drink with probability `drinkRate`.
+ */
 export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
   const peakHours = Math.min(Math.max(u.peakHours, 0), d.openHours)
   const offpeakHours = d.openHours - peakHours
@@ -70,11 +88,20 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
   const lostOrders = pos(u.peakDemand - cap) * peakHours + pos(u.offpeakDemand - cap) * offpeakHours
   const demandOrders = orders + lostOrders
 
-  const netPerGross = (1 - d.drinksShare) / (1 + d.vatFood) + d.drinksShare / (1 + d.vatDrinks)
-  const grossSales = orders * u.avgSpendGross
-  const netSales = grossSales * netPerGross
+  const foodGrossPerOrder = u.dishesPerOrder * d.dishPrice
+  const drinkGrossPerOrder = u.drinkRate * d.drinkPrice
+  const avgSpendGross = foodGrossPerOrder + drinkGrossPerOrder
+  const netPerOrder = foodGrossPerOrder / (1 + d.vatFood) + drinkGrossPerOrder / (1 + d.vatDrinks)
+  const dishCostPerOrder = u.dishesPerOrder * u.dishCost
+  const drinkCostPerOrder = u.drinkRate * d.drinkCost
+  const costPerOrder = dishCostPerOrder + drinkCostPerOrder
 
-  const ingredients = orders * u.costPerOrder
+  const grossSales = orders * avgSpendGross
+  const netSales = orders * netPerOrder
+
+  const dishIngredients = orders * dishCostPerOrder
+  const drinkIngredients = orders * drinkCostPerOrder
+  const ingredients = dishIngredients + drinkIngredients
   const paymentFees = grossSales * d.cardFeeRate
   const rentVariable = netSales * d.rentRevenueShare
   const rent = d.rentFixedPerDay + rentVariable
@@ -84,9 +111,8 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
   const dailyCosts = ingredients + paymentFees + rent + staff + otherCosts
   const profit = netSales - dailyCosts
 
-  const netPerOrder = u.avgSpendGross * netPerGross
   const contributionPerOrder =
-    netPerOrder * (1 - d.rentRevenueShare) - u.costPerOrder - u.avgSpendGross * d.cardFeeRate
+    netPerOrder * (1 - d.rentRevenueShare) - costPerOrder - avgSpendGross * d.cardFeeRate
   const fixedPerDay = d.rentFixedPerDay + staff + otherCosts
   const breakevenOrders = contributionPerOrder > 0 ? fixedPerDay / contributionPerOrder : Infinity
 
@@ -94,9 +120,13 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
     demandOrders,
     orders,
     lostOrders,
-    lostGrossSales: lostOrders * u.avgSpendGross,
+    lostGrossSales: lostOrders * avgSpendGross,
+    avgSpendGross,
+    costPerOrder,
     grossSales,
     netSales,
+    dishIngredients,
+    drinkIngredients,
     ingredients,
     paymentFees,
     rent,
@@ -137,7 +167,8 @@ export function cushionWord(profitChance: number): MarginWord {
 }
 
 export type CostKind = 'fixed' | 'variable'
-export type CostItemKey = 'wages' | 'rentFixed' | 'other' | 'ingredients' | 'cardFees' | 'rentShare'
+export type CostItemKey =
+  'wages' | 'rentFixed' | 'other' | 'dishes' | 'drinks' | 'cardFees' | 'rentShare'
 
 export interface CostItem {
   key: CostItemKey
@@ -159,7 +190,8 @@ export function costBreakdown(day: DayResult): {
     { key: 'wages', kind: 'fixed', amount: day.staff },
     { key: 'rentFixed', kind: 'fixed', amount: day.rentFixed },
     { key: 'other', kind: 'fixed', amount: day.otherCosts },
-    { key: 'ingredients', kind: 'variable', amount: day.ingredients },
+    { key: 'dishes', kind: 'variable', amount: day.dishIngredients },
+    { key: 'drinks', kind: 'variable', amount: day.drinkIngredients },
     { key: 'cardFees', kind: 'variable', amount: day.paymentFees },
     { key: 'rentShare', kind: 'variable', amount: day.rentVariable },
   ]

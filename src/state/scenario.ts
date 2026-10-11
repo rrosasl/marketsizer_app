@@ -56,10 +56,19 @@ export function niceRound(x: number): number {
   return Math.abs(x) >= 10 ? Math.round(x) : Math.round(x * 10) / 10
 }
 
-/** Suggested worst/best for a "most likely" value. */
+/** Rounding for suggestions by unit: whole percent, 0.05 dishes, otherwise friendly numbers. */
+function roundFor(def: UncertainInputDef, x: number): number {
+  if (def.unit === '%') return Math.round(x * 100) / 100
+  if (def.unit === 'dishes') return Math.round(x * 20) / 20
+  return niceRound(x)
+}
+
+/** Suggested worst/best for a "most likely" value, kept inside the default limits. */
 export function suggestRange(def: UncertainInputDef, base: number): Record<Side, number> {
   const e = applySpread(base, def.spread)
-  return { worst: niceRound(e.worst), best: niceRound(e.best) }
+  const upper = typeof def.limits.upper === 'number' ? def.limits.upper : Infinity
+  const clamp = (x: number) => Math.min(upper, Math.max(def.limits.lower, x))
+  return { worst: clamp(roundFor(def, e.worst)), best: clamp(roundFor(def, e.best)) }
 }
 
 /** Sets "most likely"; worst/best the user has not typed follow the suggestion. */
