@@ -91,7 +91,8 @@ export function niceRound(x: number): number {
 
 /** Rounding for suggestions by unit: whole percent, €0.05, 0.05 dishes, otherwise friendly numbers. */
 function roundFor(def: UncertainInputDef, x: number): number {
-  if (def.unit === '%' || def.unit === 'per100') return Math.round(x * 100) / 100
+  // 0.01 per order = 0.1 per 10 orders = 1 percentage point.
+  if (def.unit === '%' || def.unit === 'per10') return Math.round(x * 100) / 100
   if (def.unit === 'dishes' || def.unit === '€') return Math.round(x * 20) / 20
   return niceRound(x)
 }

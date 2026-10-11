@@ -16,14 +16,14 @@ export type Unit =
   | 'people'
   | 'orders'
   | 'dishes'
-  /** Stored per order (0.4), shown per 100 orders (40). */
-  | 'per100'
+  /** Stored per order (0.4), shown per 10 orders (4). */
+  | 'per10'
 
-/** Inputs stored as fractions but shown ×100 (percentages, "per 100 orders"). */
-export const shownTimes100 = (u: Unit) => u === '%' || u === 'per100'
+/** Factor between the stored value and what the user sees: % ×100, "per 10 orders" ×10. */
+export const displayScale = (u: Unit) => (u === '%' ? 100 : u === 'per10' ? 10 : 1)
 
 /** Short unit shown next to an input. */
-export const unitLabel = (u: Unit) => (u === 'per100' ? 'drinks' : u)
+export const unitLabel = (u: Unit) => (u === 'per10' ? 'drinks' : u)
 
 /** Where an input appears on the page. */
 export type Section = 'product' | 'customers' | 'stand' | 'advanced'

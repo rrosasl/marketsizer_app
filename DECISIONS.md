@@ -2,9 +2,9 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
-## 2026-10-11 — Drinks per 100 orders; dishes per order moved (Ricardo)
+## 2026-10-11 — Drinks per 10 orders; dishes per order moved (Ricardo)
 
-- "Orders that include a drink" (%) renamed **"Drinks per 100 orders"** (unit pill "drinks", no % sign), because values above 100 are now allowed. Stored unchanged as drinks per order (0.40), so the model and defaults are unaffected. New unit `per100` (shown ×100 like %).
+- "Orders that include a drink" (%) renamed **"Drinks per 10 orders"** (unit pill "drinks", no % sign; Ricardo: per 10 is easier to imagine than per 100): defaults 2.5 / 4 / 6, maximum 50. Stored unchanged as drinks per order (0.40), so the model and results are unaffected. New unit `per10` (shown ×10); suggestions round to 0.1 drinks per 10 orders.
 - **"Main dishes per order"** moved from Advanced to _Your customers_ — it is the third-biggest driver and describes what customers order, next to drinks. Advanced now holds only rent share, card fees, VAT, linked estimates, limits and seed.
 
 ## 2026-10-11 — Defaults adjusted (Ricardo)

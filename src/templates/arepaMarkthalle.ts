@@ -60,14 +60,14 @@ export const arepaMarkthalle: Template = {
     {
       key: 'drinkRate',
       section: 'customers',
-      label: 'Drinks per 100 orders',
-      unit: 'per100',
+      label: 'Drinks per 10 orders',
+      unit: 'per10',
       higherIsWorse: false,
       defaults: { worst: 0.25, base: 0.4, best: 0.6 },
       spread: { worst: -0.375, best: 0.5 },
       // Above 100% = more than one drink per order on average (e.g. groups).
       limits: { lower: 0, upper: 5 },
-      help: 'For every 100 orders, how many drinks do you sell? 40 = 4 drinks for every 10 orders. Can be above 100 if groups order several drinks. With a dish + drink combo, expect more.',
+      help: 'For every 10 orders, how many drinks do you sell? 4 = four drinks for every 10 orders. Can be above 10 if groups order several drinks. With a dish + drink combo, expect more.',
       tip: 'Watch a similar stall and count how many drinks go out with every 10 orders.',
     },
     {

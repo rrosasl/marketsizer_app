@@ -10,7 +10,7 @@ import {
 } from '../engine'
 import {
   arepaMarkthalle as template,
-  shownTimes100,
+  displayScale,
   type DecisionDef,
   type Section,
   type UncertainInputDef,
@@ -228,7 +228,7 @@ export default function WeekendPage() {
               <div className="limits">
                 {template.uncertain.map((def) => {
                   const b = boundsFor(def, scenario)
-                  const k = shownTimes100(def.unit) ? 100 : 1
+                  const k = displayScale(def.unit)
                   return (
                     <div className="limit" key={def.key}>
                       <span>

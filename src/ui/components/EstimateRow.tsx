@@ -1,6 +1,6 @@
 import type { Estimate, EstimateIssue } from '../../engine'
 import { issueText } from '../issueText'
-import { shownTimes100, unitLabel, type UncertainInputDef } from '../../templates'
+import { displayScale, unitLabel, type UncertainInputDef } from '../../templates'
 import type { Side } from '../../state/scenario'
 import { copy } from '../copy'
 import { InfoTip } from './InfoTip'
@@ -17,8 +17,8 @@ export function EstimateRow(props: {
   onReset: (side: Side) => void
 }) {
   const { def, value, manual, issue } = props
-  // Percentages are stored as fractions (0.5) and shown as 50.
-  const k = shownTimes100(def.unit) ? 100 : 1
+  // Stored per order (0.4), shown as 40% or "4 per 10 orders".
+  const k = displayScale(def.unit)
   const side = (s: Side) => (
     <div className={`side ${manual[s] ? 'is-manual' : 'is-auto'}`}>
       <span className="field-label">

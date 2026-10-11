@@ -7,8 +7,8 @@ export function issueText(issue: EstimateIssue, def: UncertainInputDef): string 
   const fmt = (x: number) =>
     def.unit === '%'
       ? `${Math.round(x * 100)}%`
-      : def.unit === 'per100'
-        ? String(Math.round(x * 100))
+      : def.unit === 'per10'
+        ? String(Math.round(x * 100) / 10)
         : String(Math.round(x * 100) / 100)
   switch (issue.kind) {
     case 'not-a-number':
