@@ -7,7 +7,23 @@ import type {
   UncertainKey,
 } from '../engine'
 
-export type Unit = 'h' | 'orders/h' | '€' | '€/h' | '%' | 'people' | 'orders' | 'dishes'
+export type Unit =
+  | 'h'
+  | 'orders/h'
+  | '€'
+  | '€/h'
+  | '%'
+  | 'people'
+  | 'orders'
+  | 'dishes'
+  /** Stored per order (0.4), shown per 100 orders (40). */
+  | 'per100'
+
+/** Inputs stored as fractions but shown ×100 (percentages, "per 100 orders"). */
+export const shownTimes100 = (u: Unit) => u === '%' || u === 'per100'
+
+/** Short unit shown next to an input. */
+export const unitLabel = (u: Unit) => (u === 'per100' ? 'drinks' : u)
 
 /** Where an input appears on the page. */
 export type Section = 'product' | 'customers' | 'stand' | 'advanced'

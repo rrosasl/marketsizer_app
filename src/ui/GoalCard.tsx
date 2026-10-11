@@ -26,6 +26,7 @@ function fmtPct(p: number): string {
 function fmtValue(def: UncertainInputDef, x: number): string {
   if (def.unit === '€') return formatEuro(x)
   if (def.unit === '%') return `${Math.round(x * 100)}%`
+  if (def.unit === 'per100') return `${Math.round(x * 100)} drinks`
   if (def.unit === 'dishes') return `${Math.round(x * 100) / 100} dishes`
   const v = Math.abs(x) >= 10 ? Math.round(x) : Math.round(x * 10) / 10
   return `${v} ${def.unit}`

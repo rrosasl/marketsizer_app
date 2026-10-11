@@ -10,6 +10,7 @@ import {
 } from '../engine'
 import {
   arepaMarkthalle as template,
+  shownTimes100,
   type DecisionDef,
   type Section,
   type UncertainInputDef,
@@ -195,9 +196,11 @@ export default function WeekendPage() {
 
             <details className="advanced">
               <summary>{copy.advancedTitle}</summary>
-              <div className="estimates advanced-estimates">
-                {estimatesIn('advanced').map(estimateRow)}
-              </div>
+              {estimatesIn('advanced').length > 0 && (
+                <div className="estimates advanced-estimates">
+                  {estimatesIn('advanced').map(estimateRow)}
+                </div>
+              )}
               <div className="decisions">
                 {decisionsIn('advanced').map(decisionField)}
                 <div className="decision">
@@ -225,12 +228,12 @@ export default function WeekendPage() {
               <div className="limits">
                 {template.uncertain.map((def) => {
                   const b = boundsFor(def, scenario)
-                  const k = def.unit === '%' ? 100 : 1
+                  const k = shownTimes100(def.unit) ? 100 : 1
                   return (
                     <div className="limit" key={def.key}>
                       <span>
                         {def.label}
-                        {k === 100 && <em className="muted"> (%)</em>}
+                        {def.unit === '%' && <em className="muted"> (%)</em>}
                       </span>
                       <NumberField
                         label={`${def.label} minimum`}

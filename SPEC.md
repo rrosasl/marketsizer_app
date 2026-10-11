@@ -1,4 +1,6 @@
-# SPEC v0.9 — Pop-up Food Stand Simulator
+# SPEC v0.9.1 — Pop-up Food Stand Simulator
+
+**Changelog v0.9.1 (2026-10-11):** "Orders that include a drink" renamed "Drinks per 100 orders" (unit: drinks, no %); "Main dishes per order" moved from Advanced to Your customers.
 
 **Changelog v0.9 (2026-10-11):** defaults: dish cost 3.25 / 3.00 / 2.75 (limit €3.50), 1 person on shift (20 orders/h), setup 2 h; drink-rate limit 500% (several drinks per order allowed), dishes-per-order limit 7; capacity curve 1 → 20, 2 → 30, 3 → 38, 4+ → 45.
 
@@ -105,8 +107,8 @@ Calibrated by Ricardo (2026-10-11) for the Kulturbrauerei Sunday street-food mar
 | Busy hours per day | h | 2 | 3 | 4 | ±33% | 0 – opening hours | lunch peak ~12:30–15:30 |
 | Orders per busy hour (demand) | orders/h | 8 | 18 | 30 | −55.5% / +66.7% | 0 – 150 | above 30 the serving limit caps it anyway |
 | Orders per quiet hour (demand) | orders/h | 2 | 6 | 12 | −66.7% / +100% | 0 – 100 | |
-| Orders that include a drink (Your customers) | % | 25% | 40% | 60% | −37.5% / +50% | 0 – 500% | drinks per 100 orders; above 100% = several drinks per order; use 40/55/70 with a ~€12 combo |
-| Main dishes per order (Advanced) | dishes | 1.0 | 1.2 | 1.5 | −16.7% / +25% | 0 – 7 | people graze across stalls; couples add a second |
+| Drinks per 100 orders (Your customers) | drinks | 25 | 40 | 60 | −37.5% / +50% | 0 – 500 | stored as drinks per order (0.40); above 100 = several drinks per order; use 40/55/70 with a ~€12 combo |
+| Main dishes per order (Your customers) | dishes | 1.0 | 1.2 | 1.5 | −16.7% / +25% | 0 – 7 | people graze across stalls; couples add a second |
 
 ### Decisions (single value)
 | Input | Default | Note |

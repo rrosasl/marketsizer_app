@@ -34,7 +34,7 @@ The project evolves a 2020 notebook (Monte Carlo market sizing for an arepa rest
 ### Key decisions already made (don't reopen without asking)
 
 1. **Inputs describe the average level, not day-to-day swings.** Each simulation draw is one possible "true typical day", and months are built from that same draw. Rationale: for a new stand the main uncertainty is whether it's a hit at all. Treating inputs as daily noise would average out over a month and make the ranges falsely narrow. See SPEC §8.
-2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (6 inputs: busy hours, orders per busy/quiet hour, share of orders with a drink, ingredients per main dish, main dishes per order). Things the user *chooses* (menu prices, drink cost, opening hours, staff, wages, rent terms) take a single value.
+2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (6 inputs: busy hours, orders per busy/quiet hour, drinks per 100 orders, ingredients per main dish, main dishes per order). Things the user *chooses* (menu prices, drink cost, opening hours, staff, wages, rent terms) take a single value.
 3. **Correlations are fixed per template** and hidden from the user, with only an advanced toggle (Independent / Default / Strong).
 4. **Two break-evens:** daily operating break-even (orders per day) and payback (months to recover setup costs).
 5. **Labour is costed through "People on shift".** There is no separate owner pay; the user includes themselves on shift (default: 1 person); cost per person can be set to 0 for unpaid owners.

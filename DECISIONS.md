@@ -2,6 +2,11 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Drinks per 100 orders; dishes per order moved (Ricardo)
+
+- "Orders that include a drink" (%) renamed **"Drinks per 100 orders"** (unit pill "drinks", no % sign), because values above 100 are now allowed. Stored unchanged as drinks per order (0.40), so the model and defaults are unaffected. New unit `per100` (shown ×100 like %).
+- **"Main dishes per order"** moved from Advanced to _Your customers_ — it is the third-biggest driver and describes what customers order, next to drinks. Advanced now holds only rent share, card fees, VAT, linked estimates, limits and seed.
+
 ## 2026-10-11 — Defaults adjusted (Ricardo)
 
 - Ingredients + packaging per main dish: 3.25 / **3.00** / 2.75, upper limit €3.50 (was 3.50 / 2.70 / 2.00, limit €30). Suggested euro values now round to €0.05 so these reproduce exactly.

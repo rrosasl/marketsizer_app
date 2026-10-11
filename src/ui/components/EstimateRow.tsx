@@ -1,6 +1,6 @@
 import type { Estimate, EstimateIssue } from '../../engine'
 import { issueText } from '../issueText'
-import type { UncertainInputDef } from '../../templates'
+import { shownTimes100, unitLabel, type UncertainInputDef } from '../../templates'
 import type { Side } from '../../state/scenario'
 import { copy } from '../copy'
 import { InfoTip } from './InfoTip'
@@ -18,7 +18,7 @@ export function EstimateRow(props: {
 }) {
   const { def, value, manual, issue } = props
   // Percentages are stored as fractions (0.5) and shown as 50.
-  const k = def.unit === '%' ? 100 : 1
+  const k = shownTimes100(def.unit) ? 100 : 1
   const side = (s: Side) => (
     <div className={`side ${manual[s] ? 'is-manual' : 'is-auto'}`}>
       <span className="field-label">
@@ -45,7 +45,7 @@ export function EstimateRow(props: {
       <div className="estimate-head">
         <span className="estimate-label">{def.label}</span>
         <InfoTip text={def.higherIsWorse ? `${def.help} ${copy.costHint}` : def.help} />
-        <span className="unit-pill">{def.unit}</span>
+        <span className="unit-pill">{unitLabel(def.unit)}</span>
       </div>
       <div className="estimate-fields">
         {side('worst')}
