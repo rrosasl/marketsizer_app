@@ -1,4 +1,6 @@
-# SPEC v1.0 — Pop-up Food Stand Simulator
+# SPEC v1.1 — Pop-up Food Stand Simulator
+
+**Changelog v1.1 (2026-10-11):** per-weekend-day only — §7 (month, year, payback) dropped.
 
 **Changelog v1.0 (2026-10-11, review round):** scenario saved in the link (`#s=…`, survives refresh, shareable, includes seed) + "Copy link"; Sales card shows "€X after VAT (€Y VAT)" so Sales − Costs ≈ Profit; Break-even lines merged into one; profit histogram folded into the Profit card ("See all 10,000 scenarios"); duplicate loss line removed from the goal card; context caption on every card; "How this works" note; mobile sticky results bar.
 
@@ -28,7 +30,7 @@ Test case: arepa stand in a Berlin Markthalle.
 ## 1. Product principles
 
 1. **Audience: non-experts. UI language: English (v1).** No jargon in the UI: no "P10", "Monte Carlo", "distribution" or "correlation". Labels say *Worst case / Most likely / Best case*.
-2. **Minimum friction.** The default page is one **weekend day**. Everything else (weekdays, month, year, payback) is optional.
+2. **Minimum friction.** The app is about one **weekend day**: every figure is per day.
 3. **Decisions vs. uncertainties.** Things the user *chooses* (opening hours, staff count, wage) take a single value. Things the user *estimates* (orders, spend, costs) take worst / base / best.
 4. **Screenshot-ready.** Every output is a self-contained card that reads correctly in a pitch deck with no surrounding context.
 5. **Private and shareable.** All computation runs client-side. Scenario state, including the random seed, is stored in the URL.
@@ -156,7 +158,7 @@ Sanity check at base values (1 person × (6 + 2) h): 72 orders (3 × 18 + 3 × 6
 
 All outputs are cards. Each card has a title, a headline number, a worst–best range, a one-line footnote, and a small brand mark.
 
-"Most likely" = median of the simulated results (also for break-even and payback). Worst/best = 10th/90th percentile.
+"Most likely" = median of the simulated results (also for break-even). Worst/best = 10th/90th percentile.
 
 1. **Sales per weekend day:** "Most likely €X · Worst case €A · Best case €B", with a range bar.
 2. **Profit per weekend day (after all costs, including wages):** same format, plus "N% chance a typical weekend day makes a profit" (each scenario is a possible *average* day, see §8).
@@ -181,37 +183,15 @@ Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated 
 
 ---
 
-## 7. Optional: extend to month & year
+## 7. Month, year and payback — dropped (2026-10-11)
 
-Opened via a "See your month and year →" button.
-
-### Inputs
-- **Trading days per week:** weekend days (default 1, since many market halls are closed Sundays), weekdays (default 0).
-- **Weekday opening hours:** separate decision input (e.g. Fri 12–18 = 6 h, Street Food Thursday 17–22 = 5 h).
-- **Weekday scenario:** *simple mode* (default) is a single slider "A weekday is __% as busy as a weekend day" (default 60%), which scales both demand inputs. *Full mode* gives a separate worst/base/best set.
-- **Weeks open per year:** default 48.
-- **Ramp-up:** "In your first __ months, expect __% of normal demand" (default 2 months at 60%). Scales both demand inputs before the capacity cap.
-- **Monthly fixed costs** (insurance, permits, accounting, storage): default €250.
-- **One-off setup costs:** equipment €6,000; initial stock €800; permits/hygiene €300.
-
-### Logic (per simulation draw)
-```
-days_per_month_d  = days_per_week_d × weeks_open/12
-month_profit_m    = Σ_d days_per_month_d × daily_profit_d(ramp_factor_m) − monthly_fixed
-cumulative_m      = −setup_costs + Σ_{k≤m} month_profit_k
-payback_month     = first m where cumulative_m ≥ 0   (horizon 36 months; otherwise "not within 3 years")
-```
-
-### Outputs (cards)
-6. **Monthly sales & profit** (after ramp-up): most likely + range.
-7. **Yearly sales & profit** (first full year, including ramp-up).
-8. **Payback:** "Most likely you earn back your €X setup costs in N months." Plus "Chance of earning it back within 12 months: N%." Shown as a cumulative cash curve with a band and a zero line.
+Ricardo decided to keep the whole app per weekend day. Monthly/yearly figures, ramp-up, monthly fixed costs, one-off setup costs and payback are **not built** (see DECISIONS.md and §10). The original design is kept in git history (SPEC v0.9.1) should it come back.
 
 ---
 
 ## 8. Methodological note (why inputs are averages, not daily swings)
 
-If worst/base/best described day-to-day swings, adding up 20+ days would cancel out most of the uncertainty, and monthly ranges would look falsely narrow. For a new stand, the dominant uncertainty is the **level**: is it a hit or not? So each draw represents one possible "true average day", and months are built from that same day. This is conservative and honest. Day-to-day volatility is a possible later extension (v2).
+If worst/base/best described day-to-day swings, adding up 20+ days would cancel out most of the uncertainty, and monthly ranges would look falsely narrow. For a new stand, the dominant uncertainty is the **level**: is it a hit or not? So each draw represents one possible "true average day". If multi-day views are ever added, they must be built from that same day, not from independent daily draws. Day-to-day volatility is a possible later extension (v2).
 
 ---
 
@@ -226,6 +206,8 @@ If worst/base/best described day-to-day swings, adding up 20+ days would cancel 
 ## 10. Non-goals for v1
 
 Multiple templates · user-defined formulas · accounts or login · backend · tax beyond VAT · financing/loans · day-to-day volatility.
+
+Also out of scope (2026-10-11): month and year views, ramp-up, one-off setup costs and payback, weekday modelling.
 
 ---
 

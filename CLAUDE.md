@@ -11,7 +11,6 @@ A free, browser-based **simulator for people planning a pop-up food stand**. The
 - sales and profit for a typical weekend day, with a realistic range
 - how many orders per day are needed to break even
 - what drives the result most, i.e. what to research next
-- optionally, month and year figures and how long until the setup costs are earned back
 
 **Who it's for:** first-time food entrepreneurs, not analysts. They will **screenshot the result cards into pitch decks**, so every card must be understandable on its own.
 
@@ -29,16 +28,16 @@ The project evolves a 2020 notebook (Monte Carlo market sizing for an arepa rest
 | Truncation by rejection distorted the percentiles | Bounds built into the metalog (bounded / semi-bounded variants) |
 | All inputs independent, so price looked like the biggest driver because a higher price never cost any customers | **Gaussian copula** with a template-fixed correlation matrix |
 | One-at-a-time sensitivity, mixing mean and median | **Spearman rank correlation** of each input with daily profit |
-| No capacity limit, no seasonality, no ramp-up | Capacity cap per hour, separate weekday/weekend day types, ramp-up months |
+| No capacity limit | Capacity cap per hour (suggested from people on shift) |
 
 ### Key decisions already made (don't reopen without asking)
 
-1. **Inputs describe the average level, not day-to-day swings.** Each simulation draw is one possible "true typical day", and months are built from that same draw. Rationale: for a new stand the main uncertainty is whether it's a hit at all. Treating inputs as daily noise would average out over a month and make the ranges falsely narrow. See SPEC §8.
+1. **Inputs describe the average level, not day-to-day swings.** Each simulation draw is one possible "true typical day". Rationale: for a new stand the main uncertainty is whether it's a hit at all. See SPEC §8.
 2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (6 inputs: busy hours, orders per busy/quiet hour, drinks per 10 orders, ingredients per main dish, main dishes per order). Things the user *chooses* (menu prices, drink cost, opening hours, staff, wages, rent terms) take a single value.
 3. **Correlations are fixed per template** and hidden from the user, with only an advanced toggle (Independent / Default / Strong).
-4. **Two break-evens:** daily operating break-even (orders per day) and payback (months to recover setup costs).
+4. **Per weekend day only.** All results are for one typical weekend day; break-even is in orders per day. No month/year views or payback (dropped 2026-10-11).
 5. **Labour is costed through "People on shift".** There is no separate owner pay; the user includes themselves on shift (default: 1 person); cost per person can be set to 0 for unpaid owners.
-6. **The weekend day is the default page.** Month/year is optional and opened by the user.
+6. **One page.** Inputs on the left, results for one weekend day on the right.
 7. **No jargon in the UI:** no "P10", "Monte Carlo" or "distribution". Use *Worst case / Most likely / Best case*.
 8. **UI language: English.** Number format `€1,234.50`.
 9. **Simplicity first.** Anything most users don't need goes under "Advanced settings".
@@ -98,7 +97,6 @@ a3 = (x90 + x10 − 2·x50) / ((1 − 2α)·L)
 - Stress tests: "as expected" equals the Profit card's most-likely profit; fewer customers cut orders and variable costs but not fixed costs, and are applied before the capacity cap; the customer tolerance brings most-likely profit to ~€0.
 - URL state: a scenario encoded in the link decodes to the identical scenario and identical simulated results; garbage links fall back to defaults without crashing.
 - Contribution per order ≤ 0 triggers the "every order loses money" warning state.
-- Payback is reported as "not within 3 years" when cumulative cash never turns positive.
 - Performance: 10,000 draws plus sensitivity in < 200 ms on a mid-range laptop.
 
 ---
@@ -113,7 +111,7 @@ Work phase by phase. At the end of each phase: run the tests, summarise what was
 | 1. Engine | RNG, metalog (+bounds, fallback), copula, day model, break-even, sensitivity | All §4 tests pass |
 | 2. Template | Arepa-stand template from SPEC §4 as data (not hard-coded in the UI) | Engine runs end to end from the template |
 | 3. Weekend-day page | Input form (worst/base/best + ⓘ texts, single-number mode, validation) and output cards 1–5 (SPEC §6) | A non-expert can go from defaults to results without help |
-| 4. Month & year | SPEC §7 inputs, extrapolation, payback, cards 6–8 | Tests for ramp-up and payback pass |
+| 4. ~~Month & year~~ | Dropped 2026-10-11: the app stays per weekend day | — |
 | 5. Share & export | URL state + seed (**done**, review round), PNG card export (16:9 and 1:1), deploy | A shared link reproduces the results; exported cards are readable when projected |
 
 ---

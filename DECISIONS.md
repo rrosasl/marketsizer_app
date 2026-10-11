@@ -2,6 +2,12 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Per weekend day only; Phase 4 dropped (Ricardo)
+
+- The app stays **per weekend day**: no month/year figures, ramp-up, monthly fixed costs, one-off setup costs or payback. SPEC §7 and the payback acceptance test removed; CLAUDE.md key decisions 4 and 6 rewritten; Phase 4 struck from the plan.
+- Trade-off noted: investors' "how much do you need, and when do you earn it back?" is not answered by the app. Option logged under Later.
+- Remaining planned work: PNG card export (rest of Phase 5).
+
 ## 2026-10-11 — Review round: first-principles fixes (Ricardo approved all)
 
 - **Numbers reconcile:** Sales card adds "€X after VAT (€Y VAT)". Before, Sales €833 − Costs €596 ≠ Profit €174 because VAT was invisible.
@@ -143,6 +149,8 @@ Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newe
 - _Refundable deposits_ (SPEC §7): dropped.
 
 ## Later
+
+- Payback in market days (still per-day framing): one optional input "One-off setup costs" and a line on the Profit card, "You'd earn back €X after about N market days" (most likely, from the median daily profit).
 
 - Price elasticity (Advanced): demand falls by X% per 10% price rise above a reference price.
 
