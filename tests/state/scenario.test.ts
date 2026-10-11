@@ -75,7 +75,7 @@ describe('capacity suggestion', () => {
   it('grows with people on shift, with diminishing returns and a ceiling', async () => {
     const { suggestCapacity } = await import('../../src/state/scenario')
     const caps = [0, 1, 2, 3, 4, 5].map((n) => suggestCapacity(arepaMarkthalle, n))
-    expect(caps).toEqual([0, 17, 30, 41, 45, 45])
+    expect(caps).toEqual([0, 20, 30, 38, 45, 45])
     // Template default matches the suggestion for the default number of people.
     const s = defaultScenario(arepaMarkthalle, 1)
     expect(s.decisions.capacityPerHour).toBe(
@@ -87,12 +87,12 @@ describe('capacity suggestion', () => {
     const { setDecision, resetCapacity } = await import('../../src/state/scenario')
     const s = defaultScenario(arepaMarkthalle, 1)
     setDecision(arepaMarkthalle, s, 'staffCount', 3)
-    expect(s.decisions.capacityPerHour).toBe(41)
+    expect(s.decisions.capacityPerHour).toBe(38)
     setDecision(arepaMarkthalle, s, 'capacityPerHour', 25)
     setDecision(arepaMarkthalle, s, 'staffCount', 1)
     expect(s.decisions.capacityPerHour).toBe(25)
     resetCapacity(arepaMarkthalle, s)
-    expect(s.decisions.capacityPerHour).toBe(17)
+    expect(s.decisions.capacityPerHour).toBe(20)
     expect(s.capacityManual).toBe(false)
   })
 })

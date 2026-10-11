@@ -37,7 +37,7 @@ The project evolves a 2020 notebook (Monte Carlo market sizing for an arepa rest
 2. **Decisions vs. uncertainties.** Only things the user *estimates* get worst/base/best (6 inputs: busy hours, orders per busy/quiet hour, share of orders with a drink, ingredients per main dish, main dishes per order). Things the user *chooses* (menu prices, drink cost, opening hours, staff, wages, rent terms) take a single value.
 3. **Correlations are fixed per template** and hidden from the user, with only an advanced toggle (Independent / Default / Strong).
 4. **Two break-evens:** daily operating break-even (orders per day) and payback (months to recover setup costs).
-5. **Labour is costed through "People on shift".** There is no separate owner pay; the user includes themselves on shift if they want to pay themselves (default: 2 people).
+5. **Labour is costed through "People on shift".** There is no separate owner pay; the user includes themselves on shift (default: 1 person); cost per person can be set to 0 for unpaid owners.
 6. **The weekend day is the default page.** Month/year is optional and opened by the user.
 7. **No jargon in the UI:** no "P10", "Monte Carlo" or "distribution". Use *Worst case / Most likely / Best case*.
 8. **UI language: English.** Number format `€1,234.50`.
@@ -92,7 +92,7 @@ a3 = (x90 + x10 − 2·x50) / ((1 − 2α)·L)
 - The metalog reproduces the input p10/p50/p90 within 1% (bounded and unbounded cases).
 - Sampled rank correlations are within ±0.03 of their targets at n = 10,000.
 - The same seed gives identical results; a different seed changes the results.
-- At base values with zero uncertainty, the model reproduces the SPEC §4 sanity check (72 orders, €878.40 gross, €811.43 net, €45.06 profit, break-even ≈ 66.0 orders).
+- At base values with zero uncertainty, the model reproduces the SPEC §4 sanity check (72 orders, €878.40 gross, €811.43 net, €199.14 profit, break-even ≈ 44.1 orders).
 - Goal check: probability equals the share of scenarios meeting it; "at least €0 profit" equals the chance of a profitable day.
 - Capacity cap: demand above capacity produces lost orders, not extra sales.
 - Stress tests: "as expected" equals the Profit card's most-likely profit; fewer customers cut orders and variable costs but not fixed costs, and are applied before the capacity cap; the customer tolerance brings most-likely profit to ~€0.

@@ -1,4 +1,6 @@
-# SPEC v0.8 — Pop-up Food Stand Simulator
+# SPEC v0.9 — Pop-up Food Stand Simulator
+
+**Changelog v0.9 (2026-10-11):** defaults: dish cost 3.25 / 3.00 / 2.75 (limit €3.50), 1 person on shift (20 orders/h), setup 2 h; drink-rate limit 500% (several drinks per order allowed), dishes-per-order limit 7; capacity curve 1 → 20, 2 → 30, 3 → 38, 4+ → 45.
 
 **Changelog v0.8 (2026-10-11):** template defaults recalibrated by Ricardo for the Kulturbrauerei Sunday market (§4); help texts carry the reasoning; new sanity check.
 
@@ -99,12 +101,12 @@ Calibrated by Ricardo (2026-10-11) for the Kulturbrauerei Sunday street-food mar
 ### Uncertainties (worst / base / best)
 | Input | Unit | Worst | Base | Best | Suggested spread | Limits (Advanced) | Why |
 |---|---|---|---|---|---|---|---|
-| Ingredients + packaging per main dish (Your product) | € | 3.50 | 2.70 | 2.00 | +30% / −26% | €0 – €30 | masa ~€0.15, filling €1.20–2.20, packaging €0.30–0.40 |
+| Ingredients + packaging per main dish (Your product) | € | 3.25 | 3.00 | 2.75 | ±8.3% | €0 – €3.50 | masa ~€0.15, filling €1.20–2.20, packaging €0.30–0.40 |
 | Busy hours per day | h | 2 | 3 | 4 | ±33% | 0 – opening hours | lunch peak ~12:30–15:30 |
 | Orders per busy hour (demand) | orders/h | 8 | 18 | 30 | −55.5% / +66.7% | 0 – 150 | above 30 the serving limit caps it anyway |
 | Orders per quiet hour (demand) | orders/h | 2 | 6 | 12 | −66.7% / +100% | 0 – 100 | |
-| Orders that include a drink (Your customers) | % | 25% | 40% | 60% | −37.5% / +50% | 0 – 100% | use 40/55/70 with a ~€12 dish + drink combo |
-| Main dishes per order (Advanced) | dishes | 1.0 | 1.2 | 1.5 | −16.7% / +25% | 0 – 5 | people graze across stalls; couples add a second |
+| Orders that include a drink (Your customers) | % | 25% | 40% | 60% | −37.5% / +50% | 0 – 500% | drinks per 100 orders; above 100% = several drinks per order; use 40/55/70 with a ~€12 combo |
+| Main dishes per order (Advanced) | dishes | 1.0 | 1.2 | 1.5 | −16.7% / +25% | 0 – 7 | people graze across stalls; couples add a second |
 
 ### Decisions (single value)
 | Input | Default | Note |
@@ -112,10 +114,10 @@ Calibrated by Ricardo (2026-10-11) for the Kulturbrauerei Sunday street-food mar
 | Price of a main dish (Your product) | €9.00 | incl. VAT; Krunsch (Berlin arepa stand) €12–15 a plate, most Berlin street food €8–14 |
 | Price of a drink (Your product) | €3.50 | homemade papelón or lemonade |
 | Cost of a drink (Your product) | €0.90 | homemade + cup; ~€1.40 for bought-in cans such as Malta |
-| People on shift | 2 | everyone working; include yourself. Set cost per person to 0 if everyone works unpaid |
-| Max orders per hour you can serve | 30 | suggested from people on shift: round(min(17 × people^0.8, 45)) → 1: 17, 2: 30, 3: 41, 4+: 45; realistic for two people if arepas are pre-cooked and filled to order (~20 if cooked fresh). Follows people on shift until the user types their own value. |
+| People on shift | 1 | everyone working; include yourself. Set cost per person to 0 if everyone works unpaid |
+| Max orders per hour you can serve | 20 | suggested from people on shift: round(min(20 × people^0.585, 45)) → 1: 20, 2: 30, 3: 38, 4+: 45 (two people ~30 if arepas are pre-cooked and filled to order). Follows people on shift until the user types their own value. |
 | Opening hours (weekend day) | 6 h | Kulturbrauerei Sunday 12:00–18:00 (Markthalle Neun Saturday: 8 h) |
-| Setup + cleanup hours | 3 h | organisers want you 1.5–2 h before opening, plus teardown |
+| Setup + cleanup hours | 2 h | |
 | Cost per person per hour (employer) | €18 | min. wage €13.90 + 25–30% employer costs |
 | Rent: fixed per day | €120 | not published; try €60 / €120 / €250 |
 | Rent: share of sales | 0% | 10–15% if the organiser takes a cut |
@@ -123,9 +125,9 @@ Calibrated by Ricardo (2026-10-11) for the Kulturbrauerei Sunday street-food mar
 | VAT food / drinks | 7% / 19% | 0 / 0 for a Kleinunternehmer (first-year sales ≤ €25,000) |
 | Other costs per day | €50 | gas, transport, ice, waste (packaging is in the dish cost) |
 
-Sanity check at base values (2 people × (6 + 3) h): 72 orders (3 × 18 + 3 × 6) × €12.20 (1.2 dishes × €9 + 0.4 drinks × €3.50) → €878.40 gross / €811.43 net sales per day; costs €766.38 (ingredients €259.20 = 72 × €3.60, card fees €13.18, rent €120, wages €324, other €50) → **profit €45.06/day**, break-even ≈ 66.0 orders, margin of safety ≈ 8%. Simulated (seed 12345): most likely profit ≈ €36, worst/best ≈ −€257 / €463, ~55% chance of a profitable day, customers can drop ~7% before break-even.
+Sanity check at base values (1 person × (6 + 2) h): 72 orders (3 × 18 + 3 × 6; busy-hour demand 18 < 20 capacity) × €12.20 (1.2 dishes × €9 + 0.4 drinks × €3.50) → €878.40 gross / €811.43 net sales per day; costs €612.30 (ingredients €285.12 = 72 × €3.96, card fees €13.18, rent €120, wages €144, other €50) → **profit €199.14/day**, break-even ≈ 44.1 orders, margin of safety ≈ 39%. Simulated (seed 12345): most likely profit ≈ €174, worst/best ≈ −€84 / €442, ~80% chance of a profitable day ("Thin cushion"), customers can drop ~38% before break-even.
 
-**Biggest levers at these defaults:** wages (€324, the largest cost; ~€369/day profit if both work unpaid), orders per busy hour (each +5/h ≈ +€125), price (€10 instead of €9 ≈ +€80 if orders hold).
+**Biggest levers at these defaults:** orders per busy and quiet hour (with 20 orders/h capacity, busy hours are often capped, so quiet-hour orders matter almost as much), main dishes per order, busy hours. Ingredient cost now has a narrow range and little impact.
 
 ---
 

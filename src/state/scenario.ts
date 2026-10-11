@@ -89,10 +89,10 @@ export function niceRound(x: number): number {
   return Math.abs(x) >= 10 ? Math.round(x) : Math.round(x * 10) / 10
 }
 
-/** Rounding for suggestions by unit: whole percent, 0.05 dishes, otherwise friendly numbers. */
+/** Rounding for suggestions by unit: whole percent, €0.05, 0.05 dishes, otherwise friendly numbers. */
 function roundFor(def: UncertainInputDef, x: number): number {
   if (def.unit === '%') return Math.round(x * 100) / 100
-  if (def.unit === 'dishes') return Math.round(x * 20) / 20
+  if (def.unit === 'dishes' || def.unit === '€') return Math.round(x * 20) / 20
   return niceRound(x)
 }
 

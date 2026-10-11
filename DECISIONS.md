@@ -2,6 +2,15 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Defaults adjusted (Ricardo)
+
+- Ingredients + packaging per main dish: 3.25 / **3.00** / 2.75, upper limit €3.50 (was 3.50 / 2.70 / 2.00, limit €30). Suggested euro values now round to €0.05 so these reproduce exactly.
+- People on shift **1**, most orders per hour **20**, setup + cleanup **2 h**.
+- Capacity suggestion recalibrated so 1 person → 20 while keeping 2 people → 30 (Ricardo's earlier figure for two people with pre-cooked arepas): round(min(20 × people^0.585, 45)) → 1: 20, 2: 30, 3: 38, 4+: 45.
+- Limits: "Orders that include a drink" up to **500%** (the model treats it as drinks per order, so >100% = several drinks per order; help text now says "drinks per 100 orders"); main dishes per order up to **7**.
+- New sanity check: €199.14 profit, break-even 44.1 orders. Simulated: most likely ≈ €174, ~80% chance of a profitable day, ~38% customer tolerance.
+- Note: with 20 orders/h capacity, busy-hour demand is often capped, so quiet-hour orders now drive high-profit scenarios about as much as busy-hour orders (the goal test was relaxed to accept either).
+
 ## 2026-10-11 — Defaults recalibrated: Kulturbrauerei Sunday market (Ricardo)
 
 - All template defaults replaced with Ricardo's calibration (SPEC §4): dish €9 (cost 3.50 / 2.70 / 2.00), drink €3.50 (cost €0.90, homemade), busy hours 2/3/4, orders per busy hour 8/18/30, per quiet hour 2/6/12, drink in 25/40/60% of orders, 1.0/1.2/1.5 dishes per order, 2 people, capacity 30, open 6 h, setup 3 h, €18/h, rent €120, other €50, fees 1.5%, VAT 7/19%. Scenario name: "Arepa stand · Kulturbrauerei Sunday market, Berlin".

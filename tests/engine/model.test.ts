@@ -10,7 +10,7 @@ const base: DayUncertain = {
   offpeakDemand: 6,
   drinkRate: 0.4,
   dishesPerOrder: 1.2,
-  dishCost: 2.7,
+  dishCost: 3,
 }
 
 describe('simulateDay', () => {
@@ -18,14 +18,14 @@ describe('simulateDay', () => {
     const r = simulateDay(base, decisions)
     expect(r.orders).toBe(72) // 3 h × 18 + 3 h × 6
     expect(r.avgSpendGross).toBeCloseTo(12.2, 12) // 1.2 × €9 + 0.4 × €3.50
-    expect(r.costPerOrder).toBeCloseTo(3.6, 12) // 1.2 × €2.70 + 0.4 × €0.90
+    expect(r.costPerOrder).toBeCloseTo(3.96, 12) // 1.2 × €3.00 + 0.4 × €0.90
     expect(r.grossSales).toBeCloseTo(878.4, 9)
     expect(r.netSales).toBeCloseTo(811.43, 2) // food at 7 % VAT, drinks at 19 %
-    expect(r.staff).toBe(324) // 2 people × (6 + 3) h × €18
-    expect(r.dailyCosts).toBeCloseTo(766.38, 2)
-    expect(r.profit).toBeCloseTo(45.06, 2)
-    expect(r.breakevenOrders).toBeCloseTo(65.98, 2)
-    expect(marginOfSafety(r.orders, r.breakevenOrders)).toBeCloseTo(0.08, 2)
+    expect(r.staff).toBe(144) // 1 person × (6 + 2) h × €18
+    expect(r.dailyCosts).toBeCloseTo(612.3, 2)
+    expect(r.profit).toBeCloseTo(199.14, 2)
+    expect(r.breakevenOrders).toBeCloseTo(44.06, 2)
+    expect(marginOfSafety(r.orders, r.breakevenOrders)).toBeCloseTo(0.39, 2)
     expect(r.lostOrders).toBe(0)
   })
 
@@ -39,15 +39,15 @@ describe('simulateDay', () => {
   it('costs and prices scale with dishes per order', () => {
     const r = simulateDay({ ...base, dishesPerOrder: 2 }, decisions)
     expect(r.avgSpendGross).toBeCloseTo(2 * 9 + 0.4 * 3.5, 12)
-    expect(r.costPerOrder).toBeCloseTo(2 * 2.7 + 0.4 * 0.9, 12)
+    expect(r.costPerOrder).toBeCloseTo(2 * 3 + 0.4 * 0.9, 12)
   })
 
   it('caps orders at capacity and counts the rest as lost', () => {
     const r = simulateDay({ ...base, peakDemand: 40 }, decisions)
-    expect(r.orders).toBe(30 * 3 + 6 * 3)
-    expect(r.lostOrders).toBe(10 * 3)
+    expect(r.orders).toBe(20 * 3 + 6 * 3) // 1 person → 20 orders/h
+    expect(r.lostOrders).toBe(20 * 3)
     expect(r.demandOrders).toBe(40 * 3 + 6 * 3)
-    expect(r.lostGrossSales).toBeCloseTo(30 * 12.2, 9)
+    expect(r.lostGrossSales).toBeCloseTo(60 * 12.2, 9)
   })
 
   it('caps busy hours at opening hours', () => {
@@ -81,12 +81,12 @@ describe('costBreakdown', () => {
     const { costBreakdown } = await import('../../src/engine')
     const r = simulateDay(base, decisions)
     const b = costBreakdown(r)
-    expect(b.fixed).toBeCloseTo(120 + 324 + 50, 9)
-    expect(b.variable).toBeCloseTo(233.28 + 25.92 + 13.176, 9)
+    expect(b.fixed).toBeCloseTo(120 + 144 + 50, 9)
+    expect(b.variable).toBeCloseTo(259.2 + 25.92 + 13.176, 9)
     expect(b.total).toBeCloseTo(r.dailyCosts, 9)
     expect(b.items.map((i) => i.key)).toEqual([
-      'wages',
       'dishes',
+      'wages',
       'rentFixed',
       'other',
       'drinks',

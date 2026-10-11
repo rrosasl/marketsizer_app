@@ -35,9 +35,9 @@ describe('simulate', () => {
     expect(r.summary.orders.p90).toBe(72)
     expect(r.summary.grossSales.p50).toBeCloseTo(878.4, 9)
     expect(r.summary.netSales.p50).toBeCloseTo(811.43, 2)
-    expect(r.summary.profit.p10).toBeCloseTo(45.06, 2)
-    expect(r.summary.profit.p90).toBeCloseTo(45.06, 2)
-    expect(r.summary.breakevenOrders.p50).toBeCloseTo(65.98, 2)
+    expect(r.summary.profit.p10).toBeCloseTo(199.14, 2)
+    expect(r.summary.profit.p90).toBeCloseTo(199.14, 2)
+    expect(r.summary.breakevenOrders.p50).toBeCloseTo(44.06, 2)
     expect(r.summary.lossChance).toBe(0)
   })
 
