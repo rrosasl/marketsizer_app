@@ -84,6 +84,8 @@ export interface Template {
     defaults: InvestorChoice
     gainOptions: number[]
     lossOptions: number[]
+    /** The 0 option stands for this many euros ("€1 or more"). */
+    minEuro: number
   }
 }
 

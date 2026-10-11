@@ -25,6 +25,14 @@ export interface InvestorOutlook {
   chanceBigLoss: number
 }
 
+/**
+ * Threshold (share of the stake) for a dropdown option. Option 0 means "the smallest amount that
+ * counts" (e.g. €1), so "earning €1 or more" / "losing €1 or more" rather than a confusing €0.
+ */
+export function investorThreshold(option: number, amount: number, minEuro: number): number {
+  return option > 0 ? option : amount > 0 ? minEuro / amount : 0
+}
+
 export function investorOutlook(
   r: SimulationResult,
   amount: number,

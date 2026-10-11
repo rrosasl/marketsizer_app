@@ -192,7 +192,7 @@ export function ResultsPanel({
           </p>
         )}
         <StressTable rows={stress.rows} />
-        <Expand title={copy.driversMore}>
+        <Expand title={copy.driversMore} open>
           <p className="card-sub">
             {copy.driversIntro} <InfoTip text={copy.driversInfo} />
           </p>

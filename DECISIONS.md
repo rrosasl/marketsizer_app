@@ -6,7 +6,8 @@ Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newe
 
 - Detail behind closed-by-default expandables so each card leads with its headline: new "More about your sales"; cost line items; "What it would take"; investor chances. One shared `Expand` component and style (also used by "See all 10,000 scenarios" and the stress table).
 - **"What matters most" folded into the Break-even card** (expandable); the separate card is gone. Trade-off: it is less visible to first-time users and no longer a standalone screenshot. The "Start here" tip stays inside.
-- Investor dropdowns start at €0 (gain: break even or better; loss: any loss). The fixed "Chance of losing any money" row was removed because the €0 loss option (now the default) shows the same number. Loss at €0 counts strictly negative results, so it equals the Profit card's chance of a losing day.
+- Investor dropdowns start at **€1** (Ricardo: "losing / earning €1 or more" reads better than €0). The first option is a fixed €1 (template `minEuro`), the others stay % of the stake. The fixed "Chance of losing any money" row was removed; "losing €1 or more" (default) is practically the same number.
+- **"What matters most" opens by default** (Ricardo: ok) — it answers a core question ("what to research next"), so it should not depend on a click.
 - Sales detail (`salesDetail`) re-runs the day model on the stored scenarios (no new randomness); `DayResult` gained busy/quiet orders and food/drink sales.
 - Old links: a link that relied on the previous default loss threshold (20%) now opens with €0. Acceptable — no users yet.
 

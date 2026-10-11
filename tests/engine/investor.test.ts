@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { investorOutlook, simulate } from '../../src/engine'
+import { investorOutlook, investorThreshold, simulate } from '../../src/engine'
 import { arepaMarkthalle } from '../../src/templates'
 import { defaultScenario, toSimulationSpec } from '../../src/state/scenario'
 
@@ -48,6 +48,25 @@ describe('investorOutlook', () => {
   it('never loses more than the stake', () => {
     const o = investorOutlook(r, 100, 0.1, 1.0001)
     expect(o.chanceBigLoss).toBe(0)
+  })
+})
+
+describe('investorThreshold: the first option means €1', () => {
+  it('maps option 0 to €1 of the stake and leaves other options alone', () => {
+    expect(investorThreshold(0, 100, 1)).toBeCloseTo(0.01, 12)
+    expect(investorThreshold(0, 250, 1) * 250).toBeCloseTo(1, 12)
+    expect(investorThreshold(0.2, 100, 1)).toBe(0.2)
+  })
+
+  it('counts results of at least €1 up or down', () => {
+    const o = investorOutlook(r, 100, investorThreshold(0, 100, 1), investorThreshold(0, 100, 1))
+    const res = Array.from(
+      r.profit,
+      (p, i) => (Math.min(100, r.dailyCosts[i]!) / r.dailyCosts[i]!) * p,
+    )
+    expect(o.chanceGain).toBeCloseTo(res.filter((v) => v >= 1).length / r.draws, 12)
+    expect(o.chanceBigLoss).toBeCloseTo(res.filter((v) => v <= -1).length / r.draws, 12)
+    expect(o.chanceBigLoss).toBeLessThanOrEqual(o.chanceLoss)
   })
 })
 

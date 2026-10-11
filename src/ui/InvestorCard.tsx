@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { investorOutlook, type SimulationResult } from '../engine'
+import { investorOutlook, investorThreshold, type SimulationResult } from '../engine'
 import type { InvestorChoice, Template } from '../templates'
 import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
@@ -32,11 +32,17 @@ export function InvestorCard({
   caption: string
 }) {
   const valid = Number.isFinite(choice.amount) && choice.amount > 0
-  const o = useMemo(
-    () => (valid ? investorOutlook(r, choice.amount, choice.gain, choice.loss) : null),
-    [r, choice, valid],
-  )
-  const option = (share: number) => copy.investor.option(euro(share * choice.amount), pct(share))
+  const { minEuro } = template.investor
+  const threshold = (opt: number) => investorThreshold(opt, choice.amount, minEuro)
+  const o = useMemo(() => {
+    if (!valid) return null
+    const t = (opt: number) => investorThreshold(opt, choice.amount, minEuro)
+    return investorOutlook(r, choice.amount, t(choice.gain), t(choice.loss))
+  }, [r, choice, valid, minEuro])
+  const option = (opt: number) => {
+    const share = threshold(opt)
+    return copy.investor.option(euro(share * choice.amount), chance(share))
+  }
 
   return (
     <article className="card investor">

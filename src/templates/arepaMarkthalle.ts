@@ -245,5 +245,6 @@ export const arepaMarkthalle: Template = {
     defaults: { amount: 100, gain: 0.1, loss: 0 },
     gainOptions: [0, 0.05, 0.1, 0.2, 0.5],
     lossOptions: [0, 0.1, 0.2, 0.5],
+    minEuro: 1,
   },
 }
