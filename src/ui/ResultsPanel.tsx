@@ -1,4 +1,11 @@
-import type { DayDecisions, Goal, SimulationResult, UncertainKey } from '../engine'
+import { useMemo } from 'react'
+import {
+  runStressTests,
+  type DayDecisions,
+  type Goal,
+  type SimulationResult,
+  type UncertainKey,
+} from '../engine'
 import type { Template, UncertainInputDef } from '../templates'
 import { BreakevenBar } from './charts/BreakevenBar'
 import { DriverBars } from './charts/DriverBars'
@@ -9,7 +16,8 @@ import { copy } from './copy'
 import { formatEuro } from './format'
 import { CostsCard } from './CostsCard'
 import { GoalCard } from './GoalCard'
-import { StressSection } from './StressSection'
+import { StressTable } from './StressSection'
+import { cardCaption } from './caption'
 
 const fmtOrders = (x: number) => (Number.isFinite(x) ? Math.round(x).toLocaleString('en-GB') : '—')
 const fmtPct = (x: number) => `${Math.round(x * 100)}%`
@@ -35,7 +43,20 @@ export function ResultsPanel({
   const s = r.summary
   const profitChance = 1 - s.lossChance
   const top = r.sensitivity[0]
-  const room = s.orders.p50 - s.breakevenOrders.p50
+  const stress = useMemo(
+    () => runStressTests(r, decisions, template.stressTests),
+    [r, decisions, template],
+  )
+  const caption = cardCaption(template, decisions)
+  const tol = stress.tolerance
+  const toleranceText =
+    tol.kind === 'can-drop'
+      ? copy.stress.canDrop(fmtPct(tol.share), fmtOrders(tol.share * s.orders.p50))
+      : tol.kind === 'needs-more'
+        ? copy.stress.needsMore(fmtPct(tol.share), fmtOrders(tol.share * s.orders.p50))
+        : tol.kind === 'capacity'
+          ? copy.stress.capacity
+          : copy.stress.losesPerOrder
   const fallbacks = (Object.keys(r.fits) as UncertainKey[]).filter(
     (k) => r.fits[k] === 'two-piece-normal',
   )
@@ -75,6 +96,12 @@ export function ResultsPanel({
           </div>
         </div>
         <RangeBar range={s.profit} fmt={formatEuro} showZero />
+        <details className="spread-toggle">
+          <summary>{copy.spreadToggle}</summary>
+          <p className="card-sub">{copy.spreadSub}</p>
+          <ProfitSpread profit={r.profit} range={s.profit} />
+        </details>
+        <p className="card-caption">{caption}</p>
       </article>
 
       <div className="card-pair">
@@ -85,11 +112,18 @@ export function ResultsPanel({
           </header>
           <span className="eyebrow">{copy.mostLikely}</span>
           <span className="big">{formatEuro(s.grossSales.p50)}</span>
+          <p className="sales-net">
+            {copy.salesNet(
+              formatEuro(s.netSales.p50),
+              formatEuro(s.grossSales.p50 - s.netSales.p50),
+            )}
+          </p>
           <RangeBar range={s.grossSales} fmt={formatEuro} />
           <p className="sales-orders">{copy.salesOrders(fmtOrders(s.orders.p50))}</p>
+          <p className="card-caption">{caption}</p>
         </article>
 
-        <CostsCard r={r} />
+        <CostsCard r={r} caption={caption} />
       </div>
 
       <article className="card">
@@ -101,16 +135,15 @@ export function ResultsPanel({
         </p>
         <BreakevenBar expected={s.orders.p50} breakeven={s.breakevenOrders.p50} />
         <p className={`cushion cushion-${s.marginWord}`}>
-          <b>{copy.cushion[s.marginWord]}</b>
-          {Number.isFinite(room) &&
-            ` · ${room >= 0 ? copy.cushionDetail(fmtOrders(room)) : copy.cushionShort(fmtOrders(-room))}`}
+          <b>{copy.cushion[s.marginWord]}</b> · {toleranceText}
         </p>
         {s.breakevenAboveCapacity && (
           <p className="notice notice-warn">
             {copy.breakevenAboveCapacity(fmtOrders(s.maxOrdersPerDay))}
           </p>
         )}
-        <StressSection r={r} decisions={decisions} shocks={template.stressTests} />
+        <StressTable rows={stress.rows} />
+        <p className="card-caption">{caption}</p>
       </article>
 
       {s.capacity.show && (
@@ -122,14 +155,6 @@ export function ResultsPanel({
           )}
         </aside>
       )}
-
-      <article className="card">
-        <header className="card-head">
-          <h3>{copy.spreadTitle}</h3>
-          <span className="card-sub">{copy.spreadSub}</span>
-        </header>
-        <ProfitSpread profit={r.profit} range={s.profit} />
-      </article>
 
       <article className="card">
         <header className="card-head">
@@ -147,14 +172,27 @@ export function ResultsPanel({
             </p>
           </div>
         )}
+        <p className="card-caption">{caption}</p>
       </article>
 
-      <GoalCard r={r} goal={goal} onGoal={onGoal} defs={defs} baseValues={baseValues} />
+      <GoalCard
+        r={r}
+        goal={goal}
+        onGoal={onGoal}
+        defs={defs}
+        baseValues={baseValues}
+        caption={caption}
+      />
 
       <p className="footnote">
         {copy.footnote(r.draws.toLocaleString('en-GB'))}
         {fallbacks.length > 0 && ` ${copy.fallbackNote(fallbacks.map(label).join(', '))}`}
       </p>
+
+      <section className="how">
+        <h4>{copy.howTitle}</h4>
+        <p>{copy.howText}</p>
+      </section>
 
       <details className="math">
         <summary>{copy.mathTitle}</summary>

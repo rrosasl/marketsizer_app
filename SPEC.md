@@ -1,4 +1,6 @@
-# SPEC v0.9.1 — Pop-up Food Stand Simulator
+# SPEC v1.0 — Pop-up Food Stand Simulator
+
+**Changelog v1.0 (2026-10-11, review round):** scenario saved in the link (`#s=…`, survives refresh, shareable, includes seed) + "Copy link"; Sales card shows "€X after VAT (€Y VAT)" so Sales − Costs ≈ Profit; Break-even lines merged into one; profit histogram folded into the Profit card ("See all 10,000 scenarios"); duplicate loss line removed from the goal card; context caption on every card; "How this works" note; mobile sticky results bar.
 
 **Changelog v0.9.1 (2026-10-11):** "Orders that include a drink" renamed "Drinks per 10 orders" (unit: drinks, no %; 2.5 / 4 / 6, max 50); "Main dishes per order" moved from Advanced to Your customers.
 
@@ -166,6 +168,14 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "Room to grow. At busy times, about N more customers may want to order than you can serve — around €X in extra sales." Facts only; no staffing advice.
 
 6. **Check a goal** (last section of the page): "What’s the probability that my profit will be [above | below] €X?" (profit only; €X may be negative — a ± button flips the sign because phone number pads have no minus key). Under the answer, small and muted: "Probability of a loss on a typical weekend day: N%". → share of the 10,000 scenarios that meet it (shown as <1% / >99% at the extremes), with the most-likely value for context. Below it, "What it would take" (or "What that would look like" for *below*): up to 3 estimates whose typical value in the scenarios that meet the goal differs most from the user's most-likely value. Ranked by the average percentile rank of the estimate among those scenarios minus 50%; shown only if that shift is ≥ 5 points, and only if at least 50 scenarios fall on each side. Default question: profit at least €200.
+
+**Review-round rules (v1.0):**
+- Sales card: below the headline, "€net after VAT (€VAT VAT)" using median net sales; so a reader can check Sales after VAT − Costs ≈ Profit.
+- Break-even card: one line "[cushion label] · your customers could drop by about N% (M orders) before you start losing money" (or the needs-more / serving-limit / loses-per-order variants); M = N × median orders.
+- The scenario histogram lives inside the Profit card behind "See all 10,000 scenarios" (closed by default); no separate card.
+- Every result card ends with a caption: scenario name · dish price · people on shift · opening hours · month and year.
+- Below the results: a short "How this works" paragraph (plain English, no jargon).
+- On narrow screens, a sticky bar shows most-likely profit and chance of profit with "See results ↓" until the results are on screen.
 
 Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated scenarios of your inputs."
 

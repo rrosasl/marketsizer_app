@@ -6,7 +6,7 @@ import { formatEuro } from './format'
 const pct = (x: number, total: number) => `${Math.round((x / total) * 100)}%`
 
 /** Most likely day's costs: total, fixed vs variable split, and line items, largest first. */
-export function CostsCard({ r }: { r: SimulationResult }) {
+export function CostsCard({ r, caption }: { r: SimulationResult; caption: string }) {
   const b = costBreakdown(r.medianCostDay)
   if (!(b.total > 0)) return null
   const range = r.summary.dailyCosts
@@ -55,6 +55,7 @@ export function CostsCard({ r }: { r: SimulationResult }) {
         ))}
       </ul>
       <p className="footnote">{copy.costsRange(formatEuro(range.p10), formatEuro(range.p90))}</p>
+      <p className="card-caption">{caption}</p>
     </article>
   )
 }

@@ -1246,3 +1246,99 @@ select {
     display: none;
   }
 }
+
+/* Review round: sharing, captions, sticky bar, how-it-works */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.card-caption {
+  margin: 16px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.sales-net {
+  margin: -12px 0 16px;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+.spread-toggle {
+  margin-top: 16px;
+}
+.spread-toggle summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-ink);
+  padding: 6px 0;
+}
+.spread-toggle .card-sub {
+  margin-bottom: 10px;
+}
+.how {
+  margin: 0 4px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1px solid var(--hairline);
+}
+.how h4 {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+}
+.how p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+.sticky-results {
+  display: none;
+}
+@media (max-width: 1020px) {
+  .sticky-results {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 14px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgba(11, 31, 58, 0.3);
+  }
+  .sticky-results small {
+    display: block;
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .sticky-results b {
+    font-size: 1.15rem;
+  }
+  .sticky-results b.neg {
+    color: #ff9c9c;
+  }
+  .sticky-chance {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .sticky-cta {
+    font-weight: 600;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  .app {
+    padding-bottom: 96px;
+  }
+}

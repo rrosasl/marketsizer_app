@@ -2,6 +2,15 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Review round: first-principles fixes (Ricardo approved all)
+
+- **Numbers reconcile:** Sales card adds "€X after VAT (€Y VAT)". Before, Sales €833 − Costs €596 ≠ Profit €174 because VAT was invisible.
+- **Scenario in the link** (part of Phase 5, pulled forward): `#s=` + base64url JSON of only what differs from the template defaults, plus the seed, with a version field; decoding ignores bad data. The URL updates with `history.replaceState` (no history spam). "Copy link" button in the header. Old links keep working when defaults change (only diffs are stored), though their results then follow the new defaults for untouched fields.
+- **Less repetition:** Break-even card merges cushion label, orders of room and customer tolerance into one sentence; the "How your scenarios spread" card is folded into the Profit card (closed by default); the goal card's "probability of a loss" line is removed (the Profit card already shows the chance of profit).
+- **Screenshot context:** every result card ends with a caption (scenario · dish price · people · hours open · month/year), per SPEC §9. PNG export still to come (Phase 5).
+- **Credibility:** "How this works" paragraph under the results.
+- **Mobile:** sticky bar with most-likely profit and chance of profit until the results scroll into view.
+
 ## 2026-10-11 — Drinks per 10 orders; dishes per order moved (Ricardo)
 
 - "Orders that include a drink" (%) renamed **"Drinks per 10 orders"** (unit pill "drinks", no % sign; Ricardo: per 10 is easier to imagine than per 100): defaults 2.5 / 4 / 6, maximum 50. Stored unchanged as drinks per order (0.40), so the model and results are unaffected. New unit `per10` (shown ×10); suggestions round to 0.1 drinks per 10 orders.

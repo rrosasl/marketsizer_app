@@ -38,12 +38,14 @@ export function GoalCard({
   onGoal,
   defs,
   baseValues,
+  caption,
 }: {
   r: SimulationResult
   goal: Goal
   onGoal: (g: Goal) => void
   defs: Record<UncertainKey, UncertainInputDef>
   baseValues: Record<UncertainKey, number>
+  caption: string
 }) {
   const valid = Number.isFinite(goal.amount)
   const analysis = useMemo(() => (valid ? analyzeGoal(r, goal) : null), [r, goal, valid])
@@ -103,7 +105,6 @@ export function GoalCard({
                 <div style={{ width: `${Math.max(p > 0 ? 1 : 0, p * 100)}%` }} />
               </div>
               <span className="card-sub">{copy.goalLikely(formatEuro(likely))}</span>
-              <span className="goal-loss">{copy.goalLossChance(fmtPct(r.summary.lossChance))}</span>
             </div>
           </div>
 
@@ -144,6 +145,7 @@ export function GoalCard({
           </div>
         </>
       )}
+      <p className="card-caption">{caption}</p>
     </article>
   )
 }

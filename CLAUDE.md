@@ -96,6 +96,7 @@ a3 = (x90 + x10 − 2·x50) / ((1 − 2α)·L)
 - Goal check: probability equals the share of scenarios meeting it; "at least €0 profit" equals the chance of a profitable day.
 - Capacity cap: demand above capacity produces lost orders, not extra sales.
 - Stress tests: "as expected" equals the Profit card's most-likely profit; fewer customers cut orders and variable costs but not fixed costs, and are applied before the capacity cap; the customer tolerance brings most-likely profit to ~€0.
+- URL state: a scenario encoded in the link decodes to the identical scenario and identical simulated results; garbage links fall back to defaults without crashing.
 - Contribution per order ≤ 0 triggers the "every order loses money" warning state.
 - Payback is reported as "not within 3 years" when cumulative cash never turns positive.
 - Performance: 10,000 draws plus sensitivity in < 200 ms on a mid-range laptop.
@@ -113,7 +114,7 @@ Work phase by phase. At the end of each phase: run the tests, summarise what was
 | 2. Template | Arepa-stand template from SPEC §4 as data (not hard-coded in the UI) | Engine runs end to end from the template |
 | 3. Weekend-day page | Input form (worst/base/best + ⓘ texts, single-number mode, validation) and output cards 1–5 (SPEC §6) | A non-expert can go from defaults to results without help |
 | 4. Month & year | SPEC §7 inputs, extrapolation, payback, cards 6–8 | Tests for ramp-up and payback pass |
-| 5. Share & export | URL state + seed, PNG card export (16:9 and 1:1), deploy | A shared link reproduces the results; exported cards are readable when projected |
+| 5. Share & export | URL state + seed (**done**, review round), PNG card export (16:9 and 1:1), deploy | A shared link reproduces the results; exported cards are readable when projected |
 
 ---
 

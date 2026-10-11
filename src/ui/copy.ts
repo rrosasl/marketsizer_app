@@ -67,6 +67,7 @@ export const copy = {
   salesTitle: 'Sales per weekend day',
   salesSub: 'what customers pay, incl. VAT',
   salesOrders: (orders: string) => `From about ${orders} orders a day.`,
+  salesNet: (net: string, vat: string) => `${net} after VAT (${vat} VAT)`,
 
   costsTitle: 'Costs per weekend day',
   costsSub: 'what a most likely day costs you',
@@ -97,18 +98,17 @@ export const copy = {
     thin: 'Thin cushion',
     negative: 'Below break-even',
   },
-  cushionDetail: (orders: string) => `${orders} orders of room above break-even`,
-  cushionShort: (orders: string) => `${orders} orders short of break-even`,
   breakevenAboveCapacity: (max: string) =>
     `Break-even is more than you can serve in a day (about ${max} orders at most).`,
 
   stress: {
-    canDrop: (p: string) =>
-      `Your customers could drop by about ${p} before you start losing money.`,
-    needsMore: (p: string) => `You’d need about ${p} more customers to break even.`,
+    canDrop: (p: string, orders: string) =>
+      `your customers could drop by about ${p} (${orders} orders) before you start losing money.`,
+    needsMore: (p: string, orders: string) =>
+      `you’d need about ${p} more customers (${orders} more orders) to break even.`,
     capacity:
-      'More customers alone won’t get you to break even — you’d hit your serving limit first.',
-    losesPerOrder: 'More customers won’t help while each order loses money.',
+      'more customers alone won’t get you to break even — you’d hit your serving limit first.',
+    losesPerOrder: 'more customers won’t help while each order loses money.',
     title: 'What if things go worse than expected?',
     colWhatIf: 'What if…',
     colProfit: 'Most likely profit per day',
@@ -120,6 +120,7 @@ export const copy = {
     note: 'Hypothetical changes applied to all 10,000 scenarios — “what ifs”, not predictions.',
   },
 
+  spreadToggle: 'See all 10,000 scenarios',
   spreadTitle: 'How your scenarios spread',
   spreadSub: 'Each bar is a group of simulated days. Green made a profit; red did not.',
   spreadHint: 'Point at a bar to see its range.',
@@ -134,7 +135,6 @@ export const copy = {
   goalResult: (dir: string, amount: string) =>
     `probability that your profit on a typical weekend day will be ${dir} ${amount}`,
   goalLikely: (value: string) => `Your most likely profit is ${value}.`,
-  goalLossChance: (pct: string) => `Probability of a loss on a typical weekend day: ${pct}`,
   goalTakesTitle: { 'at-least': 'What it would take', below: 'What that would look like' },
   goalTakesIntro: {
     'at-least':
@@ -167,6 +167,14 @@ export const copy = {
   capacityText: (customers: string, sales: string) =>
     `At busy times, about ${customers} more customers may want to order than you can serve — around ${sales} in extra sales.`,
 
+  howTitle: 'How this works',
+  howText:
+    'You give a worst, most likely and best guess for the things you can’t know yet, such as how many customers will come. We turn each guess into a realistic range and simulate 10,000 possible typical days, mixing your guesses at random (busy and quiet hours tend to move together). “Most likely” is the middle result; worst and best case are the 1-in-10 low and high ends. Nothing you enter leaves your browser.',
+  copyLink: 'Copy link',
+  linkCopied: 'Link copied',
+  copyLinkHelp: 'The link contains all your numbers, so you can come back to it or share it.',
+  stickyChance: (p: string) => `${p} chance of profit`,
+  stickySee: 'See results',
   footnote: (draws: string) =>
     `Worst/best = 1-in-10 scenarios. Based on ${draws} simulated scenarios of your inputs.`,
   fallbackNote: (labels: string) =>

@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import {
   simulate,
   validateEstimate,
@@ -31,6 +31,7 @@ import { DecisionField } from './components/DecisionField'
 import { EstimateRow } from './components/EstimateRow'
 import { InfoTip } from './components/InfoTip'
 import { NumberField } from './components/NumberField'
+import { decodeScenario, encodeScenario } from '../state/url'
 import { copy } from './copy'
 import { formatEuro } from './format'
 import { ResultsPanel } from './ResultsPanel'
@@ -53,7 +54,34 @@ function run(scenario: Scenario): { result?: SimulationResult; error?: string } 
 }
 
 export default function WeekendPage() {
-  const [scenario, setScenario] = useState<Scenario>(() => defaultScenario(template, DEFAULT_SEED))
+  // A shared or bookmarked link restores every number; otherwise start from the defaults.
+  const [scenario, setScenario] = useState<Scenario>(
+    () => decodeScenario(template, window.location.hash) ?? defaultScenario(template, DEFAULT_SEED),
+  )
+  // Keep the link in sync, so a refresh or a copied URL keeps all inputs (no history spam).
+  useEffect(() => {
+    const hash = '#' + encodeScenario(template, scenario)
+    if (window.location.hash !== hash) window.history.replaceState(null, '', hash)
+  }, [scenario])
+  const [copied, setCopied] = useState(false)
+  const copyLink = () => {
+    void navigator.clipboard?.writeText(window.location.href).then(() => {
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    })
+  }
+  // Mobile: a small results bar until the results are on screen.
+  const outputsRef = useRef<HTMLElement>(null)
+  const [outputsVisible, setOutputsVisible] = useState(false)
+  useEffect(() => {
+    const el = outputsRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setOutputsVisible(!!e?.isIntersecting), {
+      rootMargin: '0px 0px -40% 0px',
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   const update = (fn: (s: Scenario) => void) =>
     setScenario((prev) => {
       const next = structuredClone(prev)
@@ -131,7 +159,12 @@ export default function WeekendPage() {
           <img src="favicon.svg" alt="" width={28} height={28} />
           <span>{copy.brand}</span>
         </div>
-        <span className="scenario-pill">{template.scenarioName}</span>
+        <div className="topbar-right">
+          <span className="scenario-pill">{template.scenarioName}</span>
+          <button type="button" className="ghost-btn" onClick={copyLink} title={copy.copyLinkHelp}>
+            {copied ? copy.linkCopied : copy.copyLink}
+          </button>
+        </div>
       </header>
 
       <section className="intro">
@@ -291,6 +324,8 @@ export default function WeekendPage() {
         </section>
 
         <section
+          ref={outputsRef}
+          id="results"
           className={`column outputs ${stale ? 'is-stale' : ''}`}
           aria-label={copy.resultsTitle}
         >
@@ -314,6 +349,28 @@ export default function WeekendPage() {
           )}
         </section>
       </main>
+
+      {outcome.result && !outputsVisible && (
+        <a
+          className="sticky-results"
+          href="#results"
+          onClick={(e) => {
+            e.preventDefault()
+            outputsRef.current?.scrollIntoView({ behavior: 'smooth' })
+          }}
+        >
+          <span>
+            <small>{copy.mostLikely}</small>
+            <b className={outcome.result.summary.profit.p50 < 0 ? 'neg' : undefined}>
+              {formatEuro(outcome.result.summary.profit.p50)}
+            </b>
+          </span>
+          <span className="sticky-chance">
+            {copy.stickyChance(`${Math.round((1 - outcome.result.summary.lossChance) * 100)}%`)}
+          </span>
+          <span className="sticky-cta">{copy.stickySee} ↓</span>
+        </a>
+      )}
     </div>
   )
 }
