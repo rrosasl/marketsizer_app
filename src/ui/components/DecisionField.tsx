@@ -1,4 +1,5 @@
 import type { DecisionDef } from '../../templates'
+import { copy } from '../copy'
 import { InfoTip } from './InfoTip'
 import { NumberField } from './NumberField'
 
@@ -7,10 +8,13 @@ export function DecisionField({
   def,
   value,
   onChange,
+  suggestion,
 }: {
   def: DecisionDef
   value: number
   onChange: (v: number) => void
+  /** For values suggested from another choice: shows "suggested …" or "Use suggestion". */
+  suggestion?: { manual: boolean; note: string; onReset: () => void }
 }) {
   const pct = def.unit === '%'
   return (
@@ -18,6 +22,14 @@ export function DecisionField({
       <span className="decision-label">
         {def.label}
         {def.help && <InfoTip text={def.help} />}
+        {suggestion &&
+          (suggestion.manual ? (
+            <button type="button" className="link-btn" onClick={suggestion.onReset}>
+              {copy.useSuggestion}
+            </button>
+          ) : (
+            <span className="badge">{suggestion.note}</span>
+          ))}
       </span>
       <NumberField
         label={def.label}

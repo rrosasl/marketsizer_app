@@ -24,6 +24,8 @@ export const copy = {
   best: 'Best',
   suggested: 'suggested',
   useSuggestion: 'Use suggestion',
+  capacitySuggested: (people: number) =>
+    `suggested for ${people} ${people === 1 ? 'person' : 'people'}`,
   costHint: 'For costs, worst = most expensive.',
 
   choicesTitle: 'Your stand',

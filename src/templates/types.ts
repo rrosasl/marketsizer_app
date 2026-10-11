@@ -48,4 +48,10 @@ export interface Template {
   correlations: CorrelationPair<UncertainKey>[]
   /** Starting question for the goal card. */
   defaultGoal: Goal
+  /**
+   * Suggested "most orders you can serve per hour" for a number of people on shift:
+   * min(perPerson × people^exponent, ceiling), rounded. Extra people share one grill and counter,
+   * so each adds a bit less (exponent < 1), up to what the stand itself can handle (ceiling).
+   */
+  capacitySuggestion: { perPerson: number; exponent: number; ceiling: number }
 }

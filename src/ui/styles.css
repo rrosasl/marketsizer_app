@@ -1159,3 +1159,10 @@ select {
 .advanced-estimates {
   margin-bottom: 14px;
 }
+
+.decision-label {
+  flex-wrap: wrap;
+}
+.decision-label .badge {
+  white-space: nowrap;
+}

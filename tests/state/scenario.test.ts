@@ -70,3 +70,29 @@ describe('parseNumber', () => {
     expect(parseNumber('abc')).toBeNaN()
   })
 })
+
+describe('capacity suggestion', () => {
+  it('grows with people on shift, with diminishing returns and a ceiling', async () => {
+    const { suggestCapacity } = await import('../../src/state/scenario')
+    const caps = [0, 1, 2, 3, 4, 5].map((n) => suggestCapacity(arepaMarkthalle, n))
+    expect(caps).toEqual([0, 17, 30, 41, 45, 45])
+    // Template default matches the suggestion for the default number of people.
+    const s = defaultScenario(arepaMarkthalle, 1)
+    expect(s.decisions.capacityPerHour).toBe(
+      suggestCapacity(arepaMarkthalle, s.decisions.staffCount),
+    )
+  })
+
+  it('follows people on shift until the user types a capacity', async () => {
+    const { setDecision, resetCapacity } = await import('../../src/state/scenario')
+    const s = defaultScenario(arepaMarkthalle, 1)
+    setDecision(arepaMarkthalle, s, 'staffCount', 3)
+    expect(s.decisions.capacityPerHour).toBe(41)
+    setDecision(arepaMarkthalle, s, 'capacityPerHour', 25)
+    setDecision(arepaMarkthalle, s, 'staffCount', 1)
+    expect(s.decisions.capacityPerHour).toBe(25)
+    resetCapacity(arepaMarkthalle, s)
+    expect(s.decisions.capacityPerHour).toBe(17)
+    expect(s.capacityManual).toBe(false)
+  })
+})

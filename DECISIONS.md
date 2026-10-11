@@ -2,6 +2,13 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Capacity suggested from people on shift (Ricardo)
+
+- "Most orders you can serve per hour" stays a normal choice, but its value is now **suggested** from "People on shift" and follows it until the user types their own number (same pattern as suggested worst/best; "Use suggestion" restores it). No new inputs; the engine is unchanged.
+- Suggestion = round(min(17 × people^0.8, 45)): one person alone handles ~17 orders/h; extra people share one grill and counter, so each adds a bit less (exponent 0.8); 45/h is the stand's ceiling. 2 people → 30 = previous default, so the sanity check is unchanged. Parameters live in the template (`capacitySuggestion`), not in the UI.
+- Owner time is not modelled separately: "People on shift" includes the owner. No capacity alert or staffing advice.
+- "People on shift" now sits next to the capacity field in _Your stand_.
+
 ## 2026-10-11 — Product mix replaces average spend (Ricardo)
 
 - **Prices are choices.** "Average spend per order" (an estimate) is replaced by: price of a main dish and price of a drink (choices), share of orders that include a drink (estimate, _Your customers_), main dishes per order (estimate, Advanced). Spend per order = dishes × dish price + drink rate × drink price.

@@ -18,8 +18,10 @@ import {
   boundsFor,
   defaultScenario,
   effectiveEstimate,
+  resetCapacity,
   resetSide,
   setBase,
+  setDecision,
   setSide,
   toSimulationSpec,
   type Scenario,
@@ -78,8 +80,8 @@ export default function WeekendPage() {
   const outcome = useMemo(() => (valid ? run(deferred) : {}), [deferred, valid])
   const stale = deferred !== scenario
 
-  const setDecision = (key: keyof DayDecisions) => (v: number) =>
-    update((s) => void (s.decisions[key] = v))
+  const onDecision = (key: keyof DayDecisions) => (v: number) =>
+    update((s) => setDecision(template, s, key, v))
   const baseValues = Object.fromEntries(
     template.uncertain.map((d) => [d.key, deferred.uncertain[d.key].base]),
   ) as Record<UncertainKey, number>
@@ -90,7 +92,16 @@ export default function WeekendPage() {
       key={def.key}
       def={def}
       value={scenario.decisions[def.key]}
-      onChange={setDecision(def.key)}
+      onChange={onDecision(def.key)}
+      suggestion={
+        def.key === 'capacityPerHour'
+          ? {
+              manual: scenario.capacityManual,
+              note: copy.capacitySuggested(scenario.decisions.staffCount),
+              onReset: () => update((s) => resetCapacity(template, s)),
+            }
+          : undefined
+      }
     />
   )
   const estimateRow = (def: UncertainInputDef) => (

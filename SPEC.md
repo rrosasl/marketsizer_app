@@ -109,7 +109,7 @@ If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more th
 | Price of a drink (Your product) | €4.00 | incl. VAT; Berlin €3.50–4.00 |
 | Cost of a drink (Your product) | €0.80 | bought-in soft drinks ~€0.55–0.75/bottle by the crate excl. deposit, plus cup/ice and pricier imports |
 | Opening hours (weekend day) | 8 h | Markthalle Neun Saturday 10:00–18:00 |
-| Max orders per hour you can serve | 30 | 2 people at the counter |
+| Max orders per hour you can serve | 30 | suggested from people on shift: round(min(17 × people^0.8, 45)) → 1: 17, 2: 30, 3: 41, 4+: 45. Follows people on shift until the user types their own value ("Use suggestion" restores it). Not an extra input. |
 | People on shift | 2 | everyone paid for the shift; include yourself to pay yourself a wage |
 | Setup + cleanup hours | 2 h | added to staff hours |
 | Cost per person per hour (employer) | €18 | min. wage €13.90 (2026) + ~21% employer SV, or minijob flat ~30% |

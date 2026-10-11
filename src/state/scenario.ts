@@ -20,6 +20,8 @@ export interface Scenario {
    * automatically from "most likely" (template spread) and follow it when it changes.
    */
   manual: Partial<Record<UncertainKey, Partial<Record<Side, boolean>>>>
+  /** True once the user typed their own capacity; until then it follows people on shift. */
+  capacityManual: boolean
   /** User overrides of the template limits (Advanced settings). */
   limits: Partial<Record<UncertainKey, Partial<Bounds>>>
   decisions: DayDecisions
@@ -37,6 +39,7 @@ export function defaultScenario(t: Template, seed: number): Scenario {
   return {
     uncertain,
     manual: {},
+    capacityManual: false,
     limits: {},
     decisions,
     correlationMode: 'default',
@@ -46,6 +49,36 @@ export function defaultScenario(t: Template, seed: number): Scenario {
 }
 
 export type Side = 'worst' | 'best'
+
+/** Suggested orders per hour for a number of people on shift (see Template.capacitySuggestion). */
+export function suggestCapacity(t: Template, people: number): number {
+  if (!(people > 0)) return 0
+  const { perPerson, exponent, ceiling } = t.capacitySuggestion
+  return Math.round(Math.min(perPerson * people ** exponent, ceiling))
+}
+
+/**
+ * Sets a choice. Changing people on shift also updates the capacity suggestion, unless the user
+ * typed their own capacity; typing a capacity stops it from following.
+ */
+export function setDecision(
+  t: Template,
+  s: Scenario,
+  key: keyof DayDecisions,
+  value: number,
+): void {
+  s.decisions[key] = value
+  if (key === 'capacityPerHour') s.capacityManual = true
+  if (key === 'staffCount' && !s.capacityManual && Number.isFinite(value)) {
+    s.decisions.capacityPerHour = suggestCapacity(t, value)
+  }
+}
+
+/** Go back to the suggested capacity for the current number of people. */
+export function resetCapacity(t: Template, s: Scenario): void {
+  s.capacityManual = false
+  s.decisions.capacityPerHour = suggestCapacity(t, s.decisions.staffCount)
+}
 
 export function applySpread(base: number, spread: Spread): Estimate {
   return { worst: base * (1 + spread.worst), base, best: base * (1 + spread.best) }
