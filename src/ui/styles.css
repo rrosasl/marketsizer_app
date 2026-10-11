@@ -939,15 +939,6 @@ select {
   border-radius: 999px;
   background: var(--accent);
 }
-.goal-takes {
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid var(--hairline);
-}
-.goal-takes h4 {
-  margin: 0;
-  font-size: 0.92rem;
-}
 .goal-takes .card-sub {
   margin-bottom: 10px;
 }
@@ -1172,18 +1163,6 @@ select {
   margin: 12px 0 0;
   font-weight: 600;
 }
-.stress {
-  margin-top: 14px;
-  border-top: 1px solid var(--hairline);
-  padding-top: 4px;
-}
-.stress summary {
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--accent-ink);
-  padding: 8px 0;
-}
 .stress table {
   width: 100%;
   border-collapse: collapse;
@@ -1266,15 +1245,47 @@ select {
   font-size: 0.85rem;
   color: var(--ink-2);
 }
-.spread-toggle {
+/* Expandable sections inside cards (closed by default) */
+.more {
   margin-top: 16px;
+  border-top: 1px solid var(--hairline);
 }
-.spread-toggle summary {
+.more summary {
   cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 600;
   font-size: 0.9rem;
   color: var(--accent-ink);
-  padding: 6px 0;
+  padding: 10px 0;
+}
+.more summary::-webkit-details-marker {
+  display: none;
+}
+.more summary::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+.more[open] summary::before {
+  transform: rotate(45deg) translate(-2px, -1px);
+}
+.more summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.more-body {
+  padding: 2px 0 6px;
+}
+.more-body > .card-sub:first-child {
+  margin-top: 0;
 }
 .spread-toggle .card-sub {
   margin-bottom: 10px;
@@ -1442,4 +1453,65 @@ select {
 }
 .investor .footnote {
   margin-top: 12px;
+}
+
+/* Sales detail */
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+}
+.sales-table th,
+.sales-table td {
+  padding: 6px 0;
+  border-top: 1px solid var(--hairline);
+  text-align: right;
+}
+.sales-table thead th {
+  border-top: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.sales-table th:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.sales-table .is-likely {
+  font-weight: 650;
+}
+.sales-facts {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+.sales-facts b {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.mix {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 4px 0 2px;
+  background: var(--surface-2);
+}
+.mix-food {
+  background: var(--accent);
+}
+.mix-drink {
+  background: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.more .callout {
+  margin-top: 14px;
+}
+.more .inv-panels {
+  margin-top: 4px;
 }

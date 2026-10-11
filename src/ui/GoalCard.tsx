@@ -7,6 +7,7 @@ import {
   type UncertainKey,
 } from '../engine'
 import type { UncertainInputDef } from '../templates'
+import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
 import { NumberField } from './components/NumberField'
 import { copy } from './copy'
@@ -108,8 +109,7 @@ export function GoalCard({
             </div>
           </div>
 
-          <div className="goal-takes">
-            <h4>{copy.goalTakesTitle[goal.direction]}</h4>
+          <Expand title={copy.goalTakesTitle[goal.direction]} className="goal-takes">
             {rare && <p className="card-sub">{copy.goalTooRare}</p>}
             {common && <p className="card-sub">{copy.goalTooCommon}</p>}
             {shown && shown.length === 0 && !rare && !common && (
@@ -142,7 +142,7 @@ export function GoalCard({
                 </ul>
               </>
             )}
-          </div>
+          </Expand>
         </>
       )}
       <p className="card-caption">{caption}</p>

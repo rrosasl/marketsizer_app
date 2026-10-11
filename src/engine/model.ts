@@ -38,6 +38,9 @@ export interface DayDecisions {
 export interface DayResult {
   demandOrders: number
   orders: number
+  /** Orders served in busy hours / quiet hours. */
+  peakOrders: number
+  offpeakOrders: number
   lostOrders: number
   /** Gross sales of the orders lost to the capacity cap (what those customers would have paid). */
   lostGrossSales: number
@@ -46,6 +49,9 @@ export interface DayResult {
   /** Ingredients + packaging per order (dishes + drinks). */
   costPerOrder: number
   grossSales: number
+  /** Gross sales of main dishes / drinks (incl. VAT). */
+  foodSalesGross: number
+  drinkSalesGross: number
   netSales: number
   /** Ingredients + packaging for main dishes. */
   dishIngredients: number
@@ -119,11 +125,15 @@ export function simulateDay(u: DayUncertain, d: DayDecisions): DayResult {
   return {
     demandOrders,
     orders,
+    peakOrders,
+    offpeakOrders,
     lostOrders,
     lostGrossSales: lostOrders * avgSpendGross,
     avgSpendGross,
     costPerOrder,
     grossSales,
+    foodSalesGross: orders * foodGrossPerOrder,
+    drinkSalesGross: orders * drinkGrossPerOrder,
     netSales,
     dishIngredients,
     drinkIngredients,

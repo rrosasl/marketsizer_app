@@ -1,4 +1,5 @@
 import { costBreakdown, type SimulationResult } from '../engine'
+import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
 import { copy } from './copy'
 import { formatEuro } from './format'
@@ -44,16 +45,18 @@ export function CostsCard({ r, caption }: { r: SimulationResult; caption: string
         </span>
       </div>
 
-      <ul className="cost-items">
-        {b.items.map((i) => (
-          <li key={i.key}>
-            <i className={`key key-${i.kind}`} />
-            <span className="cost-label">{copy.costItems[i.key]}</span>
-            <span className="cost-amount">{formatEuro(i.amount)}</span>
-            <span className="cost-share">{pct(i.amount, b.total)}</span>
-          </li>
-        ))}
-      </ul>
+      <Expand title={copy.costsMore}>
+        <ul className="cost-items">
+          {b.items.map((i) => (
+            <li key={i.key}>
+              <i className={`key key-${i.kind}`} />
+              <span className="cost-label">{copy.costItems[i.key]}</span>
+              <span className="cost-amount">{formatEuro(i.amount)}</span>
+              <span className="cost-share">{pct(i.amount, b.total)}</span>
+            </li>
+          ))}
+        </ul>
+      </Expand>
       <p className="footnote">{copy.costsRange(formatEuro(range.p10), formatEuro(range.p90))}</p>
       <p className="card-caption">{caption}</p>
     </article>

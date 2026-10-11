@@ -1,4 +1,5 @@
 import type { StressRow, StressShock } from '../engine'
+import { Expand } from './components/Expand'
 import { copy } from './copy'
 import { formatEuro } from './format'
 
@@ -24,8 +25,7 @@ export function StressTable({ rows }: { rows: StressRow[] }) {
   const pos = (v: number) => ((v - lo) / span) * 100
 
   return (
-    <details className="stress">
-      <summary>{copy.stress.title}</summary>
+    <Expand title={copy.stress.title} className="stress">
       <table>
         <thead>
           <tr>
@@ -57,6 +57,6 @@ export function StressTable({ rows }: { rows: StressRow[] }) {
         </tbody>
       </table>
       <p className="footnote">{copy.stress.note}</p>
-    </details>
+    </Expand>
   )
 }

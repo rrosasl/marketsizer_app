@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { investorOutlook, type SimulationResult } from '../engine'
 import type { InvestorChoice, Template } from '../templates'
+import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
 import { NumberField } from './components/NumberField'
 import { copy } from './copy'
@@ -74,64 +75,59 @@ export function InvestorCard({
             </span>
           </div>
 
-          <div className="inv-panels">
-            <section className="inv-panel inv-up" aria-label={copy.investor.upTitle}>
-              <h4>{copy.investor.upTitle}</h4>
-              <label className="inv-row">
-                <span>
-                  {copy.investor.upAsk}{' '}
-                  <select
-                    value={choice.gain}
-                    aria-label="Earning threshold"
-                    onChange={(e) => onChoice({ ...choice, gain: Number(e.target.value) })}
-                  >
-                    {template.investor.gainOptions.map((g) => (
-                      <option key={g} value={g}>
-                        {option(g)}
-                      </option>
-                    ))}
-                  </select>{' '}
-                  {copy.investor.orMore}
-                </span>
-                <b>{chance(o.chanceGain)}</b>
-              </label>
-              <div className="inv-meter" aria-hidden="true">
-                <div style={{ width: `${o.chanceGain * 100}%` }} />
-              </div>
-            </section>
+          <Expand title={copy.investor.more}>
+            <div className="inv-panels">
+              <section className="inv-panel inv-up" aria-label={copy.investor.upTitle}>
+                <h4>{copy.investor.upTitle}</h4>
+                <label className="inv-row">
+                  <span>
+                    {copy.investor.upAsk}{' '}
+                    <select
+                      value={choice.gain}
+                      aria-label="Earning threshold"
+                      onChange={(e) => onChoice({ ...choice, gain: Number(e.target.value) })}
+                    >
+                      {template.investor.gainOptions.map((g) => (
+                        <option key={g} value={g}>
+                          {option(g)}
+                        </option>
+                      ))}
+                    </select>{' '}
+                    {copy.investor.orMore}
+                  </span>
+                  <b>{chance(o.chanceGain)}</b>
+                </label>
+                <div className="inv-meter" aria-hidden="true">
+                  <div style={{ width: `${o.chanceGain * 100}%` }} />
+                </div>
+              </section>
 
-            <section className="inv-panel inv-down" aria-label={copy.investor.downTitle}>
-              <h4>{copy.investor.downTitle}</h4>
-              <div className="inv-row">
-                <span>{copy.investor.anyLoss}</span>
-                <b>{chance(o.chanceLoss)}</b>
-              </div>
-              <div className="inv-meter" aria-hidden="true">
-                <div style={{ width: `${o.chanceLoss * 100}%` }} />
-              </div>
-              <label className="inv-row">
-                <span>
-                  {copy.investor.downAsk}{' '}
-                  <select
-                    value={choice.loss}
-                    aria-label="Loss threshold"
-                    onChange={(e) => onChoice({ ...choice, loss: Number(e.target.value) })}
-                  >
-                    {template.investor.lossOptions.map((l) => (
-                      <option key={l} value={l}>
-                        {option(l)}
-                      </option>
-                    ))}
-                  </select>{' '}
-                  {copy.investor.orMore}
-                </span>
-                <b>{chance(o.chanceBigLoss)}</b>
-              </label>
-              <div className="inv-meter" aria-hidden="true">
-                <div style={{ width: `${o.chanceBigLoss * 100}%` }} />
-              </div>
-            </section>
-          </div>
+              <section className="inv-panel inv-down" aria-label={copy.investor.downTitle}>
+                <h4>{copy.investor.downTitle}</h4>
+                <label className="inv-row">
+                  <span>
+                    {copy.investor.downAsk}{' '}
+                    <select
+                      value={choice.loss}
+                      aria-label="Loss threshold"
+                      onChange={(e) => onChoice({ ...choice, loss: Number(e.target.value) })}
+                    >
+                      {template.investor.lossOptions.map((l) => (
+                        <option key={l} value={l}>
+                          {option(l)}
+                        </option>
+                      ))}
+                    </select>{' '}
+                    {copy.investor.orMore}
+                  </span>
+                  <b>{chance(o.chanceBigLoss)}</b>
+                </label>
+                <div className="inv-meter" aria-hidden="true">
+                  <div style={{ width: `${o.chanceBigLoss * 100}%` }} />
+                </div>
+              </section>
+            </div>
+          </Expand>
           <p className="footnote">{copy.investor.note}</p>
         </>
       )}

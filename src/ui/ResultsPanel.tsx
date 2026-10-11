@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import {
   runStressTests,
+  salesDetail,
   type DayDecisions,
   type Goal,
   type SimulationResult,
@@ -11,6 +12,7 @@ import { BreakevenBar } from './charts/BreakevenBar'
 import { DriverBars } from './charts/DriverBars'
 import { ProfitSpread } from './charts/ProfitSpread'
 import { RangeBar } from './charts/RangeBar'
+import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
 import { copy } from './copy'
 import { formatEuro } from './format'
@@ -52,6 +54,7 @@ export function ResultsPanel({
     () => runStressTests(r, decisions, template.stressTests),
     [r, decisions, template],
   )
+  const sales = useMemo(() => salesDetail(r, decisions), [r, decisions])
   const caption = cardCaption(template, decisions)
   const tol = stress.tolerance
   const toleranceText =
@@ -101,11 +104,10 @@ export function ResultsPanel({
           </div>
         </div>
         <RangeBar range={s.profit} fmt={formatEuro} showZero />
-        <details className="spread-toggle">
-          <summary>{copy.spreadToggle}</summary>
+        <Expand title={copy.spreadToggle} className="spread-toggle">
           <p className="card-sub">{copy.spreadSub}</p>
           <ProfitSpread profit={r.profit} range={s.profit} />
-        </details>
+        </Expand>
         <p className="card-caption">{caption}</p>
       </article>
 
@@ -125,6 +127,48 @@ export function ResultsPanel({
           </p>
           <RangeBar range={s.grossSales} fmt={formatEuro} />
           <p className="sales-orders">{copy.salesOrders(fmtOrders(s.orders.p50))}</p>
+          <Expand title={copy.salesMore}>
+            <table className="sales-table">
+              <thead>
+                <tr>
+                  <th />
+                  <th>{copy.worstCase}</th>
+                  <th className="is-likely">{copy.mostLikely}</th>
+                  <th>{copy.bestCase}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>{copy.salesRows.orders}</th>
+                  <td>{fmtOrders(sales.orders.p10)}</td>
+                  <td className="is-likely">{fmtOrders(sales.orders.p50)}</td>
+                  <td>{fmtOrders(sales.orders.p90)}</td>
+                </tr>
+                <tr>
+                  <th>{copy.salesRows.spend}</th>
+                  <td>{formatEuro(sales.spendPerOrder.p10)}</td>
+                  <td className="is-likely">{formatEuro(sales.spendPerOrder.p50)}</td>
+                  <td>{formatEuro(sales.spendPerOrder.p90)}</td>
+                </tr>
+              </tbody>
+            </table>
+            <ul className="sales-facts">
+              {sales.foodSales + sales.drinkSales > 0 && (
+                <li>
+                  {copy.salesMixLabel}:{' '}
+                  <b>{copy.salesMix(formatEuro(sales.foodSales), formatEuro(sales.drinkSales))}</b>
+                  <div className="mix" aria-hidden="true">
+                    <div className="mix-food" style={{ flexGrow: sales.foodSales }} />
+                    <div className="mix-drink" style={{ flexGrow: sales.drinkSales }} />
+                  </div>
+                </li>
+              )}
+              <li>{copy.salesBusy(fmtPct(sales.busyShare))}</li>
+              {sales.lostOrders >= 1 && (
+                <li>{copy.salesLost(fmtOrders(sales.lostOrders), formatEuro(sales.lostSales))}</li>
+              )}
+            </ul>
+          </Expand>
           <p className="card-caption">{caption}</p>
         </article>
 
@@ -148,6 +192,20 @@ export function ResultsPanel({
           </p>
         )}
         <StressTable rows={stress.rows} />
+        <Expand title={copy.driversMore}>
+          <p className="card-sub">
+            {copy.driversIntro} <InfoTip text={copy.driversInfo} />
+          </p>
+          <DriverBars items={r.sensitivity} defs={defs} />
+          {top && (
+            <div className="callout">
+              <span className="callout-tag">{copy.startHere}</span>
+              <p>
+                {copy.biggest(label(top.key))} <span className="tip-text">{defs[top.key].tip}</span>
+              </p>
+            </div>
+          )}
+        </Expand>
         <p className="card-caption">{caption}</p>
       </article>
 
@@ -160,25 +218,6 @@ export function ResultsPanel({
           )}
         </aside>
       )}
-
-      <article className="card">
-        <header className="card-head">
-          <h3>
-            {copy.driversTitle} <InfoTip text={copy.driversInfo} />
-          </h3>
-          <span className="card-sub">{copy.driversIntro}</span>
-        </header>
-        <DriverBars items={r.sensitivity} defs={defs} />
-        {top && (
-          <div className="callout">
-            <span className="callout-tag">{copy.startHere}</span>
-            <p>
-              {copy.biggest(label(top.key))} <span className="tip-text">{defs[top.key].tip}</span>
-            </p>
-          </div>
-        )}
-        <p className="card-caption">{caption}</p>
-      </article>
 
       <GoalCard
         r={r}

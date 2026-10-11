@@ -42,7 +42,8 @@ export function investorOutlook(
     result[i] = v
     if (v >= gain * amount) up++
     if (v < 0) down++
-    if (v <= -loss * amount) bigDown++
+    // Loss threshold 0 = any loss at all (strictly below €0).
+    if (loss > 0 ? v <= -loss * amount : v < 0) bigDown++
   }
   const typicalCosts = quantileSorted(sorted(r.dailyCosts), 0.5)
   return {

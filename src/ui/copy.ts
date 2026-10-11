@@ -68,6 +68,13 @@ export const copy = {
   salesSub: 'what customers pay, incl. VAT',
   salesOrders: (orders: string) => `From about ${orders} orders a day.`,
   salesNet: (net: string, vat: string) => `${net} after VAT (${vat} VAT)`,
+  salesMore: 'More about your sales',
+  salesRows: { orders: 'Orders a day', spend: 'Spend per order' },
+  salesMix: (food: string, drinks: string) => `Main dishes ${food} · Drinks ${drinks}`,
+  salesMixLabel: 'On a most likely day',
+  salesBusy: (share: string) => `${share} of your orders come in your busy hours.`,
+  salesLost: (orders: string, sales: string) =>
+    `About ${orders} customers a day can’t be served at busy times (${sales} in missed sales).`,
 
   costsTitle: 'Costs per weekend day',
   costsSub: 'what a most likely day costs you',
@@ -86,6 +93,7 @@ export const copy = {
     cardFees: 'Card fees',
     rentShare: 'Rent (share of sales)',
   },
+  costsMore: 'See cost breakdown',
   costsRange: (lo: string, hi: string) => `Most days cost between ${lo} and ${hi}.`,
 
   breakevenTitle: 'Break-even',
@@ -159,17 +167,18 @@ export const copy = {
     capped: (costs: string) =>
       `…they fund the whole day: a typical day costs about ${costs} to run, so that is all one day can use.`,
     likely: 'Most likely return',
+    more: 'Chances of making or losing money',
     upTitle: 'Making money',
     upAsk: 'Chance of earning',
     orMore: 'or more',
     downTitle: 'Losing money',
-    anyLoss: 'Chance of losing any money',
     downAsk: 'Chance of losing',
     option: (eur: string, pct: string) => `${eur} (${pct})`,
     note: 'Shared in proportion to the day’s costs. Figures for a typical market day, not a guarantee.',
   },
 
   driversTitle: 'What matters most',
+  driversMore: 'What matters most for your result',
   driversIntro:
     'Which of your estimates moves your profit the most. A longer bar means your result depends more on getting that estimate right.',
   driversInfo:

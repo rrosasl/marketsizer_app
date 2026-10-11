@@ -50,3 +50,11 @@ describe('investorOutlook', () => {
     expect(o.chanceBigLoss).toBe(0)
   })
 })
+
+describe('investorOutlook: €0 thresholds', () => {
+  it('losing "€0 or more" means any loss; earning "€0 or more" means not losing', () => {
+    const o = investorOutlook(r, 100, 0, 0)
+    expect(o.chanceBigLoss).toBeCloseTo(r.summary.lossChance, 12)
+    expect(o.chanceGain + o.chanceLoss).toBeCloseTo(1, 12)
+  })
+})
