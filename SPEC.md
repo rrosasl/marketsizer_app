@@ -1,4 +1,6 @@
-# SPEC v0.7 — Pop-up Food Stand Simulator
+# SPEC v0.8 — Pop-up Food Stand Simulator
+
+**Changelog v0.8 (2026-10-11):** template defaults recalibrated by Ricardo for the Kulturbrauerei Sunday market (§4); help texts carry the reasoning; new sanity check.
 
 **Changelog v0.7 (2026-10-11):** stress tests (from request US-06, scoped down): customer tolerance line and an expandable "What if things go worse than expected?" table on the Break-even card. "Downside profitability" headline, separate card and user controls deliberately not built.
 
@@ -90,42 +92,40 @@ If breakeven_orders > capacity_per_h × open_hours, warn: "Break-even is more th
 
 ---
 
-## 4. Template defaults: arepa stand, Berlin Markthalle
+## 4. Template defaults: arepa stand, Kulturbrauerei Sunday market (Berlin)
 
-⚠️ **Placeholders. Calibrate with research before freezing.**
+Calibrated by Ricardo (2026-10-11) for the Kulturbrauerei Sunday street-food market, 12:00–18:00. Order numbers remain the least certain inputs.
 
 ### Uncertainties (worst / base / best)
-| Input | Unit | Worst | Base | Best | Suggested spread | Limits (Advanced) |
-|---|---|---|---|---|---|---|
-| Busy hours per day | h | 2 | 3 | 4 | ±33% | 0 – opening hours |
-| Orders per busy hour (demand) | orders/h | 10 | 18 | 28 | −45% / +55% | 0 – 150 |
-| Orders per quiet hour (demand) | orders/h | 3 | 6 | 10 | −50% / +65% | 0 – 100 |
-| Orders that include a drink (Your customers) | % | 30% | 50% | 70% | ±40% | 0 – 100% |
-| Ingredients + packaging per main dish (Your product) | € | 3.50 | 3.00 | 2.70 | +17% / −10% | €0 – €30 |
-| Main dishes per order (Advanced) | dishes | 0.95 | 1.00 | 1.15 | −5% / +15% | 0 – 5 |
+| Input | Unit | Worst | Base | Best | Suggested spread | Limits (Advanced) | Why |
+|---|---|---|---|---|---|---|---|
+| Ingredients + packaging per main dish (Your product) | € | 3.50 | 2.70 | 2.00 | +30% / −26% | €0 – €30 | masa ~€0.15, filling €1.20–2.20, packaging €0.30–0.40 |
+| Busy hours per day | h | 2 | 3 | 4 | ±33% | 0 – opening hours | lunch peak ~12:30–15:30 |
+| Orders per busy hour (demand) | orders/h | 8 | 18 | 30 | −55.5% / +66.7% | 0 – 150 | above 30 the serving limit caps it anyway |
+| Orders per quiet hour (demand) | orders/h | 2 | 6 | 12 | −66.7% / +100% | 0 – 100 | |
+| Orders that include a drink (Your customers) | % | 25% | 40% | 60% | −37.5% / +50% | 0 – 100% | use 40/55/70 with a ~€12 dish + drink combo |
+| Main dishes per order (Advanced) | dishes | 1.0 | 1.2 | 1.5 | −16.7% / +25% | 0 – 5 | people graze across stalls; couples add a second |
 
 ### Decisions (single value)
 | Input | Default | Note |
 |---|---|---|
-| Price of a main dish (Your product) | €7.00 | incl. VAT (Ricardo) |
-| Price of a drink (Your product) | €4.00 | incl. VAT; Berlin €3.50–4.00 |
-| Cost of a drink (Your product) | €0.80 | bought-in soft drinks ~€0.55–0.75/bottle by the crate excl. deposit, plus cup/ice and pricier imports |
-| Opening hours (weekend day) | 8 h | Markthalle Neun Saturday 10:00–18:00 |
-| Max orders per hour you can serve | 30 | suggested from people on shift: round(min(17 × people^0.8, 45)) → 1: 17, 2: 30, 3: 41, 4+: 45. Follows people on shift until the user types their own value ("Use suggestion" restores it). Not an extra input. |
-| People on shift | 2 | everyone paid for the shift; include yourself to pay yourself a wage |
-| Setup + cleanup hours | 2 h | added to staff hours |
-| Cost per person per hour (employer) | €18 | min. wage €13.90 (2026) + ~21% employer SV, or minijob flat ~30% |
-| Rent: fixed per day | €120 | **placeholder: no public data, get a quote from the hall** |
-| Rent: share of sales | 0% | many halls use fixed + % |
-| Card / payment fees | 1.5% | |
-| VAT food / drinks | 7% / 19% | Food 7% since 1 Jan 2026 for eat-in and takeaway alike |
-| Other costs per day | €25 | |
+| Price of a main dish (Your product) | €9.00 | incl. VAT; Krunsch (Berlin arepa stand) €12–15 a plate, most Berlin street food €8–14 |
+| Price of a drink (Your product) | €3.50 | homemade papelón or lemonade |
+| Cost of a drink (Your product) | €0.90 | homemade + cup; ~€1.40 for bought-in cans such as Malta |
+| People on shift | 2 | everyone working; include yourself. Set cost per person to 0 if everyone works unpaid |
+| Max orders per hour you can serve | 30 | suggested from people on shift: round(min(17 × people^0.8, 45)) → 1: 17, 2: 30, 3: 41, 4+: 45; realistic for two people if arepas are pre-cooked and filled to order (~20 if cooked fresh). Follows people on shift until the user types their own value. |
+| Opening hours (weekend day) | 6 h | Kulturbrauerei Sunday 12:00–18:00 (Markthalle Neun Saturday: 8 h) |
+| Setup + cleanup hours | 3 h | organisers want you 1.5–2 h before opening, plus teardown |
+| Cost per person per hour (employer) | €18 | min. wage €13.90 + 25–30% employer costs |
+| Rent: fixed per day | €120 | not published; try €60 / €120 / €250 |
+| Rent: share of sales | 0% | 10–15% if the organiser takes a cut |
+| Card / payment fees | 1.5% | SumUp 1.39% |
+| VAT food / drinks | 7% / 19% | 0 / 0 for a Kleinunternehmer (first-year sales ≤ €25,000) |
+| Other costs per day | €50 | gas, transport, ice, waste (packaging is in the dish cost) |
 
-Sanity check at base values (2 people × 10 h): 84 orders × €9.00 (1 dish × €7 + 0.5 drinks × €4) → €756 gross / €690.71 net sales per day; costs €801.94 (ingredients €285.60 = 84 × €3.40, card fees €11.34, rent €120, wages €360, other €25) → **profit −€111.23/day**, break-even ≈ 107.7 orders, margin of safety ≈ −28%. ⚠️ With a €7 dish costing €3 the default stand is loss-making; this is the user's chosen default, not a bug.
+Sanity check at base values (2 people × (6 + 3) h): 72 orders (3 × 18 + 3 × 6) × €12.20 (1.2 dishes × €9 + 0.4 drinks × €3.50) → €878.40 gross / €811.43 net sales per day; costs €766.38 (ingredients €259.20 = 72 × €3.60, card fees €13.18, rent €120, wages €324, other €50) → **profit €45.06/day**, break-even ≈ 66.0 orders, margin of safety ≈ 8%. Simulated (seed 12345): most likely profit ≈ €36, worst/best ≈ −€257 / €463, ~55% chance of a profitable day, customers can drop ~7% before break-even.
 
-Calibration sources (Oct 2026): Berlin restaurant arepas €12–14, drinks €3.50–4.00; Markthalle Street Food Thursday dishes ~€6–15; Markthalle Neun hours Sat 10–18, Fri 12–18, Thu street food 17–22, closed Sun (except monthly breakfast market).
-
-**Least-calibrated inputs: orders per busy/quiet hour.** No public data exists. Best calibration: count orders per hour at a comparable stall on a Saturday (one observation session).
+**Biggest levers at these defaults:** wages (€324, the largest cost; ~€369/day profit if both work unpaid), orders per busy hour (each +5/h ≈ +€125), price (€10 instead of €9 ≈ +€80 if orders hold).
 
 ---
 

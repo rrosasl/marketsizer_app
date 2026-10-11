@@ -2,6 +2,15 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Defaults recalibrated: Kulturbrauerei Sunday market (Ricardo)
+
+- All template defaults replaced with Ricardo's calibration (SPEC §4): dish €9 (cost 3.50 / 2.70 / 2.00), drink €3.50 (cost €0.90, homemade), busy hours 2/3/4, orders per busy hour 8/18/30, per quiet hour 2/6/12, drink in 25/40/60% of orders, 1.0/1.2/1.5 dishes per order, 2 people, capacity 30, open 6 h, setup 3 h, €18/h, rent €120, other €50, fees 1.5%, VAT 7/19%. Scenario name: "Arepa stand · Kulturbrauerei Sunday market, Berlin".
+- Suggested spreads were set so each default equals the suggestion for its own "most likely" (so all worst/best start as "suggested").
+- The per-field reasoning went into the ⓘ help texts (e.g. "Set cost per person to 0 if everyone works unpaid", Kleinunternehmer VAT = 0, rent quotes €60/€120/€250).
+- "Busy hours upper limit = opening hours" needed no change: that limit already follows opening hours (now 6).
+- New sanity check: €45.06 profit, break-even 66.0 orders (matches Ricardo's hand calculation of ~€40). Simulated most-likely ≈ €36, ~55% chance of a profitable day.
+- Mechanics tests now set up their own cases where possible, so future default changes only touch the sanity-check tests.
+
 ## 2026-10-11 — Stress tests (request US-06, reviewed and scoped down with Ricardo)
 
 - **Built:** (1) a customer-tolerance line on the Break-even card; (2) an expandable "What if things go worse than expected?" table (closed by default) in the same card. Neutral title chosen by Ricardo.

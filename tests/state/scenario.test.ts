@@ -28,19 +28,19 @@ describe('scenario', () => {
     const def = arepaMarkthalle.uncertain.find((d) => d.key === 'peakDemand')!
     const s = defaultScenario(arepaMarkthalle, 1)
     setBase(def, s, 20)
-    expect(s.uncertain.peakDemand).toEqual({ worst: 11, base: 20, best: 31 })
+    expect(s.uncertain.peakDemand).toEqual({ worst: 8.9, base: 20, best: 33 })
     setSide(def, s, 'worst', 5)
     setBase(def, s, 30)
-    expect(s.uncertain.peakDemand).toEqual({ worst: 5, base: 30, best: 47 })
+    expect(s.uncertain.peakDemand).toEqual({ worst: 5, base: 30, best: 50 })
     resetSide(def, s, 'worst')
-    expect(s.uncertain.peakDemand.worst).toBe(17)
+    expect(s.uncertain.peakDemand.worst).toBe(13)
   })
 
   it('clamps suggested (not typed) values to the limits', () => {
     const def = arepaMarkthalle.uncertain.find((d) => d.key === 'peakHours')!
     const s = defaultScenario(arepaMarkthalle, 1)
-    setBase(def, s, 7)
-    expect(effectiveEstimate(def, s).best).toBe(8)
+    setBase(def, s, s.decisions.openHours - 0.5)
+    expect(effectiveEstimate(def, s).best).toBe(s.decisions.openHours)
     setSide(def, s, 'best', 9)
     expect(effectiveEstimate(def, s).best).toBe(9)
   })

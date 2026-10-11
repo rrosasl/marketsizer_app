@@ -8,51 +8,51 @@ const base: DayUncertain = {
   peakHours: 3,
   peakDemand: 18,
   offpeakDemand: 6,
-  drinkRate: 0.5,
-  dishesPerOrder: 1,
-  dishCost: 3,
+  drinkRate: 0.4,
+  dishesPerOrder: 1.2,
+  dishCost: 2.7,
 }
 
 describe('simulateDay', () => {
   it('reproduces the SPEC §4 sanity check at base values', () => {
     const r = simulateDay(base, decisions)
-    expect(r.orders).toBe(84)
-    expect(r.avgSpendGross).toBe(9) // 1 × €7 + 0.5 × €4
-    expect(r.costPerOrder).toBeCloseTo(3.4, 12) // 1 × €3 + 0.5 × €0.80
-    expect(r.grossSales).toBe(756)
-    expect(r.netSales).toBeCloseTo(690.71, 2) // food at 7 % VAT, drinks at 19 %
-    expect(r.staff).toBe(360) // 2 people × (8 + 2) h × €18
-    expect(r.dailyCosts).toBeCloseTo(801.94, 2)
-    expect(r.profit).toBeCloseTo(-111.23, 2)
-    expect(r.breakevenOrders).toBeCloseTo(107.73, 2)
-    expect(marginOfSafety(r.orders, r.breakevenOrders)).toBeCloseTo(-0.28, 2)
+    expect(r.orders).toBe(72) // 3 h × 18 + 3 h × 6
+    expect(r.avgSpendGross).toBeCloseTo(12.2, 12) // 1.2 × €9 + 0.4 × €3.50
+    expect(r.costPerOrder).toBeCloseTo(3.6, 12) // 1.2 × €2.70 + 0.4 × €0.90
+    expect(r.grossSales).toBeCloseTo(878.4, 9)
+    expect(r.netSales).toBeCloseTo(811.43, 2) // food at 7 % VAT, drinks at 19 %
+    expect(r.staff).toBe(324) // 2 people × (6 + 3) h × €18
+    expect(r.dailyCosts).toBeCloseTo(766.38, 2)
+    expect(r.profit).toBeCloseTo(45.06, 2)
+    expect(r.breakevenOrders).toBeCloseTo(65.98, 2)
+    expect(marginOfSafety(r.orders, r.breakevenOrders)).toBeCloseTo(0.08, 2)
     expect(r.lostOrders).toBe(0)
   })
 
   it('splits VAT exactly by food and drinks', () => {
     const r = simulateDay({ ...base, drinkRate: 0 }, decisions)
-    expect(r.netSales).toBeCloseTo((84 * 7) / 1.07, 9)
+    expect(r.netSales).toBeCloseTo((72 * 1.2 * 9) / 1.07, 9)
     const d = simulateDay({ ...base, dishesPerOrder: 0, drinkRate: 1 }, decisions)
-    expect(d.netSales).toBeCloseTo((84 * 4) / 1.19, 9)
+    expect(d.netSales).toBeCloseTo((72 * 3.5) / 1.19, 9)
   })
 
   it('costs and prices scale with dishes per order', () => {
     const r = simulateDay({ ...base, dishesPerOrder: 2 }, decisions)
-    expect(r.avgSpendGross).toBe(16)
-    expect(r.costPerOrder).toBeCloseTo(6.4, 12)
+    expect(r.avgSpendGross).toBeCloseTo(2 * 9 + 0.4 * 3.5, 12)
+    expect(r.costPerOrder).toBeCloseTo(2 * 2.7 + 0.4 * 0.9, 12)
   })
 
   it('caps orders at capacity and counts the rest as lost', () => {
     const r = simulateDay({ ...base, peakDemand: 40 }, decisions)
-    expect(r.orders).toBe(30 * 3 + 6 * 5)
+    expect(r.orders).toBe(30 * 3 + 6 * 3)
     expect(r.lostOrders).toBe(10 * 3)
-    expect(r.demandOrders).toBe(40 * 3 + 6 * 5)
-    expect(r.lostGrossSales).toBe(30 * 9)
+    expect(r.demandOrders).toBe(40 * 3 + 6 * 3)
+    expect(r.lostGrossSales).toBeCloseTo(30 * 12.2, 9)
   })
 
   it('caps busy hours at opening hours', () => {
     const r = simulateDay({ ...base, peakHours: 12 }, decisions)
-    expect(r.orders).toBe(18 * 8)
+    expect(r.orders).toBe(18 * 6)
   })
 
   it('flags every order losing money when contribution ≤ 0', () => {
@@ -81,15 +81,15 @@ describe('costBreakdown', () => {
     const { costBreakdown } = await import('../../src/engine')
     const r = simulateDay(base, decisions)
     const b = costBreakdown(r)
-    expect(b.fixed).toBeCloseTo(120 + 360 + 25, 9)
-    expect(b.variable).toBeCloseTo(252 + 33.6 + 11.34, 9)
+    expect(b.fixed).toBeCloseTo(120 + 324 + 50, 9)
+    expect(b.variable).toBeCloseTo(233.28 + 25.92 + 13.176, 9)
     expect(b.total).toBeCloseTo(r.dailyCosts, 9)
     expect(b.items.map((i) => i.key)).toEqual([
       'wages',
       'dishes',
       'rentFixed',
-      'drinks',
       'other',
+      'drinks',
       'cardFees',
     ])
   })

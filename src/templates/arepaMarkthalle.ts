@@ -1,14 +1,13 @@
 import type { Template } from './types'
 
 /**
- * SPEC §4: arepa stand in a Berlin Markthalle. Placeholder values until calibrated.
- * Product defaults (Ricardo, 2026-10-11): main dish €7 / cost €3, drink €4 / cost €0.80
- * (bought-in soft drinks by the crate, ~€0.55–0.75 per bottle excl. deposit, plus cup/ice and
- * pricier imported drinks; see DECISIONS.md), a drink with every second order.
+ * SPEC §4: arepa stand at a Berlin street-food market. Defaults calibrated by Ricardo
+ * (2026-10-11) for the Kulturbrauerei Sunday market, 12:00–18:00. Sources and reasoning per field
+ * in SPEC §4 / DECISIONS.md.
  */
 export const arepaMarkthalle: Template = {
   id: 'arepa-markthalle',
-  scenarioName: 'Arepa stand · Markthalle Berlin',
+  scenarioName: 'Arepa stand · Kulturbrauerei Sunday market, Berlin',
   uncertain: [
     {
       key: 'dishCost',
@@ -16,10 +15,10 @@ export const arepaMarkthalle: Template = {
       label: 'Ingredients + packaging per main dish',
       unit: '€',
       higherIsWorse: true,
-      defaults: { worst: 3.5, base: 3, best: 2.7 },
-      spread: { worst: 0.17, best: -0.1 },
+      defaults: { worst: 3.5, base: 2.7, best: 2 },
+      spread: { worst: 0.3, best: -0.26 },
       limits: { lower: 0, upper: 30 },
-      help: 'Food and packaging for one main dish. Worst = most expensive.',
+      help: 'Food and packaging for one main dish (e.g. masa ~€0.15, filling €1.20–2.20, packaging €0.30–0.40). Worst = most expensive.',
       tip: 'Price your recipe with real supplier quotes, including packaging and some waste.',
     },
     {
@@ -40,8 +39,8 @@ export const arepaMarkthalle: Template = {
       label: 'Orders per busy hour',
       unit: 'orders/h',
       higherIsWorse: false,
-      defaults: { worst: 10, base: 18, best: 28 },
-      spread: { worst: -0.45, best: 0.55 },
+      defaults: { worst: 8, base: 18, best: 30 },
+      spread: { worst: -0.555, best: 0.667 },
       limits: { lower: 0, upper: 150 },
       help: 'How many customers want to order in a busy hour, even if you could not serve them all.',
       tip: 'Count orders at a similar stall during a Saturday lunch rush.',
@@ -52,8 +51,8 @@ export const arepaMarkthalle: Template = {
       label: 'Orders per quiet hour',
       unit: 'orders/h',
       higherIsWorse: false,
-      defaults: { worst: 3, base: 6, best: 10 },
-      spread: { worst: -0.5, best: 0.65 },
+      defaults: { worst: 2, base: 6, best: 12 },
+      spread: { worst: -0.667, best: 1 },
       limits: { lower: 0, upper: 100 },
       help: 'How many customers want to order in a quiet hour.',
       tip: 'Count orders at a similar stall during a quiet afternoon hour.',
@@ -64,10 +63,10 @@ export const arepaMarkthalle: Template = {
       label: 'Orders that include a drink',
       unit: '%',
       higherIsWorse: false,
-      defaults: { worst: 0.3, base: 0.5, best: 0.7 },
-      spread: { worst: -0.4, best: 0.4 },
+      defaults: { worst: 0.25, base: 0.4, best: 0.6 },
+      spread: { worst: -0.375, best: 0.5 },
       limits: { lower: 0, upper: 1 },
-      help: 'Out of every 10 orders, how many come with a drink? 50% = one in every two orders.',
+      help: 'Out of every 10 orders, how many come with a drink? 40% = 4 in 10. If you sell a dish + drink combo, expect more.',
       tip: 'Watch a similar stall and count how many customers also buy a drink.',
     },
     {
@@ -76,10 +75,10 @@ export const arepaMarkthalle: Template = {
       label: 'Main dishes per order',
       unit: 'dishes',
       higherIsWorse: false,
-      defaults: { worst: 0.95, base: 1, best: 1.15 },
-      spread: { worst: -0.05, best: 0.15 },
+      defaults: { worst: 1, base: 1.2, best: 1.5 },
+      spread: { worst: -0.167, best: 0.25 },
       limits: { lower: 0, upper: 5 },
-      help: 'On average. Above 1 if some customers buy two; below 1 if some only buy a drink.',
+      help: 'On average. Above 1 if some customers buy two (e.g. couples sharing, people grazing across stalls); below 1 if some only buy a drink.',
       tip: 'Watch how many people order a second dish at a similar stall.',
     },
   ],
@@ -89,7 +88,7 @@ export const arepaMarkthalle: Template = {
       section: 'product',
       label: 'Price of a main dish',
       unit: '€',
-      default: 7,
+      default: 9,
       min: 0,
       step: 0.5,
       help: 'What a customer pays, incl. VAT.',
@@ -99,7 +98,7 @@ export const arepaMarkthalle: Template = {
       section: 'product',
       label: 'Price of a drink',
       unit: '€',
-      default: 4,
+      default: 3.5,
       min: 0,
       step: 0.5,
       help: 'What a customer pays, incl. VAT.',
@@ -109,10 +108,10 @@ export const arepaMarkthalle: Template = {
       section: 'product',
       label: 'Cost of a drink',
       unit: '€',
-      default: 0.8,
+      default: 0.9,
       min: 0,
       step: 0.1,
-      help: 'What one drink costs you, incl. cup, ice or straw.',
+      help: 'What one drink costs you, incl. cup, ice or straw. Homemade ~€0.90; bought-in cans or bottles more.',
     },
     {
       key: 'staffCount',
@@ -139,7 +138,7 @@ export const arepaMarkthalle: Template = {
       section: 'stand',
       label: 'Opening hours',
       unit: 'h',
-      default: 8,
+      default: 6,
       min: 1,
       max: 24,
       step: 0.5,
@@ -149,7 +148,8 @@ export const arepaMarkthalle: Template = {
       section: 'stand',
       label: 'Setup + cleanup hours',
       unit: 'h',
-      default: 2,
+      default: 3,
+      help: 'Markets usually want you there 1.5–2 hours before opening, plus teardown.',
       min: 0,
       step: 0.5,
     },
@@ -157,7 +157,7 @@ export const arepaMarkthalle: Template = {
       key: 'staffCostPerHour',
       section: 'stand',
       label: 'Cost per person per hour',
-      help: 'What one person on shift costs you per hour, incl. employer contributions.',
+      help: 'What one person on shift costs you per hour, incl. employer contributions (minimum wage €13.90 + 25–30%). Set to 0 if everyone on shift works unpaid, e.g. the owners.',
       unit: '€/h',
       default: 18,
       min: 0,
@@ -171,16 +171,17 @@ export const arepaMarkthalle: Template = {
       default: 120,
       min: 0,
       step: 5,
+      help: 'Ask the market organiser — fees are rarely published. Try €60, €120 and €250 to see the difference.',
     },
     {
       key: 'otherCostsPerDay',
       section: 'stand',
       label: 'Other costs per day',
       unit: '€',
-      default: 25,
+      default: 50,
       min: 0,
       step: 5,
-      help: 'Energy, cleaning, waste, small consumables.',
+      help: 'Gas, transport, ice, cleaning, waste. Packaging is already in the dish cost — don’t count it twice.',
     },
     {
       key: 'rentRevenueShare',
@@ -191,6 +192,7 @@ export const arepaMarkthalle: Template = {
       min: 0,
       max: 1,
       step: 0.01,
+      help: 'If the organiser takes a cut of sales instead of, or on top of, a fixed fee (often 10–15%).',
     },
     {
       key: 'cardFeeRate',
@@ -201,6 +203,7 @@ export const arepaMarkthalle: Template = {
       min: 0,
       max: 1,
       step: 0.001,
+      help: 'E.g. SumUp charges 1.39%.',
     },
     {
       key: 'vatFood',
@@ -211,6 +214,7 @@ export const arepaMarkthalle: Template = {
       min: 0,
       max: 1,
       step: 0.01,
+      help: 'Set both VAT rates to 0 if you are a Kleinunternehmer (first-year sales up to €25,000).',
     },
     {
       key: 'vatDrinks',

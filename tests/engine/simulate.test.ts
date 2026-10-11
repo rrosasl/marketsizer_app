@@ -31,14 +31,14 @@ describe('simulate', () => {
         }
       }),
     )
-    expect(r.summary.orders.p10).toBe(84)
-    expect(r.summary.orders.p90).toBe(84)
-    expect(r.summary.grossSales.p50).toBe(756)
-    expect(r.summary.netSales.p50).toBeCloseTo(690.71, 2)
-    expect(r.summary.profit.p10).toBeCloseTo(-111.23, 2)
-    expect(r.summary.profit.p90).toBeCloseTo(-111.23, 2)
-    expect(r.summary.breakevenOrders.p50).toBeCloseTo(107.73, 2)
-    expect(r.summary.lossChance).toBe(1)
+    expect(r.summary.orders.p10).toBe(72)
+    expect(r.summary.orders.p90).toBe(72)
+    expect(r.summary.grossSales.p50).toBeCloseTo(878.4, 9)
+    expect(r.summary.netSales.p50).toBeCloseTo(811.43, 2)
+    expect(r.summary.profit.p10).toBeCloseTo(45.06, 2)
+    expect(r.summary.profit.p90).toBeCloseTo(45.06, 2)
+    expect(r.summary.breakevenOrders.p50).toBeCloseTo(65.98, 2)
+    expect(r.summary.lossChance).toBe(0)
   })
 
   it('sampled inputs hit the entered worst/base/best as 10th/50th/90th percentiles', () => {
@@ -71,7 +71,7 @@ describe('simulate', () => {
   it('sets the "every order loses money" state', () => {
     const r = simulate(
       spec(3, (s) => {
-        s.decisions.dishPrice = 3
+        s.decisions.dishPrice = 2
         s.decisions.drinkPrice = 1
       }),
     )
