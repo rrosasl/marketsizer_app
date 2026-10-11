@@ -102,6 +102,24 @@ export const copy = {
   breakevenAboveCapacity: (max: string) =>
     `Break-even is more than you can serve in a day (about ${max} orders at most).`,
 
+  stress: {
+    canDrop: (p: string) =>
+      `Your customers could drop by about ${p} before you start losing money.`,
+    needsMore: (p: string) => `You’d need about ${p} more customers to break even.`,
+    capacity:
+      'More customers alone won’t get you to break even — you’d hit your serving limit first.',
+    losesPerOrder: 'More customers won’t help while each order loses money.',
+    title: 'What if things go worse than expected?',
+    colWhatIf: 'What if…',
+    colProfit: 'Most likely profit per day',
+    asExpected: 'As expected',
+    fewerCustomers: (p: string) => `${p} fewer customers`,
+    moreCustomers: (p: string) => `${p} more customers`,
+    ingredients: (p: string) => `ingredients ${p} more expensive`,
+    fixed: (p: string) => `fixed costs ${p} higher (rent, wages, other)`,
+    note: 'Hypothetical changes applied to all 10,000 scenarios — “what ifs”, not predictions.',
+  },
+
   spreadTitle: 'How your scenarios spread',
   spreadSub: 'Each bar is a group of simulated days. Green made a profit; red did not.',
   spreadHint: 'Point at a bar to see its range.',

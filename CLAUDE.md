@@ -95,6 +95,7 @@ a3 = (x90 + x10 − 2·x50) / ((1 − 2α)·L)
 - At base values with zero uncertainty, the model reproduces the SPEC §4 sanity check (84 orders, €756 gross, €690.71 net, −€111.23 profit, break-even ≈ 107.7 orders).
 - Goal check: probability equals the share of scenarios meeting it; "at least €0 profit" equals the chance of a profitable day.
 - Capacity cap: demand above capacity produces lost orders, not extra sales.
+- Stress tests: "as expected" equals the Profit card's most-likely profit; fewer customers cut orders and variable costs but not fixed costs, and are applied before the capacity cap; the customer tolerance brings most-likely profit to ~€0.
 - Contribution per order ≤ 0 triggers the "every order loses money" warning state.
 - Payback is reported as "not within 3 years" when cumulative cash never turns positive.
 - Performance: 10,000 draws plus sensitivity in < 200 ms on a mid-range laptop.

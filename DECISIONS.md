@@ -2,6 +2,13 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-11 — Stress tests (request US-06, reviewed and scoped down with Ricardo)
+
+- **Built:** (1) a customer-tolerance line on the Break-even card; (2) an expandable "What if things go worse than expected?" table (closed by default) in the same card. Neutral title chosen by Ricardo.
+- **Not built, and why:** "downside profitability" as a headline (duplicates the Worst case figure and would show a second, conflicting "bad case"); a separate card; detailed stress controls under Advanced (configuration with no user benefit — parameters live in the template); the +10% ingredient/fixed rows (table trimmed to 7 rows). "Food waste" in the request does not exist in the model.
+- **Method:** shocks are applied to the _same_ 10,000 draws (no new randomness), and each row reports the median profit, so "As expected" equals the Profit card exactly. Customer shocks scale both demand inputs before the capacity cap; ingredients = dish cost and drink cost; fixed = rent, wage rate and other costs. Tolerance = demand multiplier where median profit = €0, Illinois root search (~30–40 ms for everything); special cases for the serving limit and for every order losing money.
+- Shareable-link compatibility: no URL state exists yet (Phase 5), so nothing to preserve.
+
 ## 2026-10-11 — Capacity suggested from people on shift (Ricardo)
 
 - "Most orders you can serve per hour" stays a normal choice, but its value is now **suggested** from "People on shift" and follows it until the user types their own number (same pattern as suggested worst/best; "Use suggestion" restores it). No new inputs; the engine is unchanged.

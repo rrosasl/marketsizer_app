@@ -227,4 +227,13 @@ export const arepaMarkthalle: Template = {
   defaultGoal: { metric: 'profit', direction: 'at-least', amount: 200 },
   // 1 person → 17, 2 → 30, 3 → 41, 4+ → 45 orders/h.
   capacitySuggestion: { perPerson: 17, exponent: 0.8, ceiling: 45 },
+  stressTests: [
+    { demand: 1, ingredients: 1, fixed: 1 },
+    { demand: 0.9, ingredients: 1, fixed: 1 },
+    { demand: 0.8, ingredients: 1, fixed: 1 },
+    { demand: 0.7, ingredients: 1, fixed: 1 },
+    { demand: 1, ingredients: 1.2, fixed: 1 },
+    { demand: 1, ingredients: 1, fixed: 1.2 },
+    { demand: 0.8, ingredients: 1.15, fixed: 1 },
+  ],
 }

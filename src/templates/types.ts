@@ -1,4 +1,11 @@
-import type { CorrelationPair, DayDecisions, Estimate, Goal, UncertainKey } from '../engine'
+import type {
+  CorrelationPair,
+  DayDecisions,
+  Estimate,
+  Goal,
+  StressShock,
+  UncertainKey,
+} from '../engine'
 
 export type Unit = 'h' | 'orders/h' | '€' | '€/h' | '%' | 'people' | 'orders' | 'dishes'
 
@@ -54,4 +61,6 @@ export interface Template {
    * so each adds a bit less (exponent < 1), up to what the stand itself can handle (ceiling).
    */
   capacitySuggestion: { perPerson: number; exponent: number; ceiling: number }
+  /** "What if things go worse than expected?" rows (the first should be no change). */
+  stressTests: StressShock[]
 }

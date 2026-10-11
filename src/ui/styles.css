@@ -1166,3 +1166,83 @@ select {
 .decision-label .badge {
   white-space: nowrap;
 }
+
+/* Stress tests (break-even card) */
+.tolerance {
+  margin: 12px 0 0;
+  font-weight: 600;
+}
+.stress {
+  margin-top: 14px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 4px;
+}
+.stress summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-ink);
+  padding: 8px 0;
+}
+.stress table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin: 4px 0 10px;
+}
+.stress th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: var(--muted);
+  padding: 4px 6px 6px 0;
+}
+.stress td {
+  padding: 7px 6px 7px 0;
+  border-top: 1px solid var(--hairline);
+}
+.stress .num-col {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+.stress td.neg {
+  color: var(--bad-ink);
+}
+.stress td.pos {
+  color: var(--good-ink);
+}
+.stress tr.is-base td {
+  font-weight: 700;
+}
+.stress-bar {
+  position: relative;
+  width: 32%;
+  min-width: 80px;
+}
+.stress-zero {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--border);
+}
+.stress-fill {
+  position: absolute;
+  top: 50%;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: 4px;
+}
+.stress-fill.neg {
+  background: color-mix(in srgb, var(--bad) 80%, white);
+}
+.stress-fill.pos {
+  background: color-mix(in srgb, var(--good) 80%, white);
+}
+@media (max-width: 560px) {
+  .stress-bar {
+    display: none;
+  }
+}

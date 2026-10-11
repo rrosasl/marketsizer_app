@@ -1,5 +1,5 @@
-import type { Goal, SimulationResult, UncertainKey } from '../engine'
-import type { UncertainInputDef } from '../templates'
+import type { DayDecisions, Goal, SimulationResult, UncertainKey } from '../engine'
+import type { Template, UncertainInputDef } from '../templates'
 import { BreakevenBar } from './charts/BreakevenBar'
 import { DriverBars } from './charts/DriverBars'
 import { ProfitSpread } from './charts/ProfitSpread'
@@ -9,6 +9,7 @@ import { copy } from './copy'
 import { formatEuro } from './format'
 import { CostsCard } from './CostsCard'
 import { GoalCard } from './GoalCard'
+import { StressSection } from './StressSection'
 
 const fmtOrders = (x: number) => (Number.isFinite(x) ? Math.round(x).toLocaleString('en-GB') : '—')
 const fmtPct = (x: number) => `${Math.round(x * 100)}%`
@@ -19,12 +20,17 @@ export function ResultsPanel({
   goal,
   onGoal,
   baseValues,
+  decisions,
+  template,
 }: {
   r: SimulationResult
   defs: Record<UncertainKey, UncertainInputDef>
   goal: Goal
   onGoal: (g: Goal) => void
   baseValues: Record<UncertainKey, number>
+  /** The choices `r` was simulated with (for the stress tests). */
+  decisions: DayDecisions
+  template: Template
 }) {
   const s = r.summary
   const profitChance = 1 - s.lossChance
@@ -104,6 +110,7 @@ export function ResultsPanel({
             {copy.breakevenAboveCapacity(fmtOrders(s.maxOrdersPerDay))}
           </p>
         )}
+        <StressSection r={r} decisions={decisions} shocks={template.stressTests} />
       </article>
 
       {s.capacity.show && (

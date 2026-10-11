@@ -305,6 +305,8 @@ export default function WeekendPage() {
               goal={scenario.goal}
               onGoal={(g) => update((s) => void (s.goal = g))}
               baseValues={baseValues}
+              decisions={deferred.decisions}
+              template={template}
             />
           )}
         </section>
