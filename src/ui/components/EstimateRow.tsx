@@ -44,7 +44,10 @@ export function EstimateRow(props: {
     <div className={`estimate ${issue ? 'has-issue' : ''}`}>
       <div className="estimate-head">
         <span className="estimate-label">{def.label}</span>
-        <InfoTip text={def.higherIsWorse ? `${def.help} ${copy.costHint}` : def.help} />
+        <InfoTip
+          text={def.higherIsWorse ? `${def.help} ${copy.costHint}` : def.help}
+          effect={def.effect}
+        />
         <span className="unit-pill">{unitLabel(def.unit)}</span>
       </div>
       <div className="estimate-fields">

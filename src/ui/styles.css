@@ -200,6 +200,15 @@
   display: none;
   pointer-events: none;
 }
+.tip-effect {
+  display: block;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+.tip-effect b {
+  font-weight: 650;
+}
 .tip:hover .tip-bubble,
 .tip:focus-within .tip-bubble {
   display: block;

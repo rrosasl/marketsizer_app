@@ -35,6 +35,7 @@ export const copy = {
       ? `suggested (capped at ${maxPeople} people)`
       : `suggested for ${people} ${people === 1 ? 'person' : 'people'}`,
   costHint: 'For costs, worst = most expensive.',
+  tipEffect: 'Effect on your results:',
 
   choicesTitle: 'Your stand',
   choicesIntro: 'How you run the stand. One number each.',
@@ -42,12 +43,18 @@ export const copy = {
   advancedTitle: 'Advanced settings',
   linkedLabel: 'Linked estimates',
   linkedHelp: 'How strongly estimates move together (e.g. busy and quiet hours).',
+  linkedEffect:
+    'Stronger links make good and bad days more extreme, so the range between worst and best case gets wider. “Independent” makes it narrower than reality.',
   linkedOptions: { independent: 'Independent', default: 'Default', strong: 'Strong' },
   limitsTitle: 'Limits',
   limitsIntro: 'The lowest and highest values an estimate can ever take.',
+  limitsInfo:
+    'Limits keep the simulation realistic, e.g. busy hours can’t be longer than your opening hours. Worst and best case are kept as you entered them; limits only shape the extremes beyond them.',
   limitTo: 'to',
   seedLabel: 'Random seed',
   seedHelp: 'Same seed + same inputs = exactly the same results.',
+  seedEffect:
+    'A new seed reshuffles the 10,000 scenarios. Results should only move by a few euros — that is the noise of simulating, not a change in your stand.',
   seedNew: 'New',
   restart: 'Restart',
   restartHelp: 'Start again from the default numbers, with every section back to how it started.',
@@ -73,10 +80,14 @@ export const copy = {
 
   profitTitle: 'Profit per weekend day',
   profitSub: 'after all costs, including wages',
+  profitInfo:
+    'Sales after VAT minus all costs: ingredients, wages, rent, card fees and other costs. Most likely is the middle of 10,000 simulated days; worst and best case are the 1-in-10 low and high ends.',
   profitChance: 'chance a typical weekend day makes a profit',
 
   salesTitle: 'Sales per weekend day',
   salesSub: 'what customers pay, incl. VAT',
+  salesInfo:
+    'Orders × what customers spend per order. Orders come from your customer estimates and opening hours, capped by the most orders you can serve per hour.',
   salesOrders: (orders: string) => `From about ${orders} orders a day.`,
   salesNet: (net: string, vat: string) => `${net} after VAT (${vat} VAT)`,
   salesMore: 'More about your sales',
@@ -106,6 +117,8 @@ export const copy = {
   costsRange: (lo: string, hi: string) => `Most days cost between ${lo} and ${hi}.`,
 
   breakevenTitle: 'Break-even',
+  breakevenInfo:
+    'The orders a day at which what each order earns you (after VAT, ingredients, card fees and rent share) just covers your fixed costs: wages, rent and other costs. Fewer orders = a loss, more = a profit.',
   breakevenLine: (need: string, expect: string) =>
     `You need about ${need} orders a day to cover your costs. You expect about ${expect}.`,
   breakevenMarker: 'Break-even',

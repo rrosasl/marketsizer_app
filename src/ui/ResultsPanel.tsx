@@ -76,7 +76,9 @@ export function ResultsPanel({
 
       <article className="card card-hero">
         <header className="card-head">
-          <h3>{copy.profitTitle}</h3>
+          <h3>
+            {copy.profitTitle} <InfoTip text={copy.profitInfo} />
+          </h3>
           <span className="card-sub">{copy.profitSub}</span>
         </header>
         <div className="hero-row">
@@ -114,7 +116,9 @@ export function ResultsPanel({
       <div className="card-pair">
         <article className="card">
           <header className="card-head">
-            <h3>{copy.salesTitle}</h3>
+            <h3>
+              {copy.salesTitle} <InfoTip text={copy.salesInfo} />
+            </h3>
             <span className="card-sub">{copy.salesSub}</span>
           </header>
           <span className="eyebrow">{copy.mostLikely}</span>
@@ -184,7 +188,9 @@ export function ResultsPanel({
 
       <article className="card">
         <header className="card-head">
-          <h3>{copy.breakevenTitle}</h3>
+          <h3>
+            {copy.breakevenTitle} <InfoTip text={copy.breakevenInfo} />
+          </h3>
         </header>
         <p className="lead">
           {copy.breakevenLine(fmtOrders(s.breakevenOrders.p50), fmtOrders(s.orders.p50))}

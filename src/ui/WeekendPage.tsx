@@ -258,7 +258,7 @@ export default function WeekendPage() {
                 <div className="decision">
                   <span className="decision-label">
                     {copy.linkedLabel}
-                    <InfoTip text={copy.linkedHelp} />
+                    <InfoTip text={copy.linkedHelp} effect={copy.linkedEffect} />
                   </span>
                   <select
                     value={scenario.correlationMode}
@@ -275,7 +275,9 @@ export default function WeekendPage() {
                 </div>
               </div>
 
-              <h3>{copy.limitsTitle}</h3>
+              <h3>
+                {copy.limitsTitle} <InfoTip text={copy.limitsInfo} />
+              </h3>
               <p className="card-sub">{copy.limitsIntro}</p>
               <div className="limits">
                 {template.uncertain.map((def) => {
@@ -316,7 +318,7 @@ export default function WeekendPage() {
               <div className="decision seed">
                 <span className="decision-label">
                   {copy.seedLabel}
-                  <InfoTip text={copy.seedHelp} />
+                  <InfoTip text={copy.seedHelp} effect={copy.seedEffect} />
                 </span>
                 <span className="seed-row">
                   <NumberField

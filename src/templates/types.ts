@@ -46,6 +46,8 @@ export interface UncertainInputDef {
   /** Default limits; `upper` may refer to a decision (e.g. busy hours ≤ opening hours). */
   limits: { lower: number; upper: number | { decision: keyof DayDecisions } }
   help: string
+  /** How changing this input moves the results (second part of the ⓘ text). */
+  effect: string
   /** How to narrow this estimate down (shown when it is the biggest driver). */
   tip: string
 }
@@ -60,6 +62,8 @@ export interface DecisionDef {
   max?: number
   step: number
   help?: string
+  /** How changing this choice moves the results (second part of the ⓘ text). */
+  effect?: string
 }
 
 export interface Template {

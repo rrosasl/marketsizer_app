@@ -21,7 +21,7 @@ export function DecisionField({
     <div className="decision">
       <span className="decision-label">
         {def.label}
-        {def.help && <InfoTip text={def.help} />}
+        {def.help && <InfoTip text={def.help} effect={def.effect} />}
         {suggestion &&
           (suggestion.manual ? (
             <button type="button" className="link-btn" onClick={suggestion.onReset}>

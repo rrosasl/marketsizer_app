@@ -18,6 +18,8 @@ export const arepaMarkthalle: Template = {
       defaults: { worst: 3.25, base: 3, best: 2.75 },
       spread: { worst: 0.0833, best: -0.0833 },
       limits: { lower: 0, upper: 3.5 },
+      effect:
+        'Higher → every main dish costs you more, so profit falls and you need more orders to break even. Sales stay the same.',
       help: 'Food and packaging for one main dish (e.g. masa ~€0.15, filling €1.20–2.20, packaging €0.30–0.40). Worst = most expensive.',
       tip: 'Price your recipe with real supplier quotes, including packaging and some waste.',
     },
@@ -30,6 +32,8 @@ export const arepaMarkthalle: Template = {
       defaults: { worst: 2, base: 3, best: 4 },
       spread: { worst: -0.33, best: 0.33 },
       limits: { lower: 0, upper: { decision: 'openHours' } },
+      effect:
+        'Longer → more orders and sales: busy hours replace quiet ones within your opening hours. Ingredient costs grow with the orders; fixed costs stay the same.',
       help: 'How many hours of the day feel busy, e.g. the lunch rush.',
       tip: 'Watch a similar stall on a Saturday and note when queues form and when they fade.',
     },
@@ -42,6 +46,8 @@ export const arepaMarkthalle: Template = {
       defaults: { worst: 8, base: 18, best: 30 },
       spread: { worst: -0.555, best: 0.667 },
       limits: { lower: 0, upper: 150 },
+      effect:
+        'More → more orders and sales, until you reach the most orders you can serve per hour; customers above that are turned away. Usually one of the biggest drivers of profit.',
       help: 'How many customers want to order in a busy hour, even if you could not serve them all.',
       tip: 'Count orders at a similar stall during a Saturday lunch rush.',
     },
@@ -54,6 +60,8 @@ export const arepaMarkthalle: Template = {
       defaults: { worst: 2, base: 6, best: 12 },
       spread: { worst: -0.667, best: 1 },
       limits: { lower: 0, upper: 100 },
+      effect:
+        'More → more orders and sales in quiet hours (also capped by what you can serve). Tends to move together with orders per busy hour.',
       help: 'How many customers want to order in a quiet hour.',
       tip: 'Count orders at a similar stall during a quiet afternoon hour.',
     },
@@ -67,6 +75,8 @@ export const arepaMarkthalle: Template = {
       spread: { worst: -0.375, best: 0.5 },
       // Above 100% = more than one drink per order on average (e.g. groups).
       limits: { lower: 0, upper: 5 },
+      effect:
+        'More → each order is worth more, and profit rises because a drink costs you far less than its price. The number of orders stays the same.',
       help: 'For every 10 orders, how many drinks do you sell? 4 = four drinks for every 10 orders. Can be above 10 if groups order several drinks. With a dish + drink combo, expect more.',
       tip: 'Watch a similar stall and count how many drinks go out with every 10 orders.',
     },
@@ -79,6 +89,8 @@ export const arepaMarkthalle: Template = {
       defaults: { worst: 1, base: 1.2, best: 1.5 },
       spread: { worst: -0.167, best: 0.25 },
       limits: { lower: 0, upper: 7 },
+      effect:
+        'More → each order is worth more and earns more profit, with more ingredient costs. The number of orders stays the same.',
       help: 'On average. Above 1 if some customers buy two (e.g. couples sharing, people grazing across stalls); below 1 if some only buy a drink.',
       tip: 'Watch how many people order a second dish at a similar stall.',
     },
@@ -93,6 +105,8 @@ export const arepaMarkthalle: Template = {
       min: 0,
       step: 0.5,
       help: 'What a customer pays, incl. VAT.',
+      effect:
+        'Higher → more profit per dish. Customers don’t react to price in this model, so if you raise it, lower your order estimates too.',
     },
     {
       key: 'drinkPrice',
@@ -103,6 +117,8 @@ export const arepaMarkthalle: Template = {
       min: 0,
       step: 0.5,
       help: 'What a customer pays, incl. VAT.',
+      effect:
+        'Higher → more profit per drink. Customers don’t react to price in this model, so if you raise it, lower your drink estimate too.',
     },
     {
       key: 'drinkCost',
@@ -113,6 +129,7 @@ export const arepaMarkthalle: Template = {
       min: 0,
       step: 0.1,
       help: 'What one drink costs you, incl. cup, ice or straw. Homemade ~€0.90; bought-in cans or bottles more.',
+      effect: 'Higher → less profit on every drink sold; matters more the more drinks you sell.',
     },
     {
       key: 'staffCount',
@@ -123,6 +140,8 @@ export const arepaMarkthalle: Template = {
       min: 0,
       step: 1,
       help: 'Everyone you pay for the shift. Include yourself if you want to pay yourself a wage.',
+      effect:
+        'More people → you can serve more orders per hour (each extra person adds a bit less; the suggestion stops growing at 10 people), but wages grow with every person for the opening and setup hours.',
     },
     {
       key: 'capacityPerHour',
@@ -133,6 +152,8 @@ export const arepaMarkthalle: Template = {
       min: 1,
       step: 1,
       help: 'More people can serve more orders, but they share one grill and counter. We suggest a number from the people on shift (each extra person adds a bit less; the suggestion stops growing at 10 people). Type your own if you know better.',
+      effect:
+        'Only matters when more customers want to order than this: orders are capped and the rest are turned away. Raising it costs nothing by itself — wages come from people on shift.',
     },
     {
       key: 'openHours',
@@ -143,6 +164,9 @@ export const arepaMarkthalle: Template = {
       min: 1,
       max: 24,
       step: 0.5,
+      help: 'How long the stand is open for customers.',
+      effect:
+        'More hours → more quiet-hour orders (busy hours stay as you estimated), and more wages for everyone on shift.',
     },
     {
       key: 'setupHours',
@@ -153,6 +177,8 @@ export const arepaMarkthalle: Template = {
       help: 'Markets usually want you there 1.5–2 hours before opening, plus teardown.',
       min: 0,
       step: 0.5,
+      effect:
+        'Paid hours without sales: each extra hour adds wages for everyone on shift and lowers profit.',
     },
     {
       key: 'staffCostPerHour',
@@ -163,6 +189,8 @@ export const arepaMarkthalle: Template = {
       default: 18,
       min: 0,
       step: 0.5,
+      effect:
+        'Higher → wages rise for every person and every hour (opening + setup). A fixed cost: it doesn’t change with the number of orders.',
     },
     {
       key: 'rentFixedPerDay',
@@ -173,6 +201,8 @@ export const arepaMarkthalle: Template = {
       min: 0,
       step: 5,
       help: 'Ask the market organiser — fees are rarely published. Try €60, €120 and €250 to see the difference.',
+      effect:
+        'A fixed cost: every extra euro comes straight off profit and raises the orders you need to break even.',
     },
     {
       key: 'otherCostsPerDay',
@@ -183,6 +213,8 @@ export const arepaMarkthalle: Template = {
       min: 0,
       step: 5,
       help: 'Gas, transport, ice, cleaning, waste. Packaging is already in the dish cost — don’t count it twice.',
+      effect:
+        'A fixed cost: every extra euro comes straight off profit and raises the orders you need to break even.',
     },
     {
       key: 'rentRevenueShare',
@@ -194,6 +226,8 @@ export const arepaMarkthalle: Template = {
       max: 1,
       step: 0.01,
       help: 'If the organiser takes a cut of sales instead of, or on top of, a fixed fee (often 10–15%).',
+      effect:
+        'Taken from sales after VAT, so it grows with every order and lowers what each order earns you.',
     },
     {
       key: 'cardFeeRate',
@@ -204,7 +238,8 @@ export const arepaMarkthalle: Template = {
       min: 0,
       max: 1,
       step: 0.001,
-      help: 'E.g. SumUp charges 1.39%.',
+      help: 'Share of sales paid to your card terminal provider; we assume everyone pays by card. E.g. SumUp charges 1.39%.',
+      effect: 'Higher → each order earns you a little less. Usually a small effect.',
     },
     {
       key: 'vatFood',
@@ -216,6 +251,8 @@ export const arepaMarkthalle: Template = {
       max: 1,
       step: 0.01,
       help: 'Set both VAT rates to 0 if you are a Kleinunternehmer (first-year sales up to €25,000).',
+      effect:
+        'VAT is part of what customers pay but goes to the tax office: a higher rate leaves you less of each sale, at the same menu price.',
     },
     {
       key: 'vatDrinks',
@@ -226,6 +263,9 @@ export const arepaMarkthalle: Template = {
       min: 0,
       max: 1,
       step: 0.01,
+      help: 'Drinks are usually taxed at 19% in Germany.',
+      effect:
+        'VAT is part of what customers pay but goes to the tax office: a higher rate leaves you less of each sale, at the same menu price.',
     },
   ],
   correlations: [{ a: 'peakDemand', b: 'offpeakDemand', rho: 0.6 }],
