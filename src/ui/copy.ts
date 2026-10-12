@@ -70,6 +70,7 @@ export const copy = {
     aboveOpenHours: (max: string) => `Can't be more than your opening hours (${max}).`,
   },
 
+  inputsTitle: 'Your inputs',
   resultsTitle: 'Results for one weekend day',
   resultsInvalid: 'Fix the highlighted estimates to see your results.',
   resultsError: 'Something went wrong while calculating:',
@@ -93,7 +94,7 @@ export const copy = {
   salesOrders: (orders: string) => `From about ${orders} orders a day.`,
   salesNet: (net: string, vat: string) => `${net} after VAT (${vat} VAT)`,
   salesMore: 'More about your sales',
-  salesClosed: (gross: string, orders: string) => `${gross} most likely · about ${orders} orders`,
+  salesClosed: (gross: string) => `${gross} most likely`,
   salesRows: { orders: 'Orders a day', spend: 'Spend per order' },
   salesMix: (food: string, drinks: string) => `Main dishes ${food} · Drinks ${drinks}`,
   salesMixLabel: 'On a most likely day',
@@ -117,7 +118,7 @@ export const copy = {
     rentShare: 'Rent (share of sales)',
   },
   costsMore: 'See cost breakdown',
-  costsClosed: (total: string, fixed: string) => `${total} most likely · ${fixed} fixed`,
+  costsClosed: (total: string) => `${total} most likely`,
   costsRange: (lo: string, hi: string) => `Most days cost between ${lo} and ${hi}.`,
 
   breakevenTitle: 'Break-even',

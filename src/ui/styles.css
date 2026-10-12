@@ -1766,3 +1766,29 @@ a.brand {
 .result-card .input-card-chevron {
   margin-top: -4px;
 }
+
+/* Closed input and result cards share one height, so rows line up across the two columns. */
+.input-card:not([open]),
+.result-card:not([open]) {
+  height: 100px;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.input-card:not([open]) > summary,
+.result-card:not([open]) > summary {
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+.input-card-summary,
+.result-closed {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.result-card:not([open]) .input-card-chevron {
+  margin-top: 0;
+}

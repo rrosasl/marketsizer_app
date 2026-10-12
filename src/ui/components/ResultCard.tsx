@@ -31,7 +31,7 @@ export function ResultCard({
       <summary className="card-head result-head">
         <span className="result-head-text">
           <h3>{title}</h3>
-          {sub && <span className="card-sub">{sub}</span>}
+          {sub && open && <span className="card-sub">{sub}</span>}
           {!open && <span className="result-closed">{closedLine}</span>}
         </span>
         <span className="input-card-chevron" aria-hidden="true" />

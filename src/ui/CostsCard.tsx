@@ -22,7 +22,7 @@ export function CostsCard({ r, caption }: { r: SimulationResult; caption: string
         </>
       }
       sub={copy.costsSub}
-      closedLine={copy.costsClosed(formatEuro(b.total), pct(b.fixed, b.total))}
+      closedLine={copy.costsClosed(formatEuro(b.total))}
     >
       <span className="eyebrow">{copy.mostLikely}</span>
       <span className="big">{formatEuro(b.total)}</span>

@@ -184,7 +184,8 @@ export default function WeekendPage() {
       </section>
 
       <main className="layout">
-        <section className="column inputs" aria-label="Inputs">
+        <section className="column inputs" aria-label={copy.inputsTitle}>
+          <h2 className="column-title">{copy.inputsTitle}</h2>
           <InputCard
             id="in-product"
             title={copy.productTitle}

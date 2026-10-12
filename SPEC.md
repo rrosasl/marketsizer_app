@@ -189,7 +189,7 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 - Below the results: a short "How this works" paragraph (plain English, no jargon).
 - ~~Sticky results bar~~ removed (v1.4).
 - **Sections remember their state:** every expandable section and input card keeps open/closed for the browser tab (sessionStorage; not in the link). **Restart** (top bar, with confirmation) resets all numbers, the seed and every section to its default.
-- **Result cards** (Profit, Sales, Costs, Break-even, Check a goal, For investors) are collapsible too, open by default and remembered like the rest. Closed, a card shows its headline in one line (e.g. "€174.28 most likely · 80% chance of a profit"), so it stays understandable on its own. Tapping an ⓘ in a card header shows the tip without folding the card.
+- **Result cards** (Profit, Sales, Costs, Break-even, Check a goal, For investors) are collapsible too, open by default and remembered like the rest. Closed, a card shows its headline in one line (e.g. "€174.28 most likely · 80% chance of a profit"), so it stays understandable on its own. Closed cards (input and result) share one height so rows line up across the two columns; the subtitle hides when closed. Both columns start with a title: "Your inputs" and "Results for one weekend day". Tapping an ⓘ in a card header shows the tip without folding the card.
 - **Input cards** (Your product / customers / stand) are collapsible, open by default; when closed they show a one-line summary, e.g. "Dish €9.00 · drink €3.50 · ingredients €3.00 per dish".
 - **Capacity suggestion:** 20 × min(people, 10)^0.585 orders/h, rounded; above 10 people the badge says "suggested (capped at 10 people)". The user can always type their own.
 

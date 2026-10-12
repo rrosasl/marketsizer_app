@@ -127,7 +127,7 @@ export function ResultsPanel({
             </>
           }
           sub={copy.salesSub}
-          closedLine={copy.salesClosed(formatEuro(s.grossSales.p50), fmtOrders(s.orders.p50))}
+          closedLine={copy.salesClosed(formatEuro(s.grossSales.p50))}
         >
           <span className="eyebrow">{copy.mostLikely}</span>
           <span className="big">{formatEuro(s.grossSales.p50)}</span>
