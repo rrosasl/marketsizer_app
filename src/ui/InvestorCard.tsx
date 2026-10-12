@@ -81,7 +81,7 @@ export function InvestorCard({
             </span>
           </div>
 
-          <Expand title={copy.investor.more}>
+          <Expand id="investor-chances" title={copy.investor.more}>
             <div className="inv-panels">
               <section className="inv-panel inv-up" aria-label={copy.investor.upTitle}>
                 <h4>{copy.investor.upTitle}</h4>

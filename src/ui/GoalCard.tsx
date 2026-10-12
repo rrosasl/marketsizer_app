@@ -109,7 +109,11 @@ export function GoalCard({
             </div>
           </div>
 
-          <Expand title={copy.goalTakesTitle[goal.direction]} className="goal-takes">
+          <Expand
+            id="goal-takes"
+            title={copy.goalTakesTitle[goal.direction]}
+            className="goal-takes"
+          >
             {rare && <p className="card-sub">{copy.goalTooRare}</p>}
             {common && <p className="card-sub">{copy.goalTooCommon}</p>}
             {shown && shown.length === 0 && !rare && !common && (

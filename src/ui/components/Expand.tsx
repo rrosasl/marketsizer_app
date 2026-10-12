@@ -1,20 +1,30 @@
 import type { ReactNode } from 'react'
+import { useOpen } from '../openState'
 
-/** Closed-by-default "show more" section used inside result cards. */
+/**
+ * "Show more" section (closed by default). Its open/closed state is remembered for the session
+ * under `id`.
+ */
 export function Expand({
+  id,
   title,
   className,
-  open,
+  defaultOpen = false,
   children,
 }: {
+  id: string
   title: ReactNode
   className?: string
-  /** Start expanded (the user can still close it). */
-  open?: boolean
+  defaultOpen?: boolean
   children: ReactNode
 }) {
+  const [open, setOpen] = useOpen(id, defaultOpen)
   return (
-    <details className={`more ${className ?? ''}`} open={open}>
+    <details
+      className={`more ${className ?? ''}`}
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+    >
       <summary>{title}</summary>
       <div className="more-body">{children}</div>
     </details>

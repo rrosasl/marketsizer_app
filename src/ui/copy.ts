@@ -7,6 +7,12 @@ export const copy = {
 
   productTitle: 'Your product',
   productIntro: 'What you sell, what you charge and what it costs you.',
+  productSummary: (dish: string, drink: string, cost: string) =>
+    `Dish ${dish} · drink ${drink} · ingredients ${cost} per dish`,
+  customersSummary: (busy: string, quiet: string, hours: string) =>
+    `${busy} orders per busy hour · ${quiet} per quiet hour · ${hours} busy hours`,
+  standSummary: (people: string, cap: string, open: string, rent: string) =>
+    `${people} on shift · up to ${cap} orders/h · ${open} h open · rent ${rent}`,
   dishGroup: 'Main dish',
   drinkGroup: 'Drink',
   orderValue: (spend: string, cost: string) =>
@@ -26,7 +32,7 @@ export const copy = {
   useSuggestion: 'Use suggestion',
   capacitySuggested: (people: number, maxPeople: number) =>
     people > maxPeople
-      ? `suggested for ${maxPeople} people (capped at ${maxPeople})`
+      ? `suggested (capped at ${maxPeople} people)`
       : `suggested for ${people} ${people === 1 ? 'person' : 'people'}`,
   costHint: 'For costs, worst = most expensive.',
 
@@ -43,7 +49,10 @@ export const copy = {
   seedLabel: 'Random seed',
   seedHelp: 'Same seed + same inputs = exactly the same results.',
   seedNew: 'New',
-  reset: 'Reset to defaults',
+  restart: 'Restart',
+  restartHelp: 'Start again from the default numbers, with every section back to how it started.',
+  restartConfirm:
+    'Start again from the default numbers? Everything you entered will be replaced (a link you copied still has it).',
 
   errors: {
     notANumber: 'Please enter a number in every box.',
@@ -201,8 +210,6 @@ export const copy = {
   copyLink: 'Copy link',
   linkCopied: 'Link copied',
   copyLinkHelp: 'The link contains all your numbers, so you can come back to it or share it.',
-  stickyChance: (p: string) => `${p} chance of profit`,
-  stickySee: 'See results',
   footnote: (draws: string) =>
     `Worst/best = 1-in-10 scenarios. Based on ${draws} simulated scenarios of your inputs.`,
   fallbackNote: (labels: string) =>

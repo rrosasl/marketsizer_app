@@ -104,7 +104,7 @@ export function ResultsPanel({
           </div>
         </div>
         <RangeBar range={s.profit} fmt={formatEuro} showZero />
-        <Expand title={copy.spreadToggle} className="spread-toggle">
+        <Expand id="profit-spread" title={copy.spreadToggle} className="spread-toggle">
           <p className="card-sub">{copy.spreadSub}</p>
           <ProfitSpread profit={r.profit} range={s.profit} />
         </Expand>
@@ -137,7 +137,7 @@ export function ResultsPanel({
               )}
             </p>
           )}
-          <Expand title={copy.salesMore}>
+          <Expand id="sales-more" title={copy.salesMore}>
             <table className="sales-table">
               <thead>
                 <tr>
@@ -199,7 +199,7 @@ export function ResultsPanel({
           </p>
         )}
         <StressTable rows={stress.rows} />
-        <Expand title={copy.driversMore} open>
+        <Expand id="drivers" title={copy.driversMore} defaultOpen>
           <p className="card-sub">
             {copy.driversIntro} <InfoTip text={copy.driversInfo} />
           </p>
@@ -243,8 +243,7 @@ export function ResultsPanel({
         <p>{copy.howText}</p>
       </section>
 
-      <details className="math">
-        <summary>{copy.mathTitle}</summary>
+      <Expand id="math" title={copy.mathTitle} className="math">
         <table>
           <tbody>
             <tr>
@@ -294,7 +293,7 @@ export function ResultsPanel({
           </tbody>
         </table>
         <p className="footnote">{copy.mathNote}</p>
-      </details>
+      </Expand>
     </div>
   )
 }

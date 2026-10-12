@@ -823,15 +823,6 @@ select {
 }
 
 /* Math details */
-.math {
-  margin: 0 4px;
-}
-.math summary {
-  cursor: pointer;
-  color: var(--ink-2);
-  font-size: 0.85rem;
-  font-weight: 550;
-}
 .math table {
   margin: 12px 0;
   border-collapse: collapse;
@@ -1226,7 +1217,7 @@ select {
   }
 }
 
-/* Review round: sharing, captions, sticky bar, how-it-works */
+/* Review round: sharing, captions, how-it-works */
 .topbar-right {
   display: flex;
   align-items: center;
@@ -1306,54 +1297,6 @@ select {
   font-size: 0.82rem;
   color: var(--ink-2);
 }
-.sticky-results {
-  display: none;
-}
-@media (max-width: 1020px) {
-  .sticky-results {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    z-index: 30;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 10px 16px;
-    border-radius: 14px;
-    background: var(--ink);
-    color: #fff;
-    text-decoration: none;
-    box-shadow: 0 10px 30px rgba(11, 31, 58, 0.3);
-  }
-  .sticky-results small {
-    display: block;
-    font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .sticky-results b {
-    font-size: 1.15rem;
-  }
-  .sticky-results b.neg {
-    color: #ff9c9c;
-  }
-  .sticky-chance {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .sticky-cta {
-    font-weight: 600;
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-  .app {
-    padding-bottom: 96px;
-  }
-}
-
 /* For investors */
 .inv-share {
   margin-top: 10px;
@@ -1514,4 +1457,83 @@ select {
 }
 .more .inv-panels {
   margin-top: 4px;
+}
+
+/* Collapsible input cards */
+.input-card > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: -6px 0;
+  padding: 6px 0;
+}
+.input-card > summary::-webkit-details-marker {
+  display: none;
+}
+.input-card-title {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.input-card-title h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+.input-card-summary {
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.input-card-chevron {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  position: relative;
+  transition: background 0.15s;
+}
+.input-card-chevron::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--ink-2);
+  border-bottom: 2px solid var(--ink-2);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+.input-card[open] .input-card-chevron::before {
+  top: 13px;
+  transform: rotate(-135deg);
+}
+.input-card > summary:hover .input-card-chevron {
+  background: var(--accent-soft);
+}
+.input-card > summary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.input-card-body {
+  padding-top: 6px;
+}
+.card-intro {
+  margin: 4px 0 18px;
+}
+
+/* "See the math" keeps its quiet look */
+.more.math {
+  margin: 0 4px;
+  border-top: 0;
+}
+.more.math summary {
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  font-weight: 550;
 }

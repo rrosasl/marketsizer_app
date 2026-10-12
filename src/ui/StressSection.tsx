@@ -25,7 +25,7 @@ export function StressTable({ rows }: { rows: StressRow[] }) {
   const pos = (v: number) => ((v - lo) / span) * 100
 
   return (
-    <Expand title={copy.stress.title} className="stress">
+    <Expand id="stress" title={copy.stress.title} className="stress">
       <table>
         <thead>
           <tr>

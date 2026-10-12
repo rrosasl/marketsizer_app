@@ -45,7 +45,7 @@ export function CostsCard({ r, caption }: { r: SimulationResult; caption: string
         </span>
       </div>
 
-      <Expand title={copy.costsMore}>
+      <Expand id="costs-items" title={copy.costsMore}>
         <ul className="cost-items">
           {b.items.map((i) => (
             <li key={i.key}>

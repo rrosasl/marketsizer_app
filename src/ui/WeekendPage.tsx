@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import {
   simulate,
   validateEstimate,
@@ -30,15 +30,21 @@ import {
 import { DecisionField } from './components/DecisionField'
 import { EstimateRow } from './components/EstimateRow'
 import { InfoTip } from './components/InfoTip'
+import { InputCard } from './components/InputCard'
 import { NumberField } from './components/NumberField'
 import { decodeScenario, encodeScenario } from '../state/url'
 import { copy } from './copy'
 import { formatEuro } from './format'
+import { resetOpen, useOpen } from './openState'
 import { ResultsPanel } from './ResultsPanel'
 import './styles.css'
 
 /** Fixed default seed until the seed lives in the URL (Phase 5). */
 const DEFAULT_SEED = 12345
+
+/** Whole numbers stay whole; otherwise one decimal (e.g. 2.5 h). */
+const fmtNum = (x: number) =>
+  Number.isFinite(x) ? (Math.round(x * 10) / 10).toLocaleString('en-GB') : '—'
 
 const defs = Object.fromEntries(template.uncertain.map((d) => [d.key, d])) as Record<
   UncertainKey,
@@ -70,18 +76,14 @@ export default function WeekendPage() {
       window.setTimeout(() => setCopied(false), 2000)
     })
   }
-  // Mobile: a small results bar until the results are on screen.
-  const outputsRef = useRef<HTMLElement>(null)
-  const [outputsVisible, setOutputsVisible] = useState(false)
-  useEffect(() => {
-    const el = outputsRef.current
-    if (!el || typeof IntersectionObserver === 'undefined') return
-    const io = new IntersectionObserver(([e]) => setOutputsVisible(!!e?.isIntersecting), {
-      rootMargin: '0px 0px -40% 0px',
-    })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [advancedOpen, setAdvancedOpen] = useOpen('advanced', false)
+  // Restart: default numbers, default seed and every section back to its default.
+  const restart = () => {
+    if (!window.confirm(copy.restartConfirm)) return
+    setScenario(defaultScenario(template, DEFAULT_SEED))
+    resetOpen()
+    window.scrollTo({ top: 0 })
+  }
   const update = (fn: (s: Scenario) => void) =>
     setScenario((prev) => {
       const next = structuredClone(prev)
@@ -164,6 +166,9 @@ export default function WeekendPage() {
         </div>
         <div className="topbar-right">
           <span className="scenario-pill">{template.scenarioName}</span>
+          <button type="button" className="ghost-btn" onClick={restart} title={copy.restartHelp}>
+            {copy.restart}
+          </button>
           <button type="button" className="ghost-btn" onClick={copyLink} title={copy.copyLinkHelp}>
             {copied ? copy.linkCopied : copy.copyLink}
           </button>
@@ -177,20 +182,16 @@ export default function WeekendPage() {
 
       <main className="layout">
         <section className="column inputs" aria-label="Inputs">
-          <article className="card">
-            <header className="card-head with-action">
-              <div>
-                <h2>{copy.productTitle}</h2>
-                <p className="card-sub">{copy.productIntro}</p>
-              </div>
-              <button
-                type="button"
-                className="ghost-btn"
-                onClick={() => setScenario(defaultScenario(template, scenario.seed))}
-              >
-                {copy.reset}
-              </button>
-            </header>
+          <InputCard
+            id="in-product"
+            title={copy.productTitle}
+            summary={copy.productSummary(
+              formatEuro(d.dishPrice),
+              formatEuro(d.drinkPrice),
+              formatEuro(u.dishCost.base),
+            )}
+          >
+            <p className="card-sub card-intro">{copy.productIntro}</p>
             <div className="product-group">
               <h3>{copy.dishGroup}</h3>
               <div className="decisions">
@@ -211,26 +212,41 @@ export default function WeekendPage() {
               </p>
             )}
             <p className="card-sub">{copy.priceHint}</p>
-          </article>
+          </InputCard>
 
-          <article className="card">
-            <header className="card-head">
-              <h2>
-                {copy.customersTitle} <InfoTip text={copy.estimatesInfo} />
-              </h2>
-              <p className="card-sub">{copy.estimatesIntro}</p>
-            </header>
+          <InputCard
+            id="in-customers"
+            title={copy.customersTitle}
+            summary={copy.customersSummary(
+              fmtNum(u.peakDemand.base),
+              fmtNum(u.offpeakDemand.base),
+              fmtNum(u.peakHours.base),
+            )}
+          >
+            <p className="card-sub card-intro">
+              {copy.estimatesIntro} <InfoTip text={copy.estimatesInfo} />
+            </p>
             <div className="estimates">{estimatesIn('customers').map(estimateRow)}</div>
-          </article>
+          </InputCard>
 
-          <article className="card">
-            <header className="card-head">
-              <h2>{copy.choicesTitle}</h2>
-              <p className="card-sub">{copy.choicesIntro}</p>
-            </header>
+          <InputCard
+            id="in-stand"
+            title={copy.choicesTitle}
+            summary={copy.standSummary(
+              fmtNum(d.staffCount),
+              fmtNum(d.capacityPerHour),
+              fmtNum(d.openHours),
+              formatEuro(d.rentFixedPerDay),
+            )}
+          >
+            <p className="card-sub card-intro">{copy.choicesIntro}</p>
             <div className="decisions">{decisionsIn('stand').map(decisionField)}</div>
 
-            <details className="advanced">
+            <details
+              className="advanced"
+              open={advancedOpen}
+              onToggle={(e) => setAdvancedOpen(e.currentTarget.open)}
+            >
               <summary>{copy.advancedTitle}</summary>
               {estimatesIn('advanced').length > 0 && (
                 <div className="estimates advanced-estimates">
@@ -323,11 +339,10 @@ export default function WeekendPage() {
                 </span>
               </div>
             </details>
-          </article>
+          </InputCard>
         </section>
 
         <section
-          ref={outputsRef}
           id="results"
           className={`column outputs ${stale ? 'is-stale' : ''}`}
           aria-label={copy.resultsTitle}
@@ -354,28 +369,6 @@ export default function WeekendPage() {
           )}
         </section>
       </main>
-
-      {outcome.result && !outputsVisible && (
-        <a
-          className="sticky-results"
-          href="#results"
-          onClick={(e) => {
-            e.preventDefault()
-            outputsRef.current?.scrollIntoView({ behavior: 'smooth' })
-          }}
-        >
-          <span>
-            <small>{copy.mostLikely}</small>
-            <b className={outcome.result.summary.profit.p50 < 0 ? 'neg' : undefined}>
-              {formatEuro(outcome.result.summary.profit.p50)}
-            </b>
-          </span>
-          <span className="sticky-chance">
-            {copy.stickyChance(`${Math.round((1 - outcome.result.summary.lossChance) * 100)}%`)}
-          </span>
-          <span className="sticky-cta">{copy.stickySee} ↓</span>
-        </a>
-      )}
     </div>
   )
 }
