@@ -83,6 +83,8 @@ export const copy = {
   profitInfo:
     'Sales after VAT minus all costs: ingredients, wages, rent, card fees and other costs. Most likely is the middle of 10,000 simulated days; worst and best case are the 1-in-10 low and high ends.',
   profitChance: 'chance a typical weekend day makes a profit',
+  profitClosed: (likely: string, chance: string) =>
+    `${likely} most likely · ${chance} chance of a profit`,
 
   salesTitle: 'Sales per weekend day',
   salesSub: 'what customers pay, incl. VAT',
@@ -91,6 +93,7 @@ export const copy = {
   salesOrders: (orders: string) => `From about ${orders} orders a day.`,
   salesNet: (net: string, vat: string) => `${net} after VAT (${vat} VAT)`,
   salesMore: 'More about your sales',
+  salesClosed: (gross: string, orders: string) => `${gross} most likely · about ${orders} orders`,
   salesRows: { orders: 'Orders a day', spend: 'Spend per order' },
   salesMix: (food: string, drinks: string) => `Main dishes ${food} · Drinks ${drinks}`,
   salesMixLabel: 'On a most likely day',
@@ -114,6 +117,7 @@ export const copy = {
     rentShare: 'Rent (share of sales)',
   },
   costsMore: 'See cost breakdown',
+  costsClosed: (total: string, fixed: string) => `${total} most likely · ${fixed} fixed`,
   costsRange: (lo: string, hi: string) => `Most days cost between ${lo} and ${hi}.`,
 
   breakevenTitle: 'Break-even',
@@ -122,6 +126,8 @@ export const copy = {
   breakevenLine: (need: string, expect: string) =>
     `You need about ${need} orders a day to cover your costs. You expect about ${expect}.`,
   breakevenMarker: 'Break-even',
+  breakevenClosed: (need: string, expect: string) =>
+    `About ${need} orders a day needed · ${expect} expected`,
   breakevenExpected: 'You expect',
   cushion: {
     comfortable: 'Healthy cushion',
@@ -165,6 +171,8 @@ export const copy = {
   goalResult: (dir: string, amount: string) =>
     `probability that your profit on a typical weekend day will be ${dir} ${amount}`,
   goalLikely: (value: string) => `Your most likely profit is ${value}.`,
+  goalClosed: (p: string, dir: string, amount: string) =>
+    `${p} chance your profit is ${dir} ${amount}`,
   goalTakesTitle: { 'at-least': 'What it would take', below: 'What that would look like' },
   goalTakesIntro: {
     'at-least':
@@ -189,6 +197,8 @@ export const copy = {
     capped: (costs: string) =>
       `…they fund the whole day: a typical day costs about ${costs} to run, so that is all one day can use.`,
     likely: 'Most likely return',
+    closed: (amount: string, ret: string, pct: string) =>
+      `${amount} in → most likely ${ret} (${pct})`,
     more: 'Chances of making or losing money',
     upTitle: 'Making money',
     upAsk: 'Chance of earning',

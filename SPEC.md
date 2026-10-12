@@ -1,6 +1,6 @@
 # SPEC v1.4 — Pop-up Food Stand Simulator
 
-**Changelog v1.4 (2026-10-12):** capacity suggestion grows up to 10 people on shift (1 → 20, 2 → 30, 3 → 38, 4 → 45, 5 → 51, 6 → 57, 7 → 62, 8 → 68, 9 → 72, 10+ → 77 orders/h); capacity limit note in the Sales card replaces "Room to grow" (§6 card 5); open/closed sections remembered per browser tab; Restart button replaces "Reset to defaults"; input cards collapsible with a one-line summary; sticky results bar removed; every ⓘ adds "Effect on your results"; new "How the model works" page (§6b).
+**Changelog v1.4 (2026-10-12):** result cards collapsible (closed = one-line headline); capacity suggestion grows up to 10 people on shift (1 → 20, 2 → 30, 3 → 38, 4 → 45, 5 → 51, 6 → 57, 7 → 62, 8 → 68, 9 → 72, 10+ → 77 orders/h); capacity limit note in the Sales card replaces "Room to grow" (§6 card 5); open/closed sections remembered per browser tab; Restart button replaces "Reset to defaults"; input cards collapsible with a one-line summary; sticky results bar removed; every ⓘ adds "Effect on your results"; new "How the model works" page (§6b).
 
 **Changelog v1.3 (2026-10-11):** detail moved into expandable sections (closed by default): "More about your sales" (new), cost breakdown, "What matters most" (now inside the Break-even card, no separate card), "What it would take", and the investor chances. Investor dropdowns start at €1 ("earning / losing €1 or more"); the separate "Chance of losing any money" row is replaced by that option. "What matters most" starts open.
 
@@ -189,6 +189,7 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 - Below the results: a short "How this works" paragraph (plain English, no jargon).
 - ~~Sticky results bar~~ removed (v1.4).
 - **Sections remember their state:** every expandable section and input card keeps open/closed for the browser tab (sessionStorage; not in the link). **Restart** (top bar, with confirmation) resets all numbers, the seed and every section to its default.
+- **Result cards** (Profit, Sales, Costs, Break-even, Check a goal, For investors) are collapsible too, open by default and remembered like the rest. Closed, a card shows its headline in one line (e.g. "€174.28 most likely · 80% chance of a profit"), so it stays understandable on its own. Tapping an ⓘ in a card header shows the tip without folding the card.
 - **Input cards** (Your product / customers / stand) are collapsible, open by default; when closed they show a one-line summary, e.g. "Dish €9.00 · drink €3.50 · ingredients €3.00 per dish".
 - **Capacity suggestion:** 20 × min(people, 10)^0.585 orders/h, rounded; above 10 people the badge says "suggested (capped at 10 people)". The user can always type their own.
 

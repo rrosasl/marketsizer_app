@@ -3,6 +3,7 @@ import { investorOutlook, investorThreshold, type SimulationResult } from '../en
 import type { InvestorChoice, Template } from '../templates'
 import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
+import { ResultCard } from './components/ResultCard'
 import { NumberField } from './components/NumberField'
 import { copy } from './copy'
 import { formatEuro } from './format'
@@ -45,13 +46,24 @@ export function InvestorCard({
   }
 
   return (
-    <article className="card investor">
-      <header className="card-head">
-        <h3>
+    <ResultCard
+      id="card-investor"
+      className="investor"
+      title={
+        <>
           {copy.investor.title} <InfoTip text={copy.investor.info} />
-        </h3>
-      </header>
-
+        </>
+      }
+      closedLine={
+        o
+          ? copy.investor.closed(
+              euro(choice.amount),
+              signed(o.likelyReturn),
+              pct(o.likelyReturn / choice.amount),
+            )
+          : ''
+      }
+    >
       <div className="goal-ask">
         <span>{copy.investor.askBefore}</span>
         <NumberField
@@ -138,6 +150,6 @@ export function InvestorCard({
         </>
       )}
       <p className="card-caption">{caption}</p>
-    </article>
+    </ResultCard>
   )
 }

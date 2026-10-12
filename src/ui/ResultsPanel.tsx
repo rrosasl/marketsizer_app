@@ -14,6 +14,7 @@ import { ProfitSpread } from './charts/ProfitSpread'
 import { RangeBar } from './charts/RangeBar'
 import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
+import { ResultCard } from './components/ResultCard'
 import { copy } from './copy'
 import { formatEuro } from './format'
 import { CostsCard } from './CostsCard'
@@ -74,13 +75,17 @@ export function ResultsPanel({
     <div className="results">
       {s.everyOrderLosesMoney && <p className="notice notice-danger">{copy.everyOrderLoses}</p>}
 
-      <article className="card card-hero">
-        <header className="card-head">
-          <h3>
+      <ResultCard
+        id="card-profit"
+        className="card-hero"
+        title={
+          <>
             {copy.profitTitle} <InfoTip text={copy.profitInfo} />
-          </h3>
-          <span className="card-sub">{copy.profitSub}</span>
-        </header>
+          </>
+        }
+        sub={copy.profitSub}
+        closedLine={copy.profitClosed(formatEuro(s.profit.p50), fmtPct(profitChance))}
+      >
         <div className="hero-row">
           <div>
             <span className="eyebrow">{copy.mostLikely}</span>
@@ -111,16 +116,19 @@ export function ResultsPanel({
           <ProfitSpread profit={r.profit} range={s.profit} />
         </Expand>
         <p className="card-caption">{caption}</p>
-      </article>
+      </ResultCard>
 
       <div className="card-pair">
-        <article className="card">
-          <header className="card-head">
-            <h3>
+        <ResultCard
+          id="card-sales"
+          title={
+            <>
               {copy.salesTitle} <InfoTip text={copy.salesInfo} />
-            </h3>
-            <span className="card-sub">{copy.salesSub}</span>
-          </header>
+            </>
+          }
+          sub={copy.salesSub}
+          closedLine={copy.salesClosed(formatEuro(s.grossSales.p50), fmtOrders(s.orders.p50))}
+        >
           <span className="eyebrow">{copy.mostLikely}</span>
           <span className="big">{formatEuro(s.grossSales.p50)}</span>
           <p className="sales-net">
@@ -181,17 +189,20 @@ export function ResultsPanel({
             </ul>
           </Expand>
           <p className="card-caption">{caption}</p>
-        </article>
+        </ResultCard>
 
         <CostsCard r={r} caption={caption} />
       </div>
 
-      <article className="card">
-        <header className="card-head">
-          <h3>
+      <ResultCard
+        id="card-breakeven"
+        title={
+          <>
             {copy.breakevenTitle} <InfoTip text={copy.breakevenInfo} />
-          </h3>
-        </header>
+          </>
+        }
+        closedLine={copy.breakevenClosed(fmtOrders(s.breakevenOrders.p50), fmtOrders(s.orders.p50))}
+      >
         <p className="lead">
           {copy.breakevenLine(fmtOrders(s.breakevenOrders.p50), fmtOrders(s.orders.p50))}
         </p>
@@ -220,7 +231,7 @@ export function ResultsPanel({
           )}
         </Expand>
         <p className="card-caption">{caption}</p>
-      </article>
+      </ResultCard>
 
       <GoalCard
         r={r}

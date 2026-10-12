@@ -1,6 +1,7 @@
 import { costBreakdown, type SimulationResult } from '../engine'
 import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
+import { ResultCard } from './components/ResultCard'
 import { copy } from './copy'
 import { formatEuro } from './format'
 
@@ -12,13 +13,17 @@ export function CostsCard({ r, caption }: { r: SimulationResult; caption: string
   if (!(b.total > 0)) return null
   const range = r.summary.dailyCosts
   return (
-    <article className="card costs">
-      <header className="card-head">
-        <h3>
+    <ResultCard
+      id="card-costs"
+      className="costs"
+      title={
+        <>
           {copy.costsTitle} <InfoTip text={copy.costsInfo} />
-        </h3>
-        <span className="card-sub">{copy.costsSub}</span>
-      </header>
+        </>
+      }
+      sub={copy.costsSub}
+      closedLine={copy.costsClosed(formatEuro(b.total), pct(b.fixed, b.total))}
+    >
       <span className="eyebrow">{copy.mostLikely}</span>
       <span className="big">{formatEuro(b.total)}</span>
 
@@ -59,6 +64,6 @@ export function CostsCard({ r, caption }: { r: SimulationResult; caption: string
       </Expand>
       <p className="footnote">{copy.costsRange(formatEuro(range.p10), formatEuro(range.p90))}</p>
       <p className="card-caption">{caption}</p>
-    </article>
+    </ResultCard>
   )
 }

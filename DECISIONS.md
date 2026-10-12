@@ -2,6 +2,10 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-12 — Collapsible result cards (Ricardo)
+
+- All six result cards fold like the input cards (open by default, remembered per tab, reset by Restart). A closed card keeps a one-line headline so it still works as a screenshot on its own. The capacity note and warnings live inside the Sales / Break-even cards, so they are hidden when those cards are closed — acceptable since the user closed them on purpose.
+
 ## 2026-10-12 — Staff to 10, limit note, remembered sections, tooltips, method page (Ricardo)
 
 - **Capacity to 10 people:** same curve (20 × people^0.585), ceiling moved from 45 orders/h to "stops growing at 10 people" (77 orders/h). Wages still grow linearly, so extra staff eventually lowers profit. Badge: "suggested (capped at 10 people)". (My proposal table said 67 for 8 people; the correct rounded value is 68.)

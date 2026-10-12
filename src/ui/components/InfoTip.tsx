@@ -17,7 +17,14 @@ export function InfoTip({
   const id = useId()
   return (
     <span className="tip">
-      <button type="button" className="tip-btn" aria-label={label} aria-describedby={id}>
+      <button
+        type="button"
+        className="tip-btn"
+        aria-label={label}
+        aria-describedby={id}
+        // Inside a card's clickable header, a tap shows the tip instead of folding the card.
+        onClick={(e) => e.preventDefault()}
+      >
         i
       </button>
       <span role="tooltip" id={id} className="tip-bubble">

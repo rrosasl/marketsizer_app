@@ -9,6 +9,7 @@ import {
 import type { UncertainInputDef } from '../templates'
 import { Expand } from './components/Expand'
 import { InfoTip } from './components/InfoTip'
+import { ResultCard } from './components/ResultCard'
 import { NumberField } from './components/NumberField'
 import { copy } from './copy'
 import { formatEuro } from './format'
@@ -59,13 +60,20 @@ export function GoalCard({
   const common = analysis && analysis.drivers.length === 0 && p >= 0.5
 
   return (
-    <article className="card goal">
-      <header className="card-head">
-        <h3>
+    <ResultCard
+      id="card-goal"
+      className="goal"
+      title={
+        <>
           {copy.goalTitle} <InfoTip text={copy.goalInfo} />
-        </h3>
-      </header>
-
+        </>
+      }
+      closedLine={
+        analysis
+          ? copy.goalClosed(fmtPct(p), copy.goalDirection[goal.direction], formatEuro(goal.amount))
+          : ''
+      }
+    >
       <div className="goal-ask">
         <span>{copy.goalAsk}</span>
         <select
@@ -150,6 +158,6 @@ export function GoalCard({
         </>
       )}
       <p className="card-caption">{caption}</p>
-    </article>
+    </ResultCard>
   )
 }
