@@ -24,8 +24,10 @@ export const copy = {
   best: 'Best',
   suggested: 'suggested',
   useSuggestion: 'Use suggestion',
-  capacitySuggested: (people: number) =>
-    `suggested for ${people} ${people === 1 ? 'person' : 'people'}`,
+  capacitySuggested: (people: number, maxPeople: number) =>
+    people > maxPeople
+      ? `suggested for ${maxPeople} people (capped at ${maxPeople})`
+      : `suggested for ${people} ${people === 1 ? 'person' : 'people'}`,
   costHint: 'For costs, worst = most expensive.',
 
   choicesTitle: 'Your stand',

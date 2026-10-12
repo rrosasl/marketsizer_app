@@ -72,10 +72,15 @@ describe('parseNumber', () => {
 })
 
 describe('capacity suggestion', () => {
-  it('grows with people on shift, with diminishing returns and a ceiling', async () => {
+  it('grows with people on shift, with diminishing returns, up to 10 people', async () => {
     const { suggestCapacity } = await import('../../src/state/scenario')
-    const caps = [0, 1, 2, 3, 4, 5].map((n) => suggestCapacity(arepaMarkthalle, n))
-    expect(caps).toEqual([0, 20, 30, 38, 45, 45])
+    const caps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 20].map((n) =>
+      suggestCapacity(arepaMarkthalle, n),
+    )
+    expect(caps).toEqual([0, 20, 30, 38, 45, 51, 57, 62, 68, 72, 77, 77, 77])
+    // Each extra person adds less (before rounding).
+    const raw = (n: number) => 20 * n ** 0.585
+    for (let n = 2; n < 10; n++) expect(raw(n + 1) - raw(n)).toBeLessThan(raw(n) - raw(n - 1))
     // Template default matches the suggestion for the default number of people.
     const s = defaultScenario(arepaMarkthalle, 1)
     expect(s.decisions.capacityPerHour).toBe(

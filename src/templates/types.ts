@@ -73,10 +73,10 @@ export interface Template {
   defaultGoal: Goal
   /**
    * Suggested "most orders you can serve per hour" for a number of people on shift:
-   * min(perPerson × people^exponent, ceiling), rounded. Extra people share one grill and counter,
-   * so each adds a bit less (exponent < 1), up to what the stand itself can handle (ceiling).
+   * perPerson × min(people, maxPeople)^exponent, rounded. Extra people share one grill and counter,
+   * so each adds a bit less (exponent < 1); beyond maxPeople the suggestion stops growing.
    */
-  capacitySuggestion: { perPerson: number; exponent: number; ceiling: number }
+  capacitySuggestion: { perPerson: number; exponent: number; maxPeople: number }
   /** "What if things go worse than expected?" rows (the first should be no change). */
   stressTests: StressShock[]
   /** "For investors" card: default stake and the dropdown choices (shares of the stake). */

@@ -132,7 +132,7 @@ export const arepaMarkthalle: Template = {
       default: 20,
       min: 1,
       step: 1,
-      help: 'More people can serve more orders, but they share one grill and counter. We suggest a number from the people on shift; type your own if you know better.',
+      help: 'More people can serve more orders, but they share one grill and counter. We suggest a number from the people on shift (each extra person adds a bit less; the suggestion stops growing at 10 people). Type your own if you know better.',
     },
     {
       key: 'openHours',
@@ -231,7 +231,7 @@ export const arepaMarkthalle: Template = {
   correlations: [{ a: 'peakDemand', b: 'offpeakDemand', rho: 0.6 }],
   defaultGoal: { metric: 'profit', direction: 'at-least', amount: 200 },
   // 1 person → 20, 2 → 30, 3 → 38, 4+ → 45 orders/h.
-  capacitySuggestion: { perPerson: 20, exponent: 0.585, ceiling: 45 },
+  capacitySuggestion: { perPerson: 20, exponent: 0.585, maxPeople: 10 },
   stressTests: [
     { demand: 1, ingredients: 1, fixed: 1 },
     { demand: 0.9, ingredients: 1, fixed: 1 },

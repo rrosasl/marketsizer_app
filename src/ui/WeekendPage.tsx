@@ -126,7 +126,10 @@ export default function WeekendPage() {
         def.key === 'capacityPerHour'
           ? {
               manual: scenario.capacityManual,
-              note: copy.capacitySuggested(scenario.decisions.staffCount),
+              note: copy.capacitySuggested(
+                scenario.decisions.staffCount,
+                template.capacitySuggestion.maxPeople,
+              ),
               onReset: () => update((s) => resetCapacity(template, s)),
             }
           : undefined

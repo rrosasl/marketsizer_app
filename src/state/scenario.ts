@@ -56,8 +56,8 @@ export type Side = 'worst' | 'best'
 /** Suggested orders per hour for a number of people on shift (see Template.capacitySuggestion). */
 export function suggestCapacity(t: Template, people: number): number {
   if (!(people > 0)) return 0
-  const { perPerson, exponent, ceiling } = t.capacitySuggestion
-  return Math.round(Math.min(perPerson * people ** exponent, ceiling))
+  const { perPerson, exponent, maxPeople } = t.capacitySuggestion
+  return Math.round(perPerson * Math.min(people, maxPeople) ** exponent)
 }
 
 /**
