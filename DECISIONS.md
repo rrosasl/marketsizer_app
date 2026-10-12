@@ -2,6 +2,15 @@
 
 Log of deviations from SPEC.md / CLAUDE.md and of choices SPEC leaves open. Newest first.
 
+## 2026-10-12 — Staff to 10, limit note, remembered sections, tooltips, method page (Ricardo)
+
+- **Capacity to 10 people:** same curve (20 × people^0.585), ceiling moved from 45 orders/h to "stops growing at 10 people" (77 orders/h). Wages still grow linearly, so extra staff eventually lowers profit. Badge: "suggested (capped at 10 people)". (My proposal table said 67 for 8 people; the correct rounded value is 68.)
+- **Limit note** (Sales card) replaces "Room to grow": limited scenario = ≥ 5% of customers turned away; note when ≥ 10% of scenarios are limited; missed orders/sales are medians within those scenarios. Only serving capacity can bind — busy hours are drawn within opening hours (template limit), so no busy-hours note.
+- **Section memory:** sessionStorage per tab, not in the link (layout is personal, numbers are shareable). **Restart** replaces "Reset to defaults"; it also resets the seed and asks for confirmation.
+- **Input cards collapsible** with a one-line summary. **Sticky results bar removed** on all screens (Ricardo).
+- **Tooltips:** fixed "Effect on your results" text per input (option a; a live "+10% → €X" was rejected — misleading for prices, since customers don't react to price in the model). New tips: opening hours, VAT on drinks, card fees (now states "we assume everyone pays by card"), limits, linked estimates, seed, Profit / Sales / Break-even cards.
+- **Method page** as a second Vite entry (`method.html`), worked example from the default numbers (option chosen by Ricardo), computed by the engine so it can't drift. Long-form prose lives in `MethodPage.tsx` rather than `copy.ts` (deviation from "copy.ts holds all UI text": it is an article, not UI strings); short UI strings for it are in `copy.method`. "Back to the simulator" returns via browser history so the user's numbers are kept. The no-jargon rule (CLAUDE.md decision 7) still holds on the main page; the method page names and explains terms like "Monte Carlo", "metalog" and "copula" because that is its purpose (Ricardo asked for it).
+
 ## 2026-10-11 — Expandable sections in results (Ricardo)
 
 - Detail behind closed-by-default expandables so each card leads with its headline: new "More about your sales"; cost line items; "What it would take"; investor chances. One shared `Expand` component and style (also used by "See all 10,000 scenarios" and the stress table).

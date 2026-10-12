@@ -708,6 +708,7 @@ select {
 .spread svg:hover .col.is-hover {
   opacity: 1;
 }
+.method-figure .baseline,
 .spread .baseline {
   stroke: var(--border);
   stroke-width: 1;
@@ -725,6 +726,7 @@ select {
   stroke: var(--ink-2);
   stroke-width: 1.5;
 }
+.method-figure .tick-label,
 .spread .tick-label {
   font-size: 12px;
   fill: var(--ink-2);
@@ -1545,4 +1547,179 @@ select {
   color: var(--ink-2);
   font-size: 0.85rem;
   font-weight: 550;
+}
+
+/* Method page ("How the model works") */
+a.ghost-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+a.brand {
+  color: inherit;
+  text-decoration: none;
+}
+.how-link {
+  color: var(--accent-ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.method .intro {
+  max-width: 760px;
+}
+.method-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 24px;
+}
+.method-toc a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.method-toc a:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.method-toc span {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.method-main {
+  display: grid;
+  gap: 20px;
+  max-width: 860px;
+}
+.method-section {
+  scroll-margin-top: 16px;
+}
+.method-section h2 {
+  font-size: 1.25rem;
+  margin: 0 0 12px;
+}
+.method-section p,
+.method-section li,
+.method-section dd {
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+.method-section b {
+  color: var(--ink);
+}
+.method-steps {
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+.method-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  margin: 8px 0 16px;
+}
+.method-table th,
+.method-table td {
+  padding: 7px 0;
+  border-top: 1px solid var(--hairline);
+  vertical-align: top;
+}
+.method-table th {
+  text-align: left;
+  font-weight: 550;
+  color: var(--ink);
+  padding-right: 16px;
+}
+.method-table td {
+  text-align: right;
+  white-space: nowrap;
+}
+.method-table td.calc {
+  text-align: left;
+  color: var(--muted);
+  white-space: normal;
+  padding-right: 16px;
+}
+.method-table tr.sub th,
+.method-table tr.sub td:last-child {
+  font-weight: 650;
+}
+.method-table tr.total th,
+.method-table tr.total td {
+  font-weight: 700;
+  border-top: 2px solid var(--border);
+}
+.method-figure {
+  margin: 8px 0 16px;
+}
+.method-figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.method-col {
+  fill: var(--accent);
+  opacity: 0.75;
+}
+.method-mark {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+.method-dot {
+  fill: var(--accent);
+  fill-opacity: 0.35;
+}
+.method-tech pre {
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  overflow-x: auto;
+}
+.method-tech li,
+.method-tech p {
+  font-size: 0.88rem;
+}
+.method-formulas {
+  display: grid;
+  gap: 6px;
+}
+.method-dl dt {
+  font-weight: 650;
+  margin-top: 14px;
+}
+.method-dl dt:first-child {
+  margin-top: 0;
+}
+.method-dl dd {
+  margin: 4px 0 0;
+}
+.method-foot {
+  margin: 4px 4px 32px;
+}
+.method-foot a {
+  color: var(--accent-ink);
+}
+@media (max-width: 640px) {
+  .method-table td.calc {
+    display: none;
+  }
 }

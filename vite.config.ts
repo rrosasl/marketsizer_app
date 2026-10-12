@@ -5,6 +5,11 @@ export default defineConfig({
   plugins: [react()],
   // Relative asset paths so the build works under the GitHub Pages sub-path (/MarketSizer/).
   base: './',
+  build: {
+    rollupOptions: {
+      input: { main: 'index.html', method: 'method.html' },
+    },
+  },
   test: {
     include: ['tests/**/*.test.ts'],
     environment: 'node',

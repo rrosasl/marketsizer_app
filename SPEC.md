@@ -1,4 +1,6 @@
-# SPEC v1.3 — Pop-up Food Stand Simulator
+# SPEC v1.4 — Pop-up Food Stand Simulator
+
+**Changelog v1.4 (2026-10-12):** capacity suggestion grows up to 10 people on shift (1 → 20, 2 → 30, 3 → 38, 4 → 45, 5 → 51, 6 → 57, 7 → 62, 8 → 68, 9 → 72, 10+ → 77 orders/h); capacity limit note in the Sales card replaces "Room to grow" (§6 card 5); open/closed sections remembered per browser tab; Restart button replaces "Reset to defaults"; input cards collapsible with a one-line summary; sticky results bar removed; every ⓘ adds "Effect on your results"; new "How the model works" page (§6b).
 
 **Changelog v1.3 (2026-10-11):** detail moved into expandable sections (closed by default): "More about your sales" (new), cost breakdown, "What matters most" (now inside the Break-even card, no separate card), "What it would take", and the investor chances. Investor dropdowns start at €1 ("earning / losing €1 or more"); the separate "Chance of losing any money" row is replaced by that option. "What matters most" starts open.
 
@@ -44,7 +46,7 @@ Test case: arepa stand in a Berlin Markthalle.
 
 ## 2. Guided input: worst / base / best
 
-Each uncertain input has three fields plus an ⓘ button.
+Each uncertain input has three fields plus an ⓘ button. Every ⓘ on an input (estimates and choices) has two parts: what it is, and **"Effect on your results:"** how raising or lowering it moves sales, costs, profit or break-even (template field `effect`; a test checks every input has both).
 
 **Info text (draft):**
 > **Base case:** what you realistically expect on a typical day.
@@ -171,7 +173,7 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
    - **Customer tolerance** (always shown, one line): "Your customers could drop by about N% before you start losing money" / "You'd need about N% more customers to break even" / "More customers alone won't get you to break even — you'd hit your serving limit first" / "More customers won't help while each order loses money". N = the demand multiplier (applied to both demand inputs, before the capacity cap, on all 10,000 scenarios) at which most-likely (median) profit is €0; found with a bracketed secant (Illinois) search.
    - **"What if things go worse than expected?"** (expandable, closed by default): most-likely profit with hypothetical changes applied to the same 10,000 scenarios — as expected; 10% / 20% / 30% fewer customers; ingredients (dish + drink) 20% more expensive; fixed costs (rent, wages, other) 20% higher; 20% fewer customers + ingredients 15% more expensive. Rows are template data (`stressTests`); labels are generated from the multipliers. Footnote: "Hypothetical changes … 'what ifs', not predictions." No user controls.
 4. **What matters most** (inside the Break-even card, expandable "What matters most for your result", **open** by default): a top-5 bar chart with plain labels. Bars show strength only (Big / Some / Small impact), no sign; the direction label ("Higher → more profit") comes from the model, not from the correlation sign. A short intro, an ⓘ explanation, and a "Start here" box with a template research tip for the top driver.
-5. **Capacity alert** (shown only if lost orders exceed 5% of demand in the most-likely case): "Room to grow. At busy times, about N more customers may want to order than you can serve — around €X in extra sales." Facts only; no staffing advice.
+5. **Capacity limit note** (inside the Sales card, below the orders line): a scenario counts as limited when at least 5% of its customers are turned away; the note shows when at least 10% of scenarios are limited: "In N% of scenarios you’d turn customers away because you can serve at most C orders an hour. In those scenarios you’d miss about M orders (€X) a day." (M, €X = medians within the limited scenarios.) Facts only; no staffing advice. Busy hours are drawn within opening hours, so they never hit a limit and get no note.
 
 6. **Check a goal** (last section of the page): "What’s the probability that my profit will be [above | below] €X?" (profit only; €X may be negative — a ± button flips the sign because phone number pads have no minus key). → share of the 10,000 scenarios that meet it (shown as <1% / >99% at the extremes), with the most-likely value for context. Below it, expandable and closed by default, "What it would take" (or "What that would look like" for *below*): up to 3 estimates whose typical value in the scenarios that meet the goal differs most from the user's most-likely value. Ranked by the average percentile rank of the estimate among those scenarios minus 50%; shown only if that shift is ≥ 5 points, and only if at least 50 scenarios fall on each side. Default question: profit at least €200.
 
@@ -185,7 +187,13 @@ All outputs are cards. Each card has a title, a headline number, a worst–best 
 - The scenario histogram lives inside the Profit card behind "See all 10,000 scenarios" (closed by default); no separate card.
 - Every result card ends with a caption: scenario name · dish price · people on shift · opening hours · month and year.
 - Below the results: a short "How this works" paragraph (plain English, no jargon).
-- On narrow screens, a sticky bar shows most-likely profit and chance of profit with "See results ↓" until the results are on screen.
+- ~~Sticky results bar~~ removed (v1.4).
+- **Sections remember their state:** every expandable section and input card keeps open/closed for the browser tab (sessionStorage; not in the link). **Restart** (top bar, with confirmation) resets all numbers, the seed and every section to its default.
+- **Input cards** (Your product / customers / stand) are collapsible, open by default; when closed they show a one-line summary, e.g. "Dish €9.00 · drink €3.50 · ingredients €3.00 per dish".
+- **Capacity suggestion:** 20 × min(people, 10)^0.585 orders/h, rounded; above 10 people the badge says "suggested (capped at 10 people)". The user can always type their own.
+
+### 6b. "How the model works" page (`method.html`)
+Linked from the top bar and from "How this works". For curious users; the main page does not depend on it. Sections: the short version (incl. "Monte Carlo"); one market day step by step (worked example at default most-likely values, computed by the engine); from three guesses to a range (histogram of simulated orders per busy hour); 10,000 possible days; estimates that move together (scatter of busy vs quiet orders); a typical day, not a single day; how each result is worked out; what the model leaves out; references. Plain English first, formulas under closed "Technical detail" sections. All numbers come from the default template and seed 12345.
 
 Footnote convention: "Worst/best = 1-in-10 scenarios. Based on 10,000 simulated scenarios of your inputs."
 

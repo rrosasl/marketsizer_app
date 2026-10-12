@@ -166,6 +166,9 @@ export default function WeekendPage() {
         </div>
         <div className="topbar-right">
           <span className="scenario-pill">{template.scenarioName}</span>
+          <a className="ghost-btn" href="method.html">
+            {copy.method.link}
+          </a>
           <button type="button" className="ghost-btn" onClick={restart} title={copy.restartHelp}>
             {copy.restart}
           </button>

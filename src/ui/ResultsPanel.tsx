@@ -246,7 +246,12 @@ export function ResultsPanel({
 
       <section className="how">
         <h4>{copy.howTitle}</h4>
-        <p>{copy.howText}</p>
+        <p>
+          {copy.howText}{' '}
+          <a href="method.html" className="how-link">
+            {copy.method.link} →
+          </a>
+        </p>
       </section>
 
       <Expand id="math" title={copy.mathTitle} className="math">

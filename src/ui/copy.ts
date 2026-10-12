@@ -217,6 +217,14 @@ export const copy = {
   limitCapacity: (share: string, perHour: string, orders: string, sales: string) =>
     `In ${share} of scenarios you’d turn customers away because you can serve at most ${perHour} orders an hour. In those scenarios you’d miss about ${orders} orders (${sales}) a day.`,
 
+  method: {
+    link: 'How the model works',
+    title: 'How the model works',
+    intro:
+      'The logic behind the simulator, for anyone who wants to know more. You don’t need any of this to use it.',
+    back: 'Back to the simulator',
+    tech: 'Technical detail',
+  },
   howTitle: 'How this works',
   howText:
     'You give a worst, most likely and best guess for the things you can’t know yet, such as how many customers will come. We turn each guess into a realistic range and simulate 10,000 possible typical days, mixing your guesses at random (busy and quiet hours tend to move together). “Most likely” is the middle result; worst and best case are the 1-in-10 low and high ends. Nothing you enter leaves your browser.',

@@ -37,7 +37,7 @@ The project evolves a 2020 notebook (Monte Carlo market sizing for an arepa rest
 3. **Correlations are fixed per template** and hidden from the user, with only an advanced toggle (Independent / Default / Strong).
 4. **Per weekend day only.** All results are for one typical weekend day; break-even is in orders per day. No month/year views or payback (dropped 2026-10-11).
 5. **Labour is costed through "People on shift".** There is no separate owner pay; the user includes themselves on shift (default: 1 person); cost per person can be set to 0 for unpaid owners.
-6. **One page.** Inputs on the left, results for one weekend day on the right.
+6. **One working page.** Inputs on the left, results for one weekend day on the right. A separate "How the model works" page (`method.html`) explains the logic for curious users.
 7. **No jargon in the UI:** no "P10", "Monte Carlo" or "distribution". Use *Worst case / Most likely / Best case*.
 8. **UI language: English.** Number format `€1,234.50`.
 9. **Simplicity first.** Anything most users don't need goes under "Advanced settings".
