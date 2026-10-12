@@ -812,9 +812,9 @@ select {
   background: var(--warn-soft);
   color: var(--warn-ink);
 }
-.notice-grow {
-  background: var(--good-soft);
-  color: var(--good-ink);
+.limit-note {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
 }
 .footnote {
   margin: 0 4px;

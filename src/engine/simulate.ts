@@ -47,8 +47,10 @@ export interface SensitivityItem {
   rho: number
 }
 
-/** Lost orders above this share of demand (most-likely case) trigger the capacity alert. SPEC §6. */
-export const CAPACITY_ALERT_SHARE = 0.05
+/** A scenario counts as limited by capacity when at least this share of demand is turned away. */
+export const CAPACITY_LIMITED_SHARE = 0.05
+/** A limit note shows when at least this share of scenarios hit the limit. SPEC §6. */
+export const LIMIT_NOTE_SHARE = 0.1
 export const STRONG_FACTOR = 1.5
 export const STRONG_CAP = 0.9
 
@@ -87,12 +89,19 @@ export interface SimulationResult {
     /** Median break-even is above the most orders the stand can serve in a day. */
     breakevenAboveCapacity: boolean
     maxOrdersPerDay: number
-    capacity: {
-      show: boolean
-      /** Most-likely share of demand turned away. */
-      lostShare: number
-      lostOrders: number
-      lostGrossSales: number
+    /**
+     * Limits the simulation ran into (SPEC §6 limit notes). Serving capacity is the only one that
+     * can bind: busy hours are drawn within the opening hours, so they are never cut.
+     */
+    limits: {
+      capacity: {
+        show: boolean
+        /** Share of scenarios turning away ≥ CAPACITY_LIMITED_SHARE of their customers. */
+        share: number
+        /** Median orders / sales (incl. VAT) turned away, within those scenarios. */
+        lostOrders: number
+        lostGrossSales: number
+      }
     }
   }
   /** All uncertain inputs, strongest driver first. */
@@ -143,9 +152,10 @@ export function simulate(spec: SimulationSpec): SimulationResult {
   const orders = new Float64Array(n)
   const breakeven = new Float64Array(n)
   const contribution = new Float64Array(n)
-  const lostShare = new Float64Array(n)
+  // Lost orders and sales in the scenarios limited by capacity (first `limited` entries used).
   const lostOrders = new Float64Array(n)
   const lostGross = new Float64Array(n)
+  let limited = 0
   let maxOrdersPerDay = 0
   for (let s = 0; s < n; s++) {
     const r = simulateDay(
@@ -166,9 +176,11 @@ export function simulate(spec: SimulationSpec): SimulationResult {
     orders[s] = r.orders
     breakeven[s] = r.breakevenOrders
     contribution[s] = r.contributionPerOrder
-    lostShare[s] = r.demandOrders > 0 ? r.lostOrders / r.demandOrders : 0
-    lostOrders[s] = r.lostOrders
-    lostGross[s] = r.lostGrossSales
+    if (r.demandOrders > 0 && r.lostOrders >= CAPACITY_LIMITED_SHARE * r.demandOrders) {
+      lostOrders[limited] = r.lostOrders
+      lostGross[limited] = r.lostGrossSales
+      limited++
+    }
     maxOrdersPerDay = r.maxOrdersPerDay
   }
 
@@ -191,7 +203,6 @@ export function simulate(spec: SimulationSpec): SimulationResult {
   const ordersRange = summarize(orders)
   const breakevenRange = summarize(breakeven)
   const margin = marginOfSafety(ordersRange.p50, breakevenRange.p50)
-  const medianLostShare = summarize(lostShare).p50
 
   const lossChance = shareWhere(profit, (v) => v < 0)
 
@@ -223,11 +234,13 @@ export function simulate(spec: SimulationSpec): SimulationResult {
       everyOrderLosesMoney: summarize(contribution).p50 <= 0,
       breakevenAboveCapacity: breakevenRange.p50 > maxOrdersPerDay,
       maxOrdersPerDay,
-      capacity: {
-        show: medianLostShare > CAPACITY_ALERT_SHARE,
-        lostShare: medianLostShare,
-        lostOrders: summarize(lostOrders).p50,
-        lostGrossSales: summarize(lostGross).p50,
+      limits: {
+        capacity: {
+          show: limited / n >= LIMIT_NOTE_SHARE,
+          share: limited / n,
+          lostOrders: limited ? summarize(lostOrders.subarray(0, limited)).p50 : 0,
+          lostGrossSales: limited ? summarize(lostGross.subarray(0, limited)).p50 : 0,
+        },
       },
     },
     sensitivity,

@@ -61,11 +61,29 @@ describe('simulate', () => {
     }
   })
 
-  it('shows the capacity alert when most-likely demand exceeds capacity', () => {
+  it('capacity note: share of scenarios turning away ≥ 5% of customers', () => {
     const r = simulate(spec(3, (s) => (s.decisions.capacityPerHour = 15)))
-    expect(r.summary.capacity.show).toBe(true)
-    expect(r.summary.capacity.lostOrders).toBeGreaterThan(0)
-    expect(simulate(spec(3)).summary.capacity.show).toBe(false)
+    const c = r.summary.limits.capacity
+    // Recount from scratch: a scenario is limited when lost ≥ 5% of demand.
+    let limited = 0
+    for (let i = 0; i < r.draws; i++) {
+      const cap = 15
+      const ph = Math.min(r.samples.peakHours[i]!, 6)
+      const demand = r.samples.peakDemand[i]! * ph + r.samples.offpeakDemand[i]! * (6 - ph)
+      const lost =
+        Math.max(0, r.samples.peakDemand[i]! - cap) * ph +
+        Math.max(0, r.samples.offpeakDemand[i]! - cap) * (6 - ph)
+      if (demand > 0 && lost >= 0.05 * demand) limited++
+    }
+    expect(c.share).toBeCloseTo(limited / r.draws, 12)
+    expect(c.show).toBe(c.share >= 0.1)
+    expect(c.show).toBe(true)
+    expect(c.lostOrders).toBeGreaterThan(0)
+    expect(c.lostGrossSales).toBeGreaterThan(0)
+    // Lots of room: hardly any scenario is limited, so no note.
+    const roomy = simulate(spec(3, (s) => (s.decisions.capacityPerHour = 200)))
+    expect(roomy.summary.limits.capacity.share).toBe(0)
+    expect(roomy.summary.limits.capacity.show).toBe(false)
   })
 
   it('sets the "every order loses money" state', () => {

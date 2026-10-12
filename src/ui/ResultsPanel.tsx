@@ -127,6 +127,16 @@ export function ResultsPanel({
           </p>
           <RangeBar range={s.grossSales} fmt={formatEuro} />
           <p className="sales-orders">{copy.salesOrders(fmtOrders(s.orders.p50))}</p>
+          {s.limits.capacity.show && (
+            <p className="notice notice-warn limit-note">
+              {copy.limitCapacity(
+                fmtPct(s.limits.capacity.share),
+                fmtOrders(decisions.capacityPerHour),
+                fmtOrders(s.limits.capacity.lostOrders),
+                formatEuro(s.limits.capacity.lostGrossSales),
+              )}
+            </p>
+          )}
           <Expand title={copy.salesMore}>
             <table className="sales-table">
               <thead>
@@ -164,9 +174,6 @@ export function ResultsPanel({
                 </li>
               )}
               <li>{copy.salesBusy(fmtPct(sales.busyShare))}</li>
-              {sales.lostOrders >= 1 && (
-                <li>{copy.salesLost(fmtOrders(sales.lostOrders), formatEuro(sales.lostSales))}</li>
-              )}
             </ul>
           </Expand>
           <p className="card-caption">{caption}</p>
@@ -208,16 +215,6 @@ export function ResultsPanel({
         </Expand>
         <p className="card-caption">{caption}</p>
       </article>
-
-      {s.capacity.show && (
-        <aside className="notice notice-grow">
-          <b>{copy.capacityTitle}.</b>{' '}
-          {copy.capacityText(
-            fmtOrders(s.capacity.lostOrders),
-            formatEuro(s.capacity.lostGrossSales),
-          )}
-        </aside>
-      )}
 
       <GoalCard
         r={r}

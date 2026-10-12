@@ -75,8 +75,6 @@ export const copy = {
   salesMix: (food: string, drinks: string) => `Main dishes ${food} · Drinks ${drinks}`,
   salesMixLabel: 'On a most likely day',
   salesBusy: (share: string) => `${share} of your orders come in your busy hours.`,
-  salesLost: (orders: string, sales: string) =>
-    `About ${orders} customers a day can’t be served at busy times (${sales} in missed sales).`,
 
   costsTitle: 'Costs per weekend day',
   costsSub: 'what a most likely day costs you',
@@ -194,9 +192,8 @@ export const copy = {
 
   everyOrderLoses:
     'Each order currently costs more than it brings in. Try a higher price or lower ingredient costs.',
-  capacityTitle: 'Room to grow',
-  capacityText: (customers: string, sales: string) =>
-    `At busy times, about ${customers} more customers may want to order than you can serve — around ${sales} in extra sales.`,
+  limitCapacity: (share: string, perHour: string, orders: string, sales: string) =>
+    `In ${share} of scenarios you’d turn customers away because you can serve at most ${perHour} orders an hour. In those scenarios you’d miss about ${orders} orders (${sales}) a day.`,
 
   howTitle: 'How this works',
   howText:
